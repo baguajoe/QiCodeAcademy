@@ -16,3 +16,15 @@ Decisions made while building the backend without stopping to ask. Each can be r
 - **Business rules are enforced twice:** in request schemas (friendly 400s) and in a SQLAlchemy `before_flush` hook so Flask-Admin/CLI can't bypass them: youth registrations always get `email`/`phone` nulled; gallery photos can't be published without `consent_confirmed`; slugs auto-generated/uniqued; news `published_at` set on first publish; news body sanitized with bleach on every assignment.
 - **Seed (`flask seed`) is idempotent.** Creates the admin from `ADMIN_EMAIL`/`ADMIN_PASSWORD` (min 10 chars; never overwrites an existing password), the SiteSetting defaults, empty SiteImage slots (so the admin UI shows every slot), and `[SAMPLE]` programs/events/impact stats. Sample impact stats are also labeled `[SAMPLE]` because they are not real numbers. `flask remove-samples` deletes them later. No research references or gallery photos are seeded.
 - Social links are stored as `social_facebook`, `social_instagram`, `social_youtube`.
+
+## Phase 2 — Public API
+- **Response envelopes:** list endpoints return `{"items": [...]}`; paginated ones (events, news, gallery) add `page, per_page, total, pages`. `GET /api/settings` returns a flat `{key: value}` map; `GET /api/site-images` returns `{slot_key: {image_url, alt_text}}` (empty slots → `image_url: null`).
+- **Errors** are always `{"error": code, "message": text, "errors"?: {field: [msgs]}}`.
+- **`GET /api/events` defaults to `when=upcoming`** (end, or start if no end, ≥ now in Boston). `when=past|all` also supported. Division filters accept comma lists (`division=youth,intergenerational`).
+- **`GET /api/programs` defaults to active only**; `active=false` shows inactive, `active=all` shows both. Program detail is returned even when inactive (registration then refuses it).
+- **News** is visible only when `is_published` and `published_at <= now` (allows scheduling). The list omits `body` and includes a plain-text `excerpt`.
+- **Registration type must fit the program:** youth → youth/intergenerational programs; senior → senior/intergenerational. New registrations are `pending`, or `waitlist` automatically when the program is full. The Program row is locked `FOR UPDATE` (Postgres) to avoid overselling the last seat.
+- **Youth registration that includes a participant email/phone is rejected with 400** (rather than silently dropped) so the frontend can't accidentally collect it; the model hook also nulls them as a backstop. Senior registrations need at least one of email/phone; guardian/grade fields are discarded for seniors.
+- **Research interest requires `consent_to_contact: true`** (no point storing contact details otherwise). `email_or_phone` must look like an email or a phone number.
+- **Form responses don't return database ids** — just `{ok, message}` (+ `status`, `waitlisted` for registrations). Honeypot submissions get the identical success response.
+- **Rate limits** (per client IP, configurable): forms `5/min;30/hour`, donations `10/min;60/hour`, login `10/min;50/hour`. Storage defaults to in-memory (per process); set `RATELIMIT_STORAGE_URI=redis://...` if you scale out.
