@@ -9,7 +9,11 @@ def health():
 
 
 def register_blueprints(app):
+    from .admin import bp as admin_bp
+    from .auth import bp as auth_bp
     from .public import bp as public_bp
 
     app.register_blueprint(health_bp)
     app.register_blueprint(public_bp)
+    app.register_blueprint(auth_bp)
+    app.register_blueprint(admin_bp)

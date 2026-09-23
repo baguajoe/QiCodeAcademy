@@ -28,3 +28,12 @@ Decisions made while building the backend without stopping to ask. Each can be r
 - **Research interest requires `consent_to_contact: true`** (no point storing contact details otherwise). `email_or_phone` must look like an email or a phone number.
 - **Form responses don't return database ids** — just `{ok, message}` (+ `status`, `waitlisted` for registrations). Honeypot submissions get the identical success response.
 - **Rate limits** (per client IP, configurable): forms `5/min;30/hour`, donations `10/min;60/hour`, login `10/min;50/hour`. Storage defaults to in-memory (per process); set `RATELIMIT_STORAGE_URI=redis://...` if you scale out.
+
+## Phase 3 — Auth & admin API
+- **JWT access tokens only** (Authorization: Bearer), 8h lifetime (`JWT_EXPIRES_HOURS`). No refresh tokens — admins simply log in again. Every admin request re-checks that the user still exists and `is_active`, so deactivating an admin cuts off their token immediately.
+- **Login doesn't reveal whether an email exists** (same 401 message; dummy hash check to equalize timing) and is rate-limited.
+- **Generic admin CRUD** at `/api/admin/<resource>` with `GET list` (pagination, `q` search, per-resource filters, `sort=field|-field`), `POST`, `GET/PUT/PATCH/DELETE /<id>`. PUT and PATCH both behave as partial updates: the payload is merged onto the current record and the *whole* record is re-validated, so cross-field rules can't be bypassed by partial updates.
+- **Blank strings from admin forms become `null`** (lets admins clear optional fields).
+- **Programs with registrations can't be deleted (409)** — deactivate instead. Admins can't delete or deactivate their own account. User `password` is write-only (min 10 chars); hashes never appear in any response.
+- **CSV exports** neutralize spreadsheet formula injection (cells starting with `= + - @` get a leading `'`), include a UTF-8 BOM for Excel, and accept `program_id` / `status` filters for registrations. Because the frontend authenticates with a header, it should download CSVs with `fetch` + Blob rather than a plain link.
+- Changing a registration's status doesn't auto-promote the waitlist; the admin does that manually (dashboard shows seats_left and waitlist counts).
