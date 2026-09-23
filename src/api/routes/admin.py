@@ -14,6 +14,7 @@ from ..schemas import (ContactMessageSchema, DonationSchema, EventSchema, Galler
                        RegistrationSchema, ResearchInterestSchema, ResearchPartnerInquirySchema,
                        ResearchReferenceSchema, SiteImageSchema, SiteSettingSchema,
                        TeamMemberSchema, UserSchema, VolunteerSchema)
+from ..services import notifications
 from ..utils import APIError, csv_response, get_json, load, paginate, parse_bool
 from .auth import admin_required
 
@@ -35,11 +36,11 @@ def _require_admin():
 # ---------------------------------------------------------------------------
 class Resource:
     def __init__(self, name, model, schema_cls, search=(), filters=(), default_sort="-created_at",
-                 before_create=None, before_save=None, before_delete=None):
+                 before_create=None, before_save=None, before_delete=None, after_update=None):
         self.name, self.model, self.schema_cls = name, model, schema_cls
         self.search, self.filters, self.default_sort = search, filters, default_sort
         self.before_create, self.before_save = before_create, before_save
-        self.before_delete = before_delete
+        self.before_delete, self.after_update = before_delete, after_update
 
     @property
     def schema(self):
@@ -107,6 +108,8 @@ class Resource:
         data = load(schema, {**current, **payload})
         self._apply(obj, data)
         db.session.commit()
+        if self.after_update:
+            self.after_update(obj, current)
         return jsonify(self.schema.dump(obj))
 
     def delete(self, obj_id):
@@ -178,6 +181,12 @@ def _registration_before_save(obj, data):
     return data
 
 
+def _registration_after_update(obj, previous):
+    # Email the family/participant when an admin confirms their spot.
+    if obj.status == "confirmed" and previous.get("status") != "confirmed":
+        notifications.registration_confirmed(obj)
+
+
 for _r in [
     Resource("users", User, UserSchema, search=("email", "name"), filters=("is_active",),
              before_create=_user_before_create, before_save=_user_before_save,
@@ -190,7 +199,8 @@ for _r in [
     Resource("registrations", Registration, RegistrationSchema,
              search=("participant_first_name", "participant_last_name", "guardian_name",
                      "guardian_email", "email"),
-             filters=("program_id", "type", "status"), before_save=_registration_before_save),
+             filters=("program_id", "type", "status"), before_save=_registration_before_save,
+             after_update=_registration_after_update),
     Resource("volunteers", Volunteer, VolunteerSchema, search=("name", "email")),
     Resource("contact-messages", ContactMessage, ContactMessageSchema,
              search=("name", "email", "subject", "organization"), filters=("type", "is_read")),

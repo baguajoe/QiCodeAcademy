@@ -43,3 +43,15 @@ Decisions made while building the backend without stopping to ask. Each can be r
 - Images are auto-rotated from EXIF and re-encoded, which also **strips EXIF metadata (including GPS location)** — important for photos of kids and seniors. Only downscaled (max 1920px wide), never upscaled. Transparent PNGs keep alpha in WebP; the JPEG version is flattened onto white.
 - Keys look like `images/2026/09/<uuid>.webp` + `.jpg`. R2 is used only when **all five** `R2_*` vars are set (`R2_PUBLIC_URL` = your bucket's public/custom domain); otherwise files go to `./uploads` and Flask serves them at `/uploads/...`. Note: Render's disk is ephemeral, so configure R2 in production.
 - The upload endpoint returns URLs only; the admin then saves the URL onto the record (program image, gallery photo, site image slot, etc.). Uploads don't create DB rows.
+
+## Phase 5 — Email
+- **Provider order:** SendGrid (`SENDGRID_API_KEY`) → SMTP (`SMTP_HOST`) → console print (dev only; in production with no provider it logs a warning and sends nothing). Email failures are logged and never fail the request.
+- **Async in production** (`EMAIL_ASYNC`, default on when `APP_ENV=production`): emails go out on a background thread so forms respond quickly.
+- **Who gets what:**
+  - Registration → confirmation to the guardian (youth) or participant email (senior; skipped if they gave only a phone), with a waitlist variant. Admin notified.
+  - Admin changes a registration to `confirmed` → "You're confirmed" email (once).
+  - Volunteer, contact (all three types), research inquiry → acknowledgment to the sender + admin notification with `Reply-To` set to the sender.
+  - Research interest → acknowledgment only if they gave an email; admin notification contains name + neighborhood only (no contact details in email).
+  - Completed donation → thank-you/receipt including the `tax_status` SiteSetting text verbatim (no deductibility claims).
+- `ADMIN_NOTIFY_EMAIL` accepts a comma-separated list; if blank, no admin notifications are sent.
+- All user-supplied values are HTML-escaped in HTML emails; subjects are stripped of newlines (header-injection safe).

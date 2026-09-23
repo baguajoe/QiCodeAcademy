@@ -109,6 +109,8 @@ class Config:
     SMTP_PASSWORD = os.getenv("SMTP_PASSWORD", "")
     SMTP_USE_TLS = _bool("SMTP_USE_TLS", True)
     SMTP_USE_SSL = _bool("SMTP_USE_SSL", False)
+    # Send on a background thread so form requests stay fast (default on in production).
+    EMAIL_ASYNC = _bool("EMAIL_ASYNC", IS_PRODUCTION)
 
     # --- Stripe -------------------------------------------------------------
     STRIPE_SECRET_KEY = os.getenv("STRIPE_SECRET_KEY", "")
@@ -147,6 +149,7 @@ class TestingConfig(Config):
     RATELIMIT_STORAGE_URI = "memory://"
     SENDGRID_API_KEY = ""
     SMTP_HOST = ""
+    EMAIL_ASYNC = False
     ADMIN_NOTIFY_EMAIL = "admin-notify@example.org"
     R2_ACCOUNT_ID = R2_ACCESS_KEY_ID = R2_SECRET_ACCESS_KEY = R2_BUCKET = R2_PUBLIC_URL = ""
     STRIPE_SECRET_KEY = "sk_test_dummy"
