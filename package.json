@@ -1,0 +1,11 @@
+{
+  "name": "qi-code-academy",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Qi Code Academy website (React frontend + Flask API). Run ./start.sh — not npm start.",
+  "scripts": {
+    "build": "webpack --mode production --output-path dist_manual",
+    "dev": "webpack --watch --mode development --output-path dist_manual"
+  },
+  "engines": { "node": ">=20" }
+}
