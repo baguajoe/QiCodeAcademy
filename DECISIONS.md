@@ -55,3 +55,13 @@ Decisions made while building the backend without stopping to ask. Each can be r
   - Completed donation → thank-you/receipt including the `tax_status` SiteSetting text verbatim (no deductibility claims).
 - `ADMIN_NOTIFY_EMAIL` accepts a comma-separated list; if blank, no admin notifications are sent.
 - All user-supplied values are HTML-escaped in HTML emails; subjects are stripped of newlines (header-injection safe).
+
+## Phase 6 — Stripe
+- **`amount` is in dollars** (number or string, 2 decimals), converted to cents server-side. Limits: $1–$25,000 (`DONATION_MIN_CENTS` / `DONATION_MAX_CENTS`). Optional `donor_name` / `donor_email` (email pre-fills Checkout).
+- A `pending` Donation row is created **before** calling Stripe (its id goes into Checkout `metadata` + `client_reference_id`, and the idempotency key); if Stripe errors, the row is rolled back and the API returns 502.
+- **One-time:** `mode=payment`, `submit_type=donate`. **Monthly:** `mode=subscription` with inline `price_data.recurring.interval=month` (no pre-created Stripe Products/Prices needed).
+- `STRIPE_SUCCESS_URL` automatically gets `?session_id={CHECKOUT_SESSION_ID}` appended unless it already contains the placeholder.
+- If Stripe env vars are missing the endpoint returns **503 `donations_unavailable`** so the frontend can show a friendly message.
+- **Webhook** verifies the `Stripe-Signature` header, then works with the raw JSON (robust across stripe-python versions). Events handled: `checkout.session.completed` (marks completed when `payment_status` is paid and fills donor info from Stripe), `checkout.session.async_payment_succeeded/failed`, `checkout.session.expired`, `invoice.paid` (each **monthly renewal becomes its own completed Donation row** keyed by invoice id; the first invoice is skipped because the session already recorded it), `customer.subscription.updated/deleted` (updates `subscription_status` on the original row), and `charge.refunded` (full refunds → `refunded`). All handlers are idempotent; thank-you emails are sent once per row (`receipt_sent_at`).
+- Honeypot on the donation form returns `{"url": null, "id": null}` without calling Stripe.
+- Configure the Stripe webhook endpoint to `https://<site>/api/stripe/webhook` with the events above.
