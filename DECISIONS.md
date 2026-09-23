@@ -37,3 +37,9 @@ Decisions made while building the backend without stopping to ask. Each can be r
 - **Programs with registrations can't be deleted (409)** — deactivate instead. Admins can't delete or deactivate their own account. User `password` is write-only (min 10 chars); hashes never appear in any response.
 - **CSV exports** neutralize spreadsheet formula injection (cells starting with `= + - @` get a leading `'`), include a UTF-8 BOM for Excel, and accept `program_id` / `status` filters for registrations. Because the frontend authenticates with a header, it should download CSVs with `fetch` + Blob rather than a plain link.
 - Changing a registration's status doesn't auto-promote the waitlist; the admin does that manually (dashboard shows seats_left and waitlist counts).
+
+## Phase 4 — Image uploads
+- `POST /api/admin/upload` (multipart `file`, optional `folder` like `gallery`/`team`/`news`). The file is identified by **Pillow's decoded format**, not just the extension; both must be JPG/PNG/WebP. Max 10 MB (checked in code, plus a ~10.5 MB request cap).
+- Images are auto-rotated from EXIF and re-encoded, which also **strips EXIF metadata (including GPS location)** — important for photos of kids and seniors. Only downscaled (max 1920px wide), never upscaled. Transparent PNGs keep alpha in WebP; the JPEG version is flattened onto white.
+- Keys look like `images/2026/09/<uuid>.webp` + `.jpg`. R2 is used only when **all five** `R2_*` vars are set (`R2_PUBLIC_URL` = your bucket's public/custom domain); otherwise files go to `./uploads` and Flask serves them at `/uploads/...`. Note: Render's disk is ephemeral, so configure R2 in production.
+- The upload endpoint returns URLs only; the admin then saves the URL onto the record (program image, gallery photo, site image slot, etc.). Uploads don't create DB rows.
