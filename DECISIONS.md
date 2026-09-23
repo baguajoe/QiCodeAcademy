@@ -65,3 +65,12 @@ Decisions made while building the backend without stopping to ask. Each can be r
 - **Webhook** verifies the `Stripe-Signature` header, then works with the raw JSON (robust across stripe-python versions). Events handled: `checkout.session.completed` (marks completed when `payment_status` is paid and fills donor info from Stripe), `checkout.session.async_payment_succeeded/failed`, `checkout.session.expired`, `invoice.paid` (each **monthly renewal becomes its own completed Donation row** keyed by invoice id; the first invoice is skipped because the session already recorded it), `customer.subscription.updated/deleted` (updates `subscription_status` on the original row), and `charge.refunded` (full refunds → `refunded`). All handlers are idempotent; thank-you emails are sent once per row (`receipt_sent_at`).
 - Honeypot on the donation form returns `{"url": null, "id": null}` without calling Stripe.
 - Configure the Stripe webhook endpoint to `https://<site>/api/stripe/webhook` with the events above.
+
+## Phase 7 — Flask-Admin, deploy
+- **Flask-Admin at `/flask-admin`** uses its own **session-cookie login** (same admin `User` accounts as the API) because a browser-rendered panel can't send JWT headers. The login form has a CSRF token and rate limiting; every model form uses Flask-Admin's `SecureForm` (CSRF). Only local `next=` redirects are allowed after login. Password hashes are never shown; a "New password" field sets it.
+- The panel omits the `slug` field (auto-generated from the title; editable through the API). Programs with registrations can't be deleted there either. Model-layer rules (sanitizing, youth contact rule, gallery consent) apply automatically.
+- The API blueprint is named `admin_api` (Flask-Admin reserves the `admin` endpoint).
+- **Render:** one Python web service serving both the API and the built React app (same origin → no CORS in production unless you add another origin), plus a Postgres database. `PYTHON_VERSION=3.12.8` is pinned (the Codespace runs 3.14; all deps support both). Gunicorn: 2 workers × 4 threads.
+- **Build runs `flask seed --no-samples`** so the admin user and SiteSetting defaults exist after the first deploy without re-adding `[SAMPLE]` content every deploy.
+- Security headers on every response (`nosniff`, `Referrer-Policy`, `X-Frame-Options: SAMEORIGIN`, HSTS in production); `Cache-Control: no-store` on admin/auth responses.
+- Empty variables in `.env` are treated as "not set" (fall back to defaults).

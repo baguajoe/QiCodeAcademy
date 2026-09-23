@@ -43,7 +43,21 @@ def create_app(config_object=None, **overrides):
     _register_error_handlers(app)
     _register_jwt_handlers(app)
     _register_static(app)
+    _register_security_headers(app)
     return app
+
+
+def _register_security_headers(app):
+    @app.after_request
+    def _headers(resp):
+        resp.headers.setdefault("X-Content-Type-Options", "nosniff")
+        resp.headers.setdefault("Referrer-Policy", "strict-origin-when-cross-origin")
+        resp.headers.setdefault("X-Frame-Options", "SAMEORIGIN")
+        if app.config["IS_PRODUCTION"]:
+            resp.headers.setdefault("Strict-Transport-Security", "max-age=31536000; includeSubDomains")
+        if request.path.startswith(("/api/admin", "/api/auth", "/flask-admin")):
+            resp.headers["Cache-Control"] = "no-store"
+        return resp
 
 
 def _init_cors(app):

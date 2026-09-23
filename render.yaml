@@ -1,0 +1,66 @@
+# Render Blueprint — https://render.com/docs/blueprint-spec
+# One web service (Flask API + built React app) and one Postgres database.
+# Variables marked `sync: false` are prompted for in the Render dashboard; fill them in there.
+services:
+  - type: web
+    name: qi-code-academy
+    runtime: python
+    plan: starter
+    buildCommand: ./render_build.sh
+    startCommand: gunicorn --chdir src app:app --workers 2 --threads 4 --timeout 60 --bind 0.0.0.0:$PORT
+    healthCheckPath: /api/health
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.8
+      - key: NODE_VERSION
+        value: "20"
+      - key: APP_ENV
+        value: production
+      - key: DATABASE_URL
+        fromDatabase:
+          name: qi-code-academy-db
+          property: connectionString
+      - key: SECRET_KEY
+        generateValue: true
+      - key: JWT_SECRET_KEY
+        generateValue: true
+      - key: SITE_URL
+        sync: false            # e.g. https://qicodeacademy.org
+      - key: CORS_ORIGINS
+        sync: false            # e.g. https://qicodeacademy.org,https://www.qicodeacademy.org
+      - key: ADMIN_EMAIL
+        sync: false
+      - key: ADMIN_PASSWORD
+        sync: false
+      - key: ADMIN_NOTIFY_EMAIL
+        sync: false
+      - key: MAIL_FROM
+        sync: false            # e.g. Qi Code Academy <hello@qicodeacademy.org>
+      - key: MAIL_REPLY_TO
+        sync: false
+      - key: SENDGRID_API_KEY
+        sync: false
+      - key: STRIPE_SECRET_KEY
+        sync: false
+      - key: STRIPE_WEBHOOK_SECRET
+        sync: false
+      - key: STRIPE_SUCCESS_URL
+        sync: false            # e.g. https://qicodeacademy.org/donate/thank-you
+      - key: STRIPE_CANCEL_URL
+        sync: false            # e.g. https://qicodeacademy.org/donate
+      - key: R2_ACCOUNT_ID
+        sync: false
+      - key: R2_ACCESS_KEY_ID
+        sync: false
+      - key: R2_SECRET_ACCESS_KEY
+        sync: false
+      - key: R2_BUCKET
+        sync: false
+      - key: R2_PUBLIC_URL
+        sync: false            # e.g. https://images.qicodeacademy.org
+
+databases:
+  - name: qi-code-academy-db
+    plan: basic-256mb          # free Render Postgres expires after 30 days; use a paid plan for real data
+    databaseName: qicode
+    user: qicode

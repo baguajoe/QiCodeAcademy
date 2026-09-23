@@ -28,11 +28,11 @@ def _int(name, default):
 
 
 def _list(name):
-    return [v.strip().rstrip("/") for v in os.getenv(name, "").split(",") if v.strip()]
+    return [v.strip().rstrip("/") for v in (os.getenv(name) or "").split(",") if v.strip()]
 
 
 def _database_url():
-    url = os.getenv("DATABASE_URL", "").strip()
+    url = (os.getenv("DATABASE_URL") or "").strip()
     if not url:
         instance = REPO_ROOT / "instance"
         instance.mkdir(exist_ok=True)
@@ -44,7 +44,7 @@ def _database_url():
 
 
 class Config:
-    ENV_NAME = os.getenv("APP_ENV", os.getenv("FLASK_ENV", "development")).lower()
+    ENV_NAME = (os.getenv("APP_ENV") or os.getenv("FLASK_ENV") or "development").lower()
     IS_PRODUCTION = ENV_NAME == "production"
     TESTING = False
 
@@ -62,7 +62,7 @@ class Config:
     SQLALCHEMY_ENGINE_OPTIONS = {"pool_pre_ping": True}
 
     # --- URLs / CORS --------------------------------------------------------
-    SITE_URL = os.getenv("SITE_URL", "http://localhost:3001").rstrip("/")
+    SITE_URL = (os.getenv("SITE_URL") or "http://localhost:3001").rstrip("/")
     CORS_ORIGINS = _list("CORS_ORIGINS")
     # Regexes allowed in development only (Codespaces forwarded ports + localhost).
     DEV_CORS_ORIGIN_PATTERNS = [
@@ -71,7 +71,7 @@ class Config:
         r"http://localhost(:\d+)?",
         r"http://127\.0\.0\.1(:\d+)?",
     ]
-    FRONTEND_DIST_DIR = os.getenv("FRONTEND_DIST_DIR", str(REPO_ROOT / "dist_manual"))
+    FRONTEND_DIST_DIR = os.getenv("FRONTEND_DIST_DIR") or str(REPO_ROOT / "dist_manual")
 
     # --- Cookies (Flask-Admin session login) --------------------------------
     SESSION_COOKIE_HTTPONLY = True
@@ -80,44 +80,44 @@ class Config:
 
     # --- Rate limiting ------------------------------------------------------
     RATELIMIT_ENABLED = _bool("RATELIMIT_ENABLED", True)
-    RATELIMIT_STORAGE_URI = os.getenv("RATELIMIT_STORAGE_URI", "memory://")
+    RATELIMIT_STORAGE_URI = (os.getenv("RATELIMIT_STORAGE_URI") or "memory://")
     RATELIMIT_HEADERS_ENABLED = True
-    RATELIMIT_FORMS = os.getenv("RATELIMIT_FORMS", "5 per minute;30 per hour")
-    RATELIMIT_DONATIONS = os.getenv("RATELIMIT_DONATIONS", "10 per minute;60 per hour")
-    RATELIMIT_LOGIN = os.getenv("RATELIMIT_LOGIN", "10 per minute;50 per hour")
+    RATELIMIT_FORMS = (os.getenv("RATELIMIT_FORMS") or "5 per minute;30 per hour")
+    RATELIMIT_DONATIONS = (os.getenv("RATELIMIT_DONATIONS") or "10 per minute;60 per hour")
+    RATELIMIT_LOGIN = (os.getenv("RATELIMIT_LOGIN") or "10 per minute;50 per hour")
 
     # --- Uploads ------------------------------------------------------------
     MAX_UPLOAD_BYTES = 10 * 1024 * 1024
     # Request body cap: 10 MB image plus multipart overhead.
     MAX_CONTENT_LENGTH = MAX_UPLOAD_BYTES + 512 * 1024
-    UPLOAD_FOLDER = os.getenv("UPLOAD_FOLDER", str(REPO_ROOT / "uploads"))
+    UPLOAD_FOLDER = os.getenv("UPLOAD_FOLDER") or str(REPO_ROOT / "uploads")
     IMAGE_MAX_WIDTH = 1920
-    R2_ACCOUNT_ID = os.getenv("R2_ACCOUNT_ID", "")
-    R2_ACCESS_KEY_ID = os.getenv("R2_ACCESS_KEY_ID", "")
-    R2_SECRET_ACCESS_KEY = os.getenv("R2_SECRET_ACCESS_KEY", "")
-    R2_BUCKET = os.getenv("R2_BUCKET", "")
-    R2_PUBLIC_URL = os.getenv("R2_PUBLIC_URL", "").rstrip("/")
+    R2_ACCOUNT_ID = (os.getenv("R2_ACCOUNT_ID") or "")
+    R2_ACCESS_KEY_ID = (os.getenv("R2_ACCESS_KEY_ID") or "")
+    R2_SECRET_ACCESS_KEY = (os.getenv("R2_SECRET_ACCESS_KEY") or "")
+    R2_BUCKET = (os.getenv("R2_BUCKET") or "")
+    R2_PUBLIC_URL = (os.getenv("R2_PUBLIC_URL") or "").rstrip("/")
 
     # --- Email --------------------------------------------------------------
-    MAIL_FROM = os.getenv("MAIL_FROM", "Qi Code Academy <no-reply@qicodeacademy.org>")
-    MAIL_REPLY_TO = os.getenv("MAIL_REPLY_TO", "")
-    ADMIN_NOTIFY_EMAIL = os.getenv("ADMIN_NOTIFY_EMAIL", "")
-    SENDGRID_API_KEY = os.getenv("SENDGRID_API_KEY", "")
-    SMTP_HOST = os.getenv("SMTP_HOST", "")
+    MAIL_FROM = (os.getenv("MAIL_FROM") or "Qi Code Academy <no-reply@qicodeacademy.org>")
+    MAIL_REPLY_TO = (os.getenv("MAIL_REPLY_TO") or "")
+    ADMIN_NOTIFY_EMAIL = (os.getenv("ADMIN_NOTIFY_EMAIL") or "")
+    SENDGRID_API_KEY = (os.getenv("SENDGRID_API_KEY") or "")
+    SMTP_HOST = (os.getenv("SMTP_HOST") or "")
     SMTP_PORT = _int("SMTP_PORT", 587)
-    SMTP_USERNAME = os.getenv("SMTP_USERNAME", "")
-    SMTP_PASSWORD = os.getenv("SMTP_PASSWORD", "")
+    SMTP_USERNAME = (os.getenv("SMTP_USERNAME") or "")
+    SMTP_PASSWORD = (os.getenv("SMTP_PASSWORD") or "")
     SMTP_USE_TLS = _bool("SMTP_USE_TLS", True)
     SMTP_USE_SSL = _bool("SMTP_USE_SSL", False)
     # Send on a background thread so form requests stay fast (default on in production).
     EMAIL_ASYNC = _bool("EMAIL_ASYNC", IS_PRODUCTION)
 
     # --- Stripe -------------------------------------------------------------
-    STRIPE_SECRET_KEY = os.getenv("STRIPE_SECRET_KEY", "")
-    STRIPE_WEBHOOK_SECRET = os.getenv("STRIPE_WEBHOOK_SECRET", "")
-    STRIPE_SUCCESS_URL = os.getenv("STRIPE_SUCCESS_URL", "")
-    STRIPE_CANCEL_URL = os.getenv("STRIPE_CANCEL_URL", "")
-    STRIPE_CURRENCY = os.getenv("STRIPE_CURRENCY", "usd")
+    STRIPE_SECRET_KEY = (os.getenv("STRIPE_SECRET_KEY") or "")
+    STRIPE_WEBHOOK_SECRET = (os.getenv("STRIPE_WEBHOOK_SECRET") or "")
+    STRIPE_SUCCESS_URL = (os.getenv("STRIPE_SUCCESS_URL") or "")
+    STRIPE_CANCEL_URL = (os.getenv("STRIPE_CANCEL_URL") or "")
+    STRIPE_CURRENCY = (os.getenv("STRIPE_CURRENCY") or "usd")
     DONATION_MIN_CENTS = _int("DONATION_MIN_CENTS", 100)          # $1
     DONATION_MAX_CENTS = _int("DONATION_MAX_CENTS", 2_500_000)    # $25,000
 

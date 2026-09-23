@@ -18,7 +18,7 @@ from ..services import notifications
 from ..utils import APIError, csv_response, get_json, load, paginate, parse_bool
 from .auth import admin_required
 
-bp = Blueprint("admin", __name__, url_prefix="/api/admin")
+bp = Blueprint("admin_api", __name__, url_prefix="/api/admin")
 
 
 _check_admin = admin_required(lambda: None)
