@@ -74,3 +74,18 @@ Decisions made while building the backend without stopping to ask. Each can be r
 - **Build runs `flask seed --no-samples`** so the admin user and SiteSetting defaults exist after the first deploy without re-adding `[SAMPLE]` content every deploy.
 - Security headers on every response (`nosniff`, `Referrer-Policy`, `X-Frame-Options: SAMEORIGIN`, HSTS in production); `Cache-Control: no-store` on admin/auth responses.
 - Empty variables in `.env` are treated as "not set" (fall back to defaults).
+
+---
+
+# Frontend decisions
+
+## Phase 1: React shell
+- **Layout:** follows the 4Geeks boilerplate. Source is in `src/front/js/` (`index.js`, `layout.js`, `pages/`, `component/`, `store/flux.js` + `store/appContext.js`), with styles in `src/front/styles/`, copy in `src/front/locales/`, and images in `src/front/img/`. Webpack is split into `webpack.common.js`, `webpack.dev.js`, and `webpack.prod.js`, and `template.html` sits at the repo root.
+- **Dev servers:** `./start.sh` runs Flask on **:3001** and the webpack dev server on **:3000**. Open the site on port 3000. The dev server proxies `/api`, `/uploads`, `/flask-admin`, `/sitemap.xml`, and `/robots.txt` to Flask, so everything is same-origin and CORS never comes into play. The dev server also writes to `dist_manual/` (`writeToDisk`), so Flask on :3001 serves the same build, and `rm -rf dist_manual && ./start.sh` does a clean rebuild. Node dependencies reinstall only when `package.json`/`package-lock.json` change.
+- **Keeping webpack light:** dev uses `eval-cheap-module-source-map` plus a filesystem cache, with a 1.5 GB Node heap cap. Prod uses a vendor chunk and a runtime chunk. Every route is `React.lazy`-loaded, the admin UI is its own chunk, and CSS is extracted and minified.
+- **Babel:** Babel 8 (`babel.config.js`). The React preset's `development` flag follows `NODE_ENV`, which the webpack configs set.
+- **State:** state lives in `flux.js` using the 4Geeks `getState({getStore, getActions, setStore})` shape. `AppProvider` uses a ref so `getStore()` never goes stale, and `useStore()` is the hook to read it.
+- **Accessibility preferences:** text size (A / A+ / A++ = 18 / 20.7 / 23.4 px root), high contrast, and language are saved in `localStorage`. A tiny inline script in `template.html` applies them before first paint, so there's no flash. All three toggles are in a utility bar above the header.
+- **Navigation:** the desktop nav appears at ≥1200px. Below that, a large **"Menu"** button with an icon *and* the word "Menu" opens the nav. The Programs dropdown is click/keyboard-operated (Esc closes it) rather than hover-only.
+- **Photo slots** (`siteImages.js`) resolve in this order: an admin-uploaded SiteImage, then `src/front/img/site/<slot>.jpg|png|webp` (found at build time via `require.context` and turned into a WebP srcset by `responsive-loader` + `sharp`), then a styled placeholder naming the exact photo and size. Originals are also copied unhashed to `/img/site/` so they can serve as Open Graph images.
+- **Default share image:** `img/og-default.png` is generated artwork (logo circles + name), not a photo of people.

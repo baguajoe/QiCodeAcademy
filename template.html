@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#1f4e5f" />
+    <!--SEO-->
+    <title>Qi Code Academy — Learn. Move. Create. Connect.</title>
+    <meta name="description" content="Qi Code Academy empowers youth and older adults in Boston's inner-city communities through technology education, workforce development, wellness, community engagement, and research." data-seo="1" />
+    <!--/SEO-->
+    <script>
+      // Apply saved accessibility preferences before first paint (no flash).
+      (function () {
+        try {
+          var d = document.documentElement;
+          var s = localStorage.getItem("qca.textSize");
+          if (s) d.setAttribute("data-text-size", s);
+          if (localStorage.getItem("qca.contrast") === "high") d.setAttribute("data-contrast", "high");
+          var l = localStorage.getItem("qca.lang");
+          if (l) d.setAttribute("lang", l);
+        } catch (e) {}
+      })();
+    </script>
+  </head>
+  <body>
+    <noscript>
+      <p style="padding:1rem;font-size:1.2rem">Qi Code Academy's website needs JavaScript to run. Please enable it, or email us using the contact information in your browser's search results.</p>
+    </noscript>
+    <div id="app"></div>
+  </body>
+</html>

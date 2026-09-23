@@ -2,10 +2,43 @@
   "name": "qi-code-academy",
   "version": "0.1.0",
   "private": true,
-  "description": "Qi Code Academy website (React frontend + Flask API). Run ./start.sh — not npm start.",
+  "description": "Qi Code Academy website (React frontend + Flask API). Run ./start.sh \u2014 not npm start.",
   "scripts": {
-    "build": "webpack --mode production --output-path dist_manual",
-    "dev": "webpack --watch --mode development --output-path dist_manual"
+    "build": "webpack --config webpack.prod.js",
+    "dev": "webpack serve --config webpack.dev.js",
+    "i18n:sync": "node scripts/i18n-sync.js",
+    "start": "echo 'Use ./start.sh instead of npm start' && exit 1"
   },
-  "engines": { "node": ">=20" }
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "i18next": "^26.4.2",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-i18next": "^17.0.15",
+    "react-router-dom": "^6.30.6"
+  },
+  "devDependencies": {
+    "@babel/core": "^8.0.6",
+    "@babel/preset-env": "^8.0.6",
+    "@babel/preset-react": "^8.0.1",
+    "babel-loader": "^10.1.1",
+    "copy-webpack-plugin": "^14.0.0",
+    "css-loader": "^7.1.5",
+    "css-minimizer-webpack-plugin": "^8.0.0",
+    "html-webpack-plugin": "^5.6.8",
+    "mini-css-extract-plugin": "^2.10.2",
+    "responsive-loader": "^3.1.2",
+    "sharp": "^0.35.4",
+    "style-loader": "^4.0.0",
+    "webpack": "^5.111.1",
+    "webpack-cli": "^7.2.3",
+    "webpack-dev-server": "^6.0.0",
+    "webpack-merge": "^6.0.1"
+  },
+  "browserslist": [
+    "defaults",
+    "not dead"
+  ]
 }

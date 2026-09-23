@@ -1,0 +1,131 @@
+/* =====================================================================
+   Design tokens — shared neutral base + one accent per division.
+   All text/background pairs below meet WCAG 2.1 AA (most meet AAA).
+   ===================================================================== */
+:root {
+  /* Type scale: base 18px; the A+ / A++ toggle raises the root size. */
+  font-size: 112.5%; /* 18px */
+  --font-body: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
+  --font-heading: "Iowan Old Style", "Palatino Linotype", Palatino, "Book Antiqua", Georgia, serif;
+  --font-mono: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+
+  /* Neutral base (warm) */
+  --bg: #fbf8f3;
+  --surface: #ffffff;
+  --surface-alt: #f3eee6;
+  --ink: #1c1f23;          /* 15.9:1 on --bg */
+  --ink-muted: #4b5058;    /* 7.6:1 on --bg */
+  --line: #ddd5c8;
+  --line-strong: #8f877b;
+
+  /* Organization brand */
+  --brand: #1f4e5f;        /* white text 9.2:1 */
+  --brand-strong: #163a47;
+  --brand-soft: #e4eef0;
+  --link: #1b5c70;         /* 7.0:1 on --bg */
+  --gold: #f3c969;         /* decorative on dark only */
+  --donate: #a8402b;       /* white text 5.9:1 */
+  --donate-strong: #8b3322;
+
+  /* Status */
+  --success: #1e6b3a;
+  --success-soft: #e6f4ea;
+  --error: #a4262c;
+  --error-soft: #fbeaea;
+  --warning-soft: #fff4d6;
+  --warning-ink: #6b4a00;
+
+  /* Division palettes */
+  --youth: #1d3a8a;        /* deep blue, white text 10.4:1 */
+  --youth-strong: #142a66;
+  --youth-electric: #19b4ff; /* decorative accents only */
+  --youth-soft: #e8efff;
+
+  --senior: #2f6b55;       /* jade, white text 6.3:1 */
+  --senior-strong: #22503f;
+  --senior-earth: #8a5a2b; /* white text 5.9:1 */
+  --senior-soft: #eef5ef;
+  --senior-sand: #f4ecdf;
+
+  --research: #334155;     /* slate, white text 10.4:1 */
+  --research-strong: #1e293b;
+  --research-line: #64748b;
+  --research-soft: #eef1f5;
+
+  --inter: #5a3f86;        /* intergenerational: youth blue + senior warmth, white 8.4:1 */
+  --inter-strong: #432f66;
+  --inter-soft: #f1ecf8;
+
+  --community: var(--brand);
+  --community-soft: var(--brand-soft);
+
+  /* Defaults (overridden by .theme-*) */
+  --accent: var(--brand);
+  --accent-strong: var(--brand-strong);
+  --accent-soft: var(--brand-soft);
+  --accent-deco: var(--gold);
+
+  /* Shape & rhythm */
+  --radius: 14px;
+  --radius-sm: 8px;
+  --shadow: 0 1px 2px rgb(28 31 35 / 0.06), 0 6px 20px rgb(28 31 35 / 0.07);
+  --shadow-lg: 0 10px 40px rgb(28 31 35 / 0.14);
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --space-6: 2rem;
+  --space-7: 3rem;
+  --space-8: 4.5rem;
+  --container: 72rem;
+  --tap: 44px;
+  --focus: #ffbf47;
+  --focus-ring: 0 0 0 3px var(--ink), 0 0 0 6px var(--focus);
+  --overlay: linear-gradient(180deg, rgb(10 16 24 / 0.45) 0%, rgb(10 16 24 / 0.72) 100%);
+}
+
+/* Text-size toggle: A (18px), A+ (20.7px), A++ (23.4px) */
+:root[data-text-size="lg"] { font-size: 129.4%; }
+:root[data-text-size="xl"] { font-size: 146.25%; }
+
+.theme-youth { --accent: var(--youth); --accent-strong: var(--youth-strong); --accent-soft: var(--youth-soft); --accent-deco: var(--youth-electric); }
+.theme-senior { --accent: var(--senior); --accent-strong: var(--senior-strong); --accent-soft: var(--senior-soft); --accent-deco: var(--senior-earth); }
+.theme-research { --accent: var(--research); --accent-strong: var(--research-strong); --accent-soft: var(--research-soft); --accent-deco: var(--research-line); }
+.theme-intergenerational { --accent: var(--inter); --accent-strong: var(--inter-strong); --accent-soft: var(--inter-soft); --accent-deco: var(--gold); }
+.theme-community { --accent: var(--brand); --accent-strong: var(--brand-strong); --accent-soft: var(--brand-soft); --accent-deco: var(--gold); }
+
+/* High-contrast mode: pure black/white, yellow focus, underlined links. */
+:root[data-contrast="high"] {
+  --bg: #ffffff;
+  --surface: #ffffff;
+  --surface-alt: #ffffff;
+  --ink: #000000;
+  --ink-muted: #000000;
+  --line: #000000;
+  --line-strong: #000000;
+  --brand: #000000;
+  --brand-strong: #000000;
+  --brand-soft: #ffffff;
+  --link: #0000c8;
+  --donate: #000000;
+  --donate-strong: #000000;
+  --youth: #000000; --youth-strong: #000000; --youth-soft: #ffffff;
+  --senior: #000000; --senior-strong: #000000; --senior-soft: #ffffff; --senior-sand: #ffffff; --senior-earth: #000000;
+  --research: #000000; --research-strong: #000000; --research-soft: #ffffff;
+  --inter: #000000; --inter-strong: #000000; --inter-soft: #ffffff;
+  --accent: #000000; --accent-strong: #000000; --accent-soft: #ffffff;
+  --shadow: none;
+  --shadow-lg: none;
+  --overlay: linear-gradient(rgb(0 0 0 / 0.82), rgb(0 0 0 / 0.82));
+}
+:root[data-contrast="high"] .theme-youth,
+:root[data-contrast="high"] .theme-senior,
+:root[data-contrast="high"] .theme-research,
+:root[data-contrast="high"] .theme-intergenerational,
+:root[data-contrast="high"] .theme-community {
+  --accent: #000000; --accent-strong: #000000; --accent-soft: #ffffff;
+}
+:root[data-contrast="high"] a { text-decoration: underline !important; }
+:root[data-contrast="high"] .card,
+:root[data-contrast="high"] .panel { border: 2px solid #000 !important; }
