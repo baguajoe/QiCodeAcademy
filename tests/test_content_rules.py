@@ -121,3 +121,20 @@ def test_teaching_locations_names_only(client, db):
     street = re.compile(r"\b\d{1,5}\s+\w+(\s\w+)?\s+(St|Street|Ave|Avenue|Rd|Road|Blvd|Way|Sq|Square)\b", re.I)
     for path in COPY_FILES + [ROOT / "src/api/commands.py"]:
         assert not street.search(path.read_text()), path
+
+
+def test_site_photo_credits_follow_photo_rules():
+    from api.models import STOCK_ALLOWED_SLOTS
+    site = ROOT / "src/front/img/site"
+    credits = json.loads((site / "credits.json").read_text())
+    files = {p.stem for p in site.iterdir() if p.suffix.lower() in (".jpg", ".jpeg", ".png", ".webp")}
+    assert files == set(credits), "every photo file needs a credits.json entry (and vice versa)"
+    stock_words = re.compile(r"\b(our|we|qi code|participants?|members?|students)\b", re.I)
+    for slot, c in credits.items():
+        assert c["type"] in ("stock", "founder-owned"), slot
+        assert c["alt"] and c["license"] and c["credit"] and c["page_url"].startswith("https://"), slot
+        if c["type"] == "stock":
+            assert slot in STOCK_ALLOWED_SLOTS, f"stock photo not allowed in {slot}"
+            assert not stock_words.search(c["alt"]), f"stock alt text claims the people are ours: {slot}"
+    for forbidden in ("founder-portrait", "founder-teaching"):
+        assert credits.get(forbidden, {}).get("type") != "stock"

@@ -10,5 +10,82 @@
     "credit": "Joseph Gallop / bostontaichibodywork.com — owned by founder",
     "alt": "Joseph Gallop outdoors in a dark jacket, hands raised in front of him",
     "notes": "Cropped to 4:5 from the 540×491 original (no upscaling). Replace with a higher-resolution portrait (800×1000 or larger) when available."
+  },
+  "hero-home": {
+    "file": "hero-home.jpg",
+    "type": "stock",
+    "source_site": "Nappy (nappy.co)",
+    "photographer": "childrennaturenetwork",
+    "page_url": "https://nappy.co/photo/children-and-nature%2Bzf7cQbrtm1qUoWpo0c98H",
+    "license": "Nappy License (CC0) — free for commercial and personal use; credit appreciated, not required. https://nappy.co/license",
+    "credit": "Photo: childrennaturenetwork / Nappy (CC0)",
+    "alt": "An older man and a young child sitting together in the branches of a tree",
+    "notes": "Stock photo — replace when you have real program photos."
+  },
+  "youth-banner": {
+    "file": "youth-banner.jpg",
+    "type": "stock",
+    "source_site": "Nappy (nappy.co)",
+    "photographer": "NappyStock",
+    "page_url": "https://nappy.co/photo/man-vlogging%2BncsKgINpb8mcL5pNxEmTG",
+    "license": "Nappy License (CC0) — free for commercial and personal use; credit appreciated, not required. https://nappy.co/license",
+    "credit": "Photo: NappyStock / Nappy (CC0)",
+    "alt": "A young man with locs speaking into a microphone beside a laptop",
+    "notes": "Stock photo — replace when you have real program photos."
+  },
+  "home-card-youth": {
+    "file": "home-card-youth.jpg",
+    "type": "stock",
+    "source_site": "Nappy (nappy.co)",
+    "photographer": "NappyStock",
+    "page_url": "https://nappy.co/photo/women-in-office%2Bwrk7HT7ZLurrjEDJCqZWP",
+    "license": "Nappy License (CC0) — free for commercial and personal use; credit appreciated, not required. https://nappy.co/license",
+    "credit": "Photo: NappyStock / Nappy (CC0)",
+    "alt": "Two young women smiling at a laptop screen",
+    "notes": "Stock photo — replace when you have real program photos."
+  },
+  "home-card-seniors": {
+    "file": "home-card-seniors.jpg",
+    "type": "stock",
+    "source_site": "Nappy (nappy.co)",
+    "photographer": "streetphonicz",
+    "page_url": "https://nappy.co/photo/older-couple%2BevDvF2cNvoVqO_OUxsCSD",
+    "license": "Nappy License (CC0) — free for commercial and personal use; credit appreciated, not required. https://nappy.co/license",
+    "credit": "Photo: streetphonicz / Nappy (CC0)",
+    "alt": "An older couple smiling together, in black and white",
+    "notes": "Stock photo — replace when you have real program photos."
+  },
+  "research-banner": {
+    "file": "research-banner.jpg",
+    "type": "stock",
+    "source_site": "Nappy (nappy.co)",
+    "photographer": "NappyStock",
+    "page_url": "https://nappy.co/photo/man-exploring-mountain%2BntPhGdhSJLOZioOI461dB",
+    "license": "Nappy License (CC0) — free for commercial and personal use; credit appreciated, not required. https://nappy.co/license",
+    "credit": "Photo: NappyStock / Nappy (CC0)",
+    "alt": "A person with a backpack walking a dog along a fenced path at a scenic overlook",
+    "notes": "Stock photo — replace when you have real program photos."
+  },
+  "home-card-research": {
+    "file": "home-card-research.jpg",
+    "type": "stock",
+    "source_site": "Nappy (nappy.co)",
+    "photographer": "NappyStock",
+    "page_url": "https://nappy.co/photo/woman-in-nature%2BMmy97jZ9idrL5JmegIDmT",
+    "license": "Nappy License (CC0) — free for commercial and personal use; credit appreciated, not required. https://nappy.co/license",
+    "credit": "Photo: NappyStock / Nappy (CC0)",
+    "alt": "A person seen from behind looking out over a wide green valley",
+    "notes": "Stock photo — replace when you have real program photos."
+  },
+  "donate": {
+    "file": "donate.jpg",
+    "type": "stock",
+    "source_site": "Nappy (nappy.co)",
+    "photographer": "childrennaturenetwork",
+    "page_url": "https://nappy.co/photo/children-and-nature%2B2NxvMju7HGHOsk_V1h0pa",
+    "license": "Nappy License (CC0) — free for commercial and personal use; credit appreciated, not required. https://nappy.co/license",
+    "credit": "Photo: childrennaturenetwork / Nappy (CC0)",
+    "alt": "Three teenagers sitting on the grass in a city park, reading books",
+    "notes": "Stock photo — replace when you have real program photos."
   }
 }

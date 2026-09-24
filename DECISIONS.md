@@ -277,3 +277,19 @@ I downloaded only the four approved original files and reviewed each one.
   - `4c5f1f_2496c486…` (Baguazhang photo): Joseph in a stance, with identifiable students in orange shirts behind him. With permission it could be cropped to Joseph alone, though that crop is too narrow for the 16:9 founder-teaching slot.
 - **Result:** founder-teaching stays a placeholder, since none of the approved photos shows Joseph teaching without other identifiable people. The seniors banner and card get stock photos (Section 10).
 - Nothing with IDs `11062b_`, `fe1f5a63`, `42041be4`, or `4c5f1f_f0569442` was downloaded.
+
+## Section 10: Stock photos
+- **Source: Nappy (nappy.co) only.**
+  - Nappy's license is CC0, free for commercial use; I checked https://nappy.co/license. Nappy features Black and brown people, which matches our community.
+  - Unsplash and Pexels both block automated access (bot challenge / HTTP 403), so I couldn't search them or verify their licenses. I didn't take anything from them.
+- **I reviewed every candidate visually.**
+  - Rejected: a typing-hands photo showing DELL and camera-brand logos, anything in a medical setting, and posed or glamour shots.
+  - Chose natural, dignified photos with no readable text.
+- **Filled with stock (7):** hero-home, youth-banner, home-card-youth, home-card-seniors, research-banner, home-card-research, donate. Each was resized to at most 1920px as a compressed JPEG and saved in `src/front/img/site/` with a `credits.json` entry: photographer, page URL, license, and scene-only alt text.
+- **Still placeholders (honest gaps):**
+  - **seniors-banner:** Nappy has no older adults doing tai chi, yoga, or stretching.
+  - **intergenerational-banner:** no photo of a young person helping an older adult with a phone or laptop.
+  - **founder-teaching:** stock isn't allowed there.
+
+  These are good slots for real program photos, or for a manual Unsplash/Pexels pick.
+- A new test checks that every photo file has a credit entry, that stock is used only in allowed slots, and that stock alt text never says "our", "students", "participants", and so on.
