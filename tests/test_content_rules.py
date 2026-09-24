@@ -116,7 +116,8 @@ def test_teaching_locations_names_only(client, db):
     seed_settings()
     db.session.commit()
     locs = client.get("/api/settings").get_json()["teaching_locations"].splitlines()
-    assert locs == ["Grove Hall Senior Center", "Codman Square Library", "Boston City Parks"]
+    assert locs == ["Grove Hall Senior Center", "Parkway Community YMCA (West Roxbury)", "Codman Square Library",
+                    "Boston City Parks"]
     # No street addresses (a number followed by a street word) anywhere in seeded settings or copy.
     street = re.compile(r"\b\d{1,5}\s+\w+(\s\w+)?\s+(St|Street|Ave|Avenue|Rd|Road|Blvd|Way|Sq|Square)\b", re.I)
     for path in COPY_FILES + [ROOT / "src/api/commands.py"]:

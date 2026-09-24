@@ -302,3 +302,12 @@ I downloaded only the four approved original files and reviewed each one.
 - **Retired wording** (the old lineage spelling variants, the old center name, the old youth grade, and a retired Tai Chi style name): zero matches in the code, seed data, or database. A test now guards against it coming back.
 - **Checks:** Home, About, Founder, Youth, Seniors, Research, and Donate (plus Contact and Photo credits) checked at 390px and 1280px, with 0 axe violations and no page overflow.
 - **Dev note:** an old `./start.sh` webpack dev server keeps writing dev builds into `dist_manual/`. Stop it before running `npm run build`.
+
+## Founder bio update (September 2026)
+- **Short bio, full bio, and credentials replaced verbatim.**
+  - The short bio adds the Parkway Community YMCA in West Roxbury, the 10-month, 650-hour massage program, and Eye Forge Studios LLC.
+  - In the full bio, "Lineage and training" is unchanged. It has no Tian Yi Foundation sentence, so none was added. "Bodywork and wellness" is renamed "Yoga, massage, and bodywork" with the new text, and the Technology section now says "Eye Forge Studios LLC".
+  - There are eight credentials, including the new "Founder, Eye Forge Studios LLC".
+- **Where it shows:** the About card, the founder page, and the Person JSON-LD all read the updated TeamMember bio and settings. The frontend fallback matches, and a test checks it.
+- **Teaching locations** are now Grove Hall Senior Center, Parkway Community YMCA (West Roxbury), Codman Square Library, and Boston City Parks.
+- **Deployed sites** pick all of this up on the next deploy: `flask seed` replaces the previous version by fingerprint, but only where staff haven't edited it.

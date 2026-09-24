@@ -12,6 +12,16 @@ from .models import CurriculumModule, Event, ResearchReference, ImpactStat, Prog
 
 SAMPLE = "[SAMPLE]"
 
+# Where classes are taught (names only — never street addresses).
+TEACHING_LOCATIONS = "\n".join([
+    "Grove Hall Senior Center",
+    "Parkway Community YMCA (West Roxbury)",
+    "Codman Square Library",
+    "Boston City Parks",
+])
+# Earlier seeded defaults, replaced by `flask seed` only if staff haven't edited them.
+LEGACY_TEACHING_LOCATIONS = {"Grove Hall Senior Center\nCodman Square Library\nBoston City Parks"}
+
 DEFAULT_SETTINGS = [
     # key, value, is_public
     ("tax_status", "Qi Code Academy, Inc. has applied for 501(c)(3) tax-exempt status. "
@@ -27,7 +37,7 @@ DEFAULT_SETTINGS = [
     ("press_globe_url", "", True),
     ("press_wcvb_url", "", True),
     # Where classes are taught — names only, one per line, NO street addresses (Contact page)
-    ("teaching_locations", "Grove Hall Senior Center\nCodman Square Library\nBoston City Parks", True),
+    ("teaching_locations", TEACHING_LOCATIONS, True),
     # Organization contact info shown on Contact page/footer (blank = hidden)
     ("org_contact_email", "", True),
     ("org_contact_phone", "", True),
@@ -250,6 +260,10 @@ def upgrade_founder_text():
     if member and fingerprint(member.bio) in LEGACY_FINGERPRINTS["short_bio"]:
         member.bio = FOUNDER_SHORT_BIO
         n += 1
+    row = db.session.scalar(select(SiteSetting).where(SiteSetting.key == "teaching_locations"))
+    if row and row.value in LEGACY_TEACHING_LOCATIONS:
+        row.value = TEACHING_LOCATIONS
+        n += 1
     for key, current, kind in (("founder_full_bio", FOUNDER_FULL_BIO, "full_bio"),
                                ("founder_credentials", FOUNDER_CREDENTIALS, "credentials")):
         row = db.session.scalar(select(SiteSetting).where(SiteSetting.key == key))
@@ -304,7 +318,7 @@ def register_commands(app):
         if (n := seed_research_references()):
             click.echo(f"Added {n} research reference(s) — unverified and hidden until checked in the admin.")
         if (n := upgrade_founder_text()):
-            click.echo(f"Updated {n} founder text field(s) to the current version.")
+            click.echo(f"Updated {n} founder/location field(s) to the current version.")
 
         if with_samples and not no_samples:
             today = date.today()
