@@ -144,7 +144,8 @@ def event_jsonld(ev, url):
 
 def person_jsonld():
     member = db.session.scalar(select(TeamMember).where(TeamMember.name == FOUNDER_NAME))
-    bio = (member.bio if member and member.bio else FOUNDER_SHORT_BIO).split("\n\n")[0]
+    # The full short bio, exactly as written (paragraphs joined with a space).
+    bio = " ".join(p.strip() for p in (member.bio if member and member.bio else FOUNDER_SHORT_BIO).split("\n\n") if p.strip())
     return {
         "@context": "https://schema.org",
         "@type": "Person",

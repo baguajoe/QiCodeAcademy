@@ -43,7 +43,7 @@ def test_founder_person_jsonld(client, db, dist):
     db.session.add(TeamMember(name="Joseph Gallop", role_title="Founder & Principal Instructor", bio="Short bio.\n\nMore."))
     db.session.commit()
     html = client.get("/about/founder").get_data(as_text=True)
-    assert '"@type": "Person"' in html and '"description": "Short bio."' in html
+    assert '"@type": "Person"' in html and '"description": "Short bio. More."' in html
 
 
 def test_event_page_jsonld_with_boston_offset(client, db, dist):

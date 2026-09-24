@@ -10,7 +10,8 @@ export default function Founder() {
   const { t } = useTranslation();
   const { data } = useApi(() => api.get("/team"), []);
   const founder = useFounder(data ? data.items : []);
-  const firstParagraph = founder.shortBio.split(/\n\s*\n/)[0];
+  const paragraphs = founder.shortBio.split(/\n\s*\n/).map((p) => p.trim()).filter(Boolean);
+  const firstParagraph = paragraphs[0] || "";
 
   useSeo({
     title: `${founder.name}, ${founder.role}`,
@@ -22,7 +23,7 @@ export default function Founder() {
       "@type": "Person",
       name: founder.name,
       jobTitle: founder.role,
-      description: firstParagraph,
+      description: paragraphs.join(" "),
       url: `${window.location.origin}/about/founder`,
       worksFor: { "@type": "NGO", name: "Qi Code Academy", legalName: "Qi Code Academy, Inc.", url: window.location.origin },
     }],

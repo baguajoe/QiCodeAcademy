@@ -7,7 +7,7 @@ from sqlalchemy import select
 
 from .extensions import db
 from .founder_content import (FOUNDER_CREDENTIALS, FOUNDER_FULL_BIO, FOUNDER_NAME, FOUNDER_ROLE,
-                              FOUNDER_SHORT_BIO)
+                              FOUNDER_SHORT_BIO, LEGACY_FINGERPRINTS, fingerprint)
 from .models import Event, ImpactStat, Program, SiteImage, SiteSetting, TeamMember, User
 
 SAMPLE = "[SAMPLE]"
@@ -133,6 +133,23 @@ def seed_settings():
     return added
 
 
+def upgrade_founder_text():
+    """Replace earlier seeded founder text with the current version — only where staff
+    haven't edited it (matched by fingerprint). Returns the number of fields updated."""
+    n = 0
+    member = db.session.scalar(select(TeamMember).where(TeamMember.name == FOUNDER_NAME))
+    if member and fingerprint(member.bio) in LEGACY_FINGERPRINTS["short_bio"]:
+        member.bio = FOUNDER_SHORT_BIO
+        n += 1
+    for key, current, kind in (("founder_full_bio", FOUNDER_FULL_BIO, "full_bio"),
+                               ("founder_credentials", FOUNDER_CREDENTIALS, "credentials")):
+        row = db.session.scalar(select(SiteSetting).where(SiteSetting.key == key))
+        if row and fingerprint(row.value) in LEGACY_FINGERPRINTS[kind]:
+            row.value = current
+            n += 1
+    return n
+
+
 def seed_founder():
     """Add the founder as a TeamMember once (editable afterwards in the admin)."""
     if db.session.scalar(select(TeamMember).where(TeamMember.name == FOUNDER_NAME)):
@@ -173,6 +190,8 @@ def register_commands(app):
         click.echo(f"Settings added: {seed_settings()}")
         if seed_founder():
             click.echo("Added founder team member.")
+        if (n := upgrade_founder_text()):
+            click.echo(f"Updated {n} founder text field(s) to the current version.")
 
         if with_samples and not no_samples:
             today = date.today()

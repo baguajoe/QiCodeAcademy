@@ -196,3 +196,9 @@ Decisions made while building the backend without stopping to ask. Each can be r
 - `flask seed` **never seeds impact stats** or any other made-up numbers. `[SAMPLE]` programs and events are now opt-in (`flask seed --with-samples`, local dev only), and Render's build runs a plain `flask seed`. `--no-samples` still works but does nothing.
 - On the home page, **Upcoming events, Our impact, the gallery strip, and Latest news are hidden completely** until they have content, including while they load, so an empty box or placeholder tiles never appear.
 - My local test data (`[DEV TEST]` news, color-block gallery photos, test registrations and messages) and all sample records were deleted from the dev database.
+
+## Section 2: Final founder bio
+- The short bio, full bio (three `## ` sections), and seven credentials were replaced with the final text, verbatim, in `founder_content.py` and the identical frontend fallback. `tests/test_founder.py` checks the exact wording.
+- **Upgrading existing databases:** `flask seed`, which runs on every deploy, replaces the *previous* seeded founder text with the new version, **but only if staff haven't edited it**. The old wording isn't kept in the code at all; the seed recognizes it by SHA-256 fingerprint only, so retired phrasing like the old center name and lineage spelling is gone from the codebase.
+- **Person JSON-LD:** the `description` is now the complete short bio (its paragraphs joined), both server-side and client-side.
+- **"As featured in"** is unchanged: the outlet names show as plain text, and each becomes a link once its `press_*_url` setting is filled in.
