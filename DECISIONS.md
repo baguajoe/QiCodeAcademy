@@ -155,3 +155,9 @@ Decisions made while building the backend without stopping to ask. Each can be r
 - **Settings screen:** friendly fields for the tax status, research status, organization email/phone, social links, press links, founder full bio, and credentials.
 - **Uploads now also save 640px and 1280px versions**, and file names carry the size (`<uuid>-<W>x<H>`). The frontend builds a responsive `srcset` for any uploaded image straight from its URL.
 - **Money fields** take dollars in the admin and are stored as cents.
+
+## Phase 6: Visuals, images, i18n
+- **SVG visuals** (built in Phase 2/3): the youth pathway, senior session flow (drawn as a circle), research partnership (two columns), and research roadmap (future tense).
+- **IMAGE_GUIDE.md** lists every photo slot (page, file name, size, subject) and the per-item photos added in the admin, with the photo-consent reminder up front.
+- **i18n:** only English is bundled. Spanish and Haitian Creole load on demand as separate ~23 KB chunks the first time someone picks them. Both files contain every key; untranslated values are `"TODO: <English>"` and fall back to English at runtime. `npm run i18n:sync` keeps them in step, and `src/front/locales/README.md` explains the rules for translators (don't translate personal, lineage, or organization names, and follow the health-language rules). The language menu labels them "(in progress)".
+- **Not translated:** the founder bio and other admin-entered content, because it lives in the database, not the translation files.

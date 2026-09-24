@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { Link, NavLink, useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useStore } from "../store/appContext";
-import { LANGUAGES } from "../i18n";
+import { LANGUAGES, changeLanguage } from "../i18n";
 import { Logo } from "./Logo";
 
 function Caret() {
@@ -49,7 +49,7 @@ function UtilityBar() {
         </div>
         <div className="utility-group">
           <label htmlFor="lang-select" className="label">{t("a11y.language")}</label>
-          <select id="lang-select" value={i18n.language} onChange={(e) => i18n.changeLanguage(e.target.value)}>
+          <select id="lang-select" value={i18n.language} onChange={(e) => changeLanguage(e.target.value)}>
             {LANGUAGES.map((l) => (
               <option key={l.code} value={l.code} lang={l.code}>
                 {l.label}{l.inProgress ? ` (${t("a11y.inProgress")})` : ""}

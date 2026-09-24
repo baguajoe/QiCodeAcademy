@@ -1,8 +1,6 @@
 import i18n from "i18next";
 import { initReactI18next } from "react-i18next";
 import en from "../locales/en.json";
-import es from "../locales/es.json";
-import ht from "../locales/ht.json";
 
 export const LANGUAGES = [
   { code: "en", label: "English" },
@@ -30,13 +28,23 @@ try {
   /* ignore */
 }
 
+// Only English ships in the main bundle; other languages load on demand.
+const LOADERS = {
+  es: () => import(/* webpackChunkName: "locale-es" */ "../locales/es.json"),
+  ht: () => import(/* webpackChunkName: "locale-ht" */ "../locales/ht.json"),
+};
+
+export async function changeLanguage(lng) {
+  if (LOADERS[lng] && !i18n.hasResourceBundle(lng, "translation")) {
+    const mod = await LOADERS[lng]();
+    i18n.addResourceBundle(lng, "translation", stripTodo(mod.default || mod), true, true);
+  }
+  return i18n.changeLanguage(lng);
+}
+
 i18n.use(initReactI18next).init({
-  resources: {
-    en: { translation: en },
-    es: { translation: stripTodo(es) },
-    ht: { translation: stripTodo(ht) },
-  },
-  lng: LANGUAGES.some((l) => l.code === saved) ? saved : "en",
+  resources: { en: { translation: en } },
+  lng: "en",
   fallbackLng: "en",
   interpolation: { escapeValue: false }, // React escapes
   returnNull: false,
@@ -50,5 +58,7 @@ i18n.on("languageChanged", (lng) => {
     /* ignore */
   }
 });
+
+if (saved !== "en" && LOADERS[saved]) changeLanguage(saved);
 
 export default i18n;
