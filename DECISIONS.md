@@ -342,3 +342,8 @@ I downloaded only the four approved original files and reviewed each one.
 - **Scripts:** start and pre-deploy are shell scripts (not inline commands) so `${PORT}`/`${WEB_CONCURRENCY}` expand the same way everywhere, and `/opt/venv/bin` is on `PATH`.
 - `flask seed --no-samples` is used as requested. Samples are opt-in (`--with-samples`) anyway, so this is belt and braces.
 - `SITE_URL` falls back to Railway's `RAILWAY_PUBLIC_DOMAIN` when unset. Tests cover this and the `postgres://` → `postgresql://` conversion.
+
+## Yoga teacher training photo (September 2026)
+- "Yoga, massage, and bodywork" now has a two-photo row (the same `PhotoRow` as the lineage section): the 33 Degree Yoga teacher training photo, then the NEST graduation photo, both captioned. Yoga comes first to match the section's text order (yoga 2020, massage 2021).
+- **Yoga photo:** the bottom edge is cropped to remove the hand holding a phone, with everyone kept in frame. It's at its original width (1024px), not enlarged.
+- **"5 animal frolic qigong workshop in prague" wasn't uploaded,** so the Gallery is unchanged.

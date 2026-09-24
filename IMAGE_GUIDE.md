@@ -49,7 +49,8 @@ There are three kinds of photos:
 | Founder page ("Lineage and training" photo row, 1st) | `founder-gin-soon.jpg` | 604×404 | **No** | ✅ Founder-owned: with Master Vincent Chu at the Gin Soon Tai Chi Chuan Federation (captioned) |
 | Founder page ("Lineage and training" photo row, 2nd) | `founder-chen-xiao-ping.jpg` | 675×780 | **No** | ✅ Founder-owned: with Chen Xiao Ping and Sifu Rudy (captioned) |
 | Founder page ("Lineage and training" photo row, 3rd) | `founder-prague-group.jpg` | 960×560 | **No** | ✅ Founder-owned: with Master Vincent Chu and workshop participants in Prague (captioned) |
-| Founder page ("Yoga, massage, and bodywork") | `founder-graduation.jpg` | 1600×1200 | **No** | ✅ Founder-owned, AI-enhanced from his own photo (approved exception): NEST graduation (captioned) |
+| Founder page ("Yoga, massage, and bodywork" photo row, 1st) | `founder-yoga-training.jpg` | 1024×583 | **No** | ✅ Founder-owned: 200-hour yoga teacher training at 33 Degree Yoga (captioned; phone cropped out) |
+| Founder page ("Yoga, massage, and bodywork" photo row, 2nd) | `founder-graduation.jpg` | 1600×1200 | **No** | ✅ Founder-owned, AI-enhanced from his own photo (approved exception): NEST graduation (captioned) |
 | Youth Programs (banner) | `youth-banner.jpg` | 1920×800 | Yes | Stock (Nappy): young man at a laptop |
 | Youth Programs ("Movement built in") | `youth-movement.jpg` | 1200×900 | **No** | ✅ Founder-owned, **faces blurred** (unblurred original deleted) |
 | Senior Programs (banner) | `seniors-banner.jpg` | 1920×800 | Yes | ✅ Founder-owned: seated movement class |

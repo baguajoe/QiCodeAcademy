@@ -67,8 +67,13 @@ export const SLOTS = {
     subject: "Joseph with Master Vincent Chu and workshop participants", optional: true,
     alt: "Joseph Gallop with Master Vincent Chu and workshop participants in Prague.",
   },
+  "founder-yoga-training": {
+    page: "Founder page (Yoga, massage, and bodywork, 1st)", size: "1024×583 (original size)", ratio: "1024 / 583", division: "senior",
+    subject: "Joseph's 200-hour yoga teacher training graduation", optional: true,
+    alt: "Joseph Gallop with fellow graduates of his 200-hour yoga teacher training.",
+  },
   "founder-graduation": {
-    page: "Founder page (Yoga, massage, and bodywork)", size: "1600×1200", ratio: "4 / 3", division: "senior",
+    page: "Founder page (Yoga, massage, and bodywork, 2nd)", size: "1448×1086 (original size)", ratio: "1448 / 1086", division: "senior",
     subject: "Joseph's graduation from the New England School of Therapeutics", optional: true,
     alt: "Joseph Gallop with fellow graduates of the New England School of Therapeutics.",
   },

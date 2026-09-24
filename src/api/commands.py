@@ -51,7 +51,7 @@ SITE_IMAGE_SLOTS = [
     "events-banner", "volunteer-banner", "donate",
     # In-page photos (shown only when a photo exists — never as an empty placeholder)
     "seniors-tai-chi", "seniors-baguazhang", "seniors-chair-massage", "seniors-join", "youth-movement",
-    "founder-gin-soon", "founder-chen-xiao-ping", "founder-prague-group", "founder-graduation",
+    "founder-gin-soon", "founder-chen-xiao-ping", "founder-prague-group", "founder-yoga-training", "founder-graduation",
 ]
 
 

@@ -19,7 +19,10 @@ export default function Founder() {
       { slot: "founder-chen-xiao-ping", caption: t("founder.chenCaption") },
       { slot: "founder-prague-group", caption: t("founder.pragueCaption") },
     ] };
-    if (/massage|bodywork/i.test(heading)) return { slot: "founder-graduation", caption: t("founder.graduationCaption") };
+    if (/massage|bodywork/i.test(heading)) return { row: [
+      { slot: "founder-yoga-training", caption: t("founder.yogaCaption") },
+      { slot: "founder-graduation", caption: t("founder.graduationCaption") },
+    ], label: t("founder.bodyworkPhotos") };
     return null;
   };
   const paragraphs = founder.shortBio.split(/\n\s*\n/).map((p) => p.trim()).filter(Boolean);
@@ -64,7 +67,7 @@ export default function Founder() {
                 return (
                   <div key={section.slice(0, 40)}>
                     <Paragraphs text={section} headingLevel={2} />
-                    {photo && photo.row && <PhotoRow items={photo.row} label={t("founder.lineagePhotos")} />}
+                    {photo && photo.row && <PhotoRow items={photo.row} label={photo.label || t("founder.lineagePhotos")} />}
                     {photo && photo.slot && (
                       <OptionalSiteImage slot={photo.slot} sizes="(min-width: 56rem) 44rem, 100vw" ratio={null}
                         caption={photo.caption} />
