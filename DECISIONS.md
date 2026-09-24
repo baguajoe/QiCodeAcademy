@@ -234,3 +234,19 @@ Decisions made while building the backend without stopping to ask. Each can be r
 - The session schedule and feature blurbs are page copy in `en.json`. The level details come from the curriculum API, so staff can edit them. No budgets, statistics, or staffing details appear.
 - **Registration:** the grade choices are now 8th–12th, plus Other.
 - **Translation sync:** `i18n:sync` now refreshes untranslated `TODO` values when the English changes, and lists of objects fall back to English until they're fully translated.
+
+## Section 6: Senior program
+- **Five senior curriculum modules are seeded.**
+  - Tai Chi and Baguazhang use your text: "what we practice" is in `learning_goals`, progression is in `projects`, and Baguazhang's older-adult adaptations are in `adaptations`.
+  - **I drafted the one-sentence descriptions** for Yoga & Gentle Stretching, Chair-Based Movement, and Breathing & Meditation. They describe only what happens in class.
+  - All five are marked `available` because Joseph teaches these practices now. Change a module to `in_development` in the admin if Qi Code Academy's own senior classes haven't launched yet.
+- **Seniors page layout:**
+  - intro
+  - "Our classes": Tai Chi and Baguazhang in detail, the other three as short cards
+  - "A sample one-hour class" schedule
+  - "Join anytime"
+  - "Safety & accessibility"
+  - the program-flow circle, renamed "More than a class" so it doesn't compete with the one-hour class schedule
+  - the research note linking to /research
+  - open programs, shown only when they exist
+  - the wellness disclaimer

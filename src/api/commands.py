@@ -172,6 +172,34 @@ CURRICULUM_SEED = [
          summary="Students lead advanced projects, explore entrepreneurship, and prepare portfolios for college "
                  "and careers.",
          status="in_development"),
+    # Seniors: describe what happens in class only — no promised health outcomes.
+    dict(division="senior", sort_order=1, title="Traditional Yang-Style Tai Chi",
+         summary="Relaxed, flowing movement with controlled stepping, coordinated breathing, and good body "
+                 "alignment, taught in the lineage of Vincent Chu and Gin Soon Chu.",
+         learning_goals=["Standing exercises", "Ba Duan Jin–inspired movements", "Weight shifting and posture work",
+                         "A 22-movement medium-frame form, adapted for accessibility by removing the two "
+                         "Snake Creeps Down sections"],
+         projects=["Foundations", "Sections of the form", "The complete form", "Ongoing refinement"],
+         status="available"),
+    dict(division="senior", sort_order=2, title="Traditional Baguazhang",
+         summary="Circle walking, changes of direction, and coordinated palm movements: a practice of balance and "
+                 "coordination while moving.",
+         learning_goals=["Standing and stepping", "Circle walking", "Palm positions", "Controlled changes of direction"],
+         adaptations="Large circles, slow steps, comfortable postures, and support as needed. Faster movement is "
+                     "optional and only when a participant is ready.",
+         projects=["Standing and stepping", "Circle walking and palm positions", "Directional changes",
+                   "Additional palm changes"],
+         status="available"),
+    # One-sentence plain descriptions (drafted; see DECISIONS.md).
+    dict(division="senior", sort_order=3, title="Yoga & Gentle Stretching",
+         summary="Gentle yoga poses and stretches, done standing or seated, at a pace that feels comfortable.",
+         status="available"),
+    dict(division="senior", sort_order=4, title="Chair-Based Movement",
+         summary="Seated and chair-supported versions of our movement practice, so everyone can take part.",
+         status="available"),
+    dict(division="senior", sort_order=5, title="Breathing & Meditation",
+         summary="Simple breathing exercises and quiet, guided meditation, often used to open or close class.",
+         status="available"),
 ]
 
 

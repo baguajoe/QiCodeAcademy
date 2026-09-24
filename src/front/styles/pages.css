@@ -160,3 +160,8 @@ section[id], div[id] { scroll-margin-top: 7rem; }
 .module-list { margin: 0 0 var(--space-3); }
 .module-list li { margin-bottom: var(--space-1); }
 .module-list.progression { padding-left: 1.3em; }
+.check-list { list-style: none; padding: 0; margin: 0; display: grid; gap: var(--space-2); }
+.check-list li { position: relative; padding-left: 1.8rem; }
+.check-list li::before { content: "✓"; position: absolute; left: 0; top: 0; font-weight: 800; color: var(--senior); }
+.research-note { background: var(--surface); border: 1px solid var(--line); border-left: 6px solid var(--research); border-radius: var(--radius); padding: var(--space-5) var(--space-6); }
+.research-note h2 { font-size: 1.4rem; }

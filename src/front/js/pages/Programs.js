@@ -115,7 +115,10 @@ export function YouthPrograms() {
 
 export function SeniorPrograms() {
   const { t } = useTranslation();
+  const { modules } = useCurriculum("senior");
   useSeo({ title: t("seniors.title"), description: t("seniors.intro"), imageSlot: "seniors-banner" });
+  const detailed = modules.filter((m) => (m.learning_goals || []).length || (m.projects || []).length || m.adaptations);
+  const simple = modules.filter((m) => !detailed.includes(m));
   return (
     <div className="theme-senior">
       <PageBanner slot="seniors-banner" motto={t("divisions.senior.motto")} title={t("seniors.title")} lead={t("seniors.lead")} />
@@ -129,19 +132,58 @@ export function SeniorPrograms() {
           <FocusList items={t("seniors.focus", { returnObjects: true })} />
         </div>
       </section>
-      <section className="section section-accent" aria-labelledby="flow-title">
+
+      {modules.length > 0 && (
+        <section className="section section-accent" aria-labelledby="classes-title">
+          <div className="container">
+            <SectionHeader title={t("seniors.modulesTitle")} lead={t("seniors.modulesLead")} id="classes-title" />
+            {detailed.length > 0 && <div className="grid grid-2">{detailed.map((m) => <ModuleCard key={m.id} module={m} />)}</div>}
+            {simple.length > 0 && <div className="grid grid-3" style={{ marginTop: "1.5rem" }}>{simple.map((m) => <ModuleCard key={m.id} module={m} />)}</div>}
+          </div>
+        </section>
+      )}
+
+      <section className="section" aria-labelledby="sample-class-title">
+        <div className="container split" style={{ alignItems: "start" }}>
+          <div>
+            <SectionHeader title={t("seniors.sampleClassTitle")} id="sample-class-title" />
+            <ScheduleTable caption={t("seniors.sampleClassTitle")} rows={t("seniors.sampleClass", { returnObjects: true })} />
+          </div>
+          <div className="stack">
+            <section className="gain" aria-labelledby="join-title">
+              <h2 id="join-title" style={{ fontSize: "1.5rem" }}>{t("seniors.joinTitle")}</h2>
+              <p style={{ margin: 0 }}>{t("seniors.join")}</p>
+            </section>
+            <section className="gain" aria-labelledby="safety-title">
+              <h2 id="safety-title" style={{ fontSize: "1.5rem" }}>{t("seniors.safetyTitle")}</h2>
+              <ul className="check-list">{t("seniors.safety", { returnObjects: true }).map((i) => <li key={i}>{i}</li>)}</ul>
+            </section>
+          </div>
+        </div>
+      </section>
+
+      <section className="section section-alt" aria-labelledby="flow-title">
         <div className="container">
           <SectionHeader title={t("seniors.flowTitle")} lead={t("seniors.flowLead")} id="flow-title" />
           <SessionFlowDiagram title={t("seniors.flowTitle")} centerLabel={t("seniors.flowCenter")}
             steps={t("seniors.flow", { returnObjects: true })} />
         </div>
       </section>
-      <section className="section" aria-labelledby="senior-programs-title">
-        <div className="container">
-          <SectionHeader title={t("seniors.programsTitle")} id="senior-programs-title" />
-          <ProgramList division="senior" emptyText={t("seniors.noPrograms")} />
-          <div style={{ marginTop: "2rem" }}><WellnessDisclaimer /></div>
+
+      <section className="section" aria-labelledby="senior-research-title">
+        <div className="container container-narrow">
+          <div className="research-note theme-research">
+            <h2 id="senior-research-title">{t("seniors.researchTitle")}</h2>
+            <p>{t("seniors.researchNote")}</p>
+            <Link className="more-link" to="/research">{t("seniors.researchLink")} →</Link>
+          </div>
         </div>
+      </section>
+
+      <ProgramSection division="senior" title={t("seniors.programsTitle")} id="senior-programs-title" />
+
+      <section className="section" style={{ paddingTop: 0 }}>
+        <div className="container"><WellnessDisclaimer /></div>
       </section>
     </div>
   );

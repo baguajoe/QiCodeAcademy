@@ -72,3 +72,17 @@ def test_no_old_youth_age_wording():
     assert en["youth"]["lead"] == "For teens ages 14–18. Programs for younger students are planned for the future."
     for path in list(root.glob("src/front/**/*.js")) + list(root.glob("src/front/locales/*.json")) + list(root.glob("src/api/**/*.py")):
         assert "5th grade" not in path.read_text(), path
+
+
+def test_seeded_senior_modules(client, db):
+    from api.commands import seed_curriculum
+    seed_curriculum()
+    db.session.commit()
+    items = client.get("/api/curriculum?division=senior").get_json()["items"]
+    assert [m["title"] for m in items] == ["Traditional Yang-Style Tai Chi", "Traditional Baguazhang",
+                                           "Yoga & Gentle Stretching", "Chair-Based Movement", "Breathing & Meditation"]
+    tai_chi, bagua = items[0], items[1]
+    assert "removing the two Snake Creeps Down sections" in tai_chi["learning_goals"][-1]
+    assert tai_chi["projects"] == ["Foundations", "Sections of the form", "The complete form", "Ongoing refinement"]
+    assert bagua["adaptations"].startswith("Large circles, slow steps")
+    assert all(m["summary"].count(".") <= 1 for m in items[2:])

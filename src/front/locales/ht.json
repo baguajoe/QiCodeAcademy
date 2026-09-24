@@ -319,8 +319,8 @@
       "TODO: Food & Refreshments",
       "TODO: Community Resources"
     ],
-    "flowTitle": "TODO: What a session looks like",
-    "flowLead": "TODO: Each gathering blends gentle movement with time to connect.",
+    "flowTitle": "TODO: More than a class",
+    "flowLead": "TODO: Program gatherings pair movement with time to connect.",
     "flow": [
       "TODO: Tai Chi, Bagua, or Yoga",
       "TODO: Wellness activity",
@@ -328,9 +328,48 @@
       "TODO: Food & refreshments",
       "TODO: Community resource or guest presentation"
     ],
-    "programsTitle": "TODO: Current senior programs",
+    "programsTitle": "TODO: Open senior programs",
     "noPrograms": "TODO: No senior programs are open right now. Check back soon, or contact us to be notified.",
-    "flowCenter": "TODO: A typical session"
+    "flowCenter": "TODO: A typical session",
+    "modulesTitle": "TODO: Our classes",
+    "modulesLead": "TODO: What we practice together, and how students progress over time.",
+    "sampleClassTitle": "TODO: A sample one-hour class",
+    "sampleClass": [
+      {
+        "time": "TODO: 10 min",
+        "activity": "TODO: Warm-up and mobility"
+      },
+      {
+        "time": "TODO: 10 min",
+        "activity": "TODO: Standing and alignment"
+      },
+      {
+        "time": "TODO: 15 min",
+        "activity": "TODO: Fundamental movement practice"
+      },
+      {
+        "time": "TODO: 20 min",
+        "activity": "TODO: Form or circle-walking instruction"
+      },
+      {
+        "time": "TODO: 5 min",
+        "activity": "TODO: Cool-down"
+      }
+    ],
+    "joinTitle": "TODO: Join anytime",
+    "join": "TODO: Classes are ongoing, not fixed-length courses. New participants learn foundations while returning students keep developing. No one needs to memorize a whole form to take part.",
+    "safetyTitle": "TODO: Safety & accessibility",
+    "safety": [
+      "TODO: Higher, shorter stances instead of deep ones",
+      "TODO: Smaller steps until stability improves",
+      "TODO: Large circles and slow direction changes in Baguazhang",
+      "TODO: A chair nearby for balance or seated practice",
+      "TODO: Rest whenever you need to",
+      "TODO: Range of motion never pushed past what is comfortable"
+    ],
+    "researchTitle": "TODO: About the research",
+    "researchNote": "TODO: Tai Chi has been widely studied for balance in older adults, though results vary by person and program. Research on Baguazhang specifically is more limited — which is part of why we hope to study it.",
+    "researchLink": "TODO: Learn about our research plans"
   },
   "inter": {
     "title": "TODO: Intergenerational Programs",

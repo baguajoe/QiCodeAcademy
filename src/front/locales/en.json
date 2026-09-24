@@ -319,8 +319,8 @@
       "Food & Refreshments",
       "Community Resources"
     ],
-    "flowTitle": "What a session looks like",
-    "flowLead": "Each gathering blends gentle movement with time to connect.",
+    "flowTitle": "More than a class",
+    "flowLead": "Program gatherings pair movement with time to connect.",
     "flow": [
       "Tai Chi, Bagua, or Yoga",
       "Wellness activity",
@@ -328,9 +328,48 @@
       "Food & refreshments",
       "Community resource or guest presentation"
     ],
-    "programsTitle": "Current senior programs",
+    "programsTitle": "Open senior programs",
     "noPrograms": "No senior programs are open right now. Check back soon, or contact us to be notified.",
-    "flowCenter": "A typical session"
+    "flowCenter": "A typical session",
+    "modulesTitle": "Our classes",
+    "modulesLead": "What we practice together, and how students progress over time.",
+    "sampleClassTitle": "A sample one-hour class",
+    "sampleClass": [
+      {
+        "time": "10 min",
+        "activity": "Warm-up and mobility"
+      },
+      {
+        "time": "10 min",
+        "activity": "Standing and alignment"
+      },
+      {
+        "time": "15 min",
+        "activity": "Fundamental movement practice"
+      },
+      {
+        "time": "20 min",
+        "activity": "Form or circle-walking instruction"
+      },
+      {
+        "time": "5 min",
+        "activity": "Cool-down"
+      }
+    ],
+    "joinTitle": "Join anytime",
+    "join": "Classes are ongoing, not fixed-length courses. New participants learn foundations while returning students keep developing. No one needs to memorize a whole form to take part.",
+    "safetyTitle": "Safety & accessibility",
+    "safety": [
+      "Higher, shorter stances instead of deep ones",
+      "Smaller steps until stability improves",
+      "Large circles and slow direction changes in Baguazhang",
+      "A chair nearby for balance or seated practice",
+      "Rest whenever you need to",
+      "Range of motion never pushed past what is comfortable"
+    ],
+    "researchTitle": "About the research",
+    "researchNote": "Tai Chi has been widely studied for balance in older adults, though results vary by person and program. Research on Baguazhang specifically is more limited — which is part of why we hope to study it.",
+    "researchLink": "Learn about our research plans"
   },
   "inter": {
     "title": "Intergenerational Programs",
