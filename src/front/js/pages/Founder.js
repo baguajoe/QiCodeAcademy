@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 import { api } from "../api";
 import { useApi } from "../hooks/useApi";
 import { useSeo } from "../seo";
-import { OptionalSiteImage, SiteImage } from "../component/Photo";
+import { OptionalSiteImage, PhotoRow, SiteImage } from "../component/Photo";
 import { CredentialsList, Paragraphs, PressStrip, useFounder } from "../component/Founder";
 
 export default function Founder() {
@@ -14,7 +14,11 @@ export default function Founder() {
   const sections = founder.fullBio.split(/\n(?=## )/).map((x) => x.trim()).filter(Boolean);
   const sectionPhoto = (text) => {
     const heading = (text.match(/^## (.+)$/m) || [])[1] || "";
-    if (/lineage/i.test(heading)) return { slot: "founder-prague-group", caption: t("founder.pragueCaption") };
+    if (/lineage/i.test(heading)) return { row: [
+      { slot: "founder-gin-soon", caption: t("founder.ginSoonCaption") },
+      { slot: "founder-chen-xiao-ping", caption: t("founder.chenCaption") },
+      { slot: "founder-prague-group", caption: t("founder.pragueCaption") },
+    ] };
     if (/massage|bodywork/i.test(heading)) return { slot: "founder-graduation", caption: t("founder.graduationCaption") };
     return null;
   };
@@ -60,7 +64,8 @@ export default function Founder() {
                 return (
                   <div key={section.slice(0, 40)}>
                     <Paragraphs text={section} headingLevel={2} />
-                    {photo && (
+                    {photo && photo.row && <PhotoRow items={photo.row} label={t("founder.lineagePhotos")} />}
+                    {photo && photo.slot && (
                       <OptionalSiteImage slot={photo.slot} sizes="(min-width: 56rem) 44rem, 100vw" ratio={null}
                         caption={photo.caption} />
                     )}

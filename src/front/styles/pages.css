@@ -181,3 +181,13 @@ section[id], div[id] { scroll-margin-top: 7rem; }
 .join-box { display: grid; gap: var(--space-4); align-items: center; }
 @media (min-width: 30rem) { .join-box { grid-template-columns: minmax(0, 2fr) minmax(0, 3fr); } }
 .join-photo { margin: 0; }
+/* Founder lineage photos: equal heights, no cropping (flex-grow = aspect ratio); stacked on phones. */
+.photo-row { display: flex; flex-direction: column; gap: var(--space-4); margin: var(--space-5) 0; }
+.photo-row-item { margin: 0; }
+.photo-row-item .photo { border-radius: var(--radius-sm); }
+.photo-row-item figcaption { color: var(--ink-muted); font-size: 0.88rem; line-height: 1.4; margin-top: var(--space-2); }
+@media (max-width: 39.99rem) { .photo-row-item { max-width: 26rem; } }
+@media (min-width: 40rem) {
+  .photo-row { flex-direction: row; align-items: flex-start; }
+  .photo-row-item { flex: var(--a) 1 0%; min-width: 0; }
+}

@@ -46,7 +46,9 @@ There are three kinds of photos:
 | About (banner) | `about-banner.jpg` | 1920×800 | **No** | Placeholder |
 | About + Founder page | `founder-portrait.jpg` | 800×1000 portrait | **No** | ✅ Founder-owned (AI-enhanced from his own photo, approved exception) |
 | Founder page (top, after the intro) | `founder-teaching.jpg` | 1600×900 | **No** | ✅ Founder-owned: leading the Prague workshop (1138×640 native) |
-| Founder page ("Lineage and training") | `founder-prague-group.jpg` | 1600×900 | **No** | ✅ Founder-owned: with Master Vincent Chu and workshop participants (captioned) |
+| Founder page ("Lineage and training" photo row, 1st) | `founder-gin-soon.jpg` | 604×404 | **No** | ✅ Founder-owned: with Master Vincent Chu at the Gin Soon Tai Chi Chuan Federation (captioned) |
+| Founder page ("Lineage and training" photo row, 2nd) | `founder-chen-xiao-ping.jpg` | 675×780 | **No** | ✅ Founder-owned: with Chen Xiao Ping and Sifu Rudy (captioned) |
+| Founder page ("Lineage and training" photo row, 3rd) | `founder-prague-group.jpg` | 960×560 | **No** | ✅ Founder-owned: with Master Vincent Chu and workshop participants in Prague (captioned) |
 | Founder page ("Yoga, massage, and bodywork") | `founder-graduation.jpg` | 1600×1200 | **No** | ✅ Founder-owned, AI-enhanced from his own photo (approved exception): NEST graduation (captioned) |
 | Youth Programs (banner) | `youth-banner.jpg` | 1920×800 | Yes | Stock (Nappy): young man at a laptop |
 | Youth Programs ("Movement built in") | `youth-movement.jpg` | 1200×900 | **No** | ✅ Founder-owned, **faces blurred** (unblurred original deleted) |
@@ -57,10 +59,11 @@ There are three kinds of photos:
 | Senior Programs (Join anytime) | `seniors-join.jpg` | 900×1200 portrait | **No** | ✅ Founder-owned: seniors practicing |
 | Intergenerational (banner) | `intergenerational-banner.jpg` | 1920×800 | Yes | Placeholder |
 | Research (banner) | `research-banner.jpg` | 1920×800 | Yes | ✅ Founder-owned: seniors circle walking |
-| Events (banner) | `events-banner.jpg` | 1920×800 | **No** | ✅ Founder-owned: Prague workshop group photo with Master Vincent Chu |
+| Events (banner) | `events-banner.jpg` | 1920×800 | **No** | ✅ Founder-owned: Joseph performing at the August Moon Festival, Chinatown |
 | Get Involved (banner) | `volunteer-banner.jpg` | 1920×800 | **No** | Placeholder |
 | Donate | `donate.jpg` | 1200×1500 portrait | Yes | Stock (Nappy): three teens reading in a park |
 | Gallery | `gallery-prague-class.jpg` | — | **No** | ✅ Founder-owned: Prague workshop class (seeded, published, consent confirmed) |
+| Gallery | `gallery-prague-workshop.jpg` | — | **No** | ✅ Founder-owned: Prague workshop group (former events banner; seeded, community, consent confirmed) |
 | Gallery | `gallery-vincent-birthday.jpg` | — | **No** | ✅ Founder-owned: Master Vincent Chu's birthday with Master Gordon Chu (seeded, community, consent confirmed) |
 
 In-page photos (module, feature, and Join anytime photos) appear only when a photo exists. They never show an empty placeholder box.

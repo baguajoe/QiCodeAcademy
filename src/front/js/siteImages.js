@@ -52,8 +52,18 @@ export const SLOTS = {
     subject: "Joseph Gallop leading a class",
     alt: "Joseph Gallop leading a Tai Chi class at the international workshop in Prague.",
   },
+  "founder-gin-soon": {
+    page: "Founder page (Lineage and training, 1st)", size: "604×404 (original size)", ratio: "3 / 2", division: "senior",
+    subject: "Joseph with Master Vincent Chu at the Gin Soon Tai Chi Chuan Federation", optional: true,
+    alt: "Joseph Gallop with Master Vincent Chu at the Gin Soon Tai Chi Chuan Federation.",
+  },
+  "founder-chen-xiao-ping": {
+    page: "Founder page (Lineage and training, 2nd)", size: "675×780 (original size)", ratio: "675 / 780", division: "senior",
+    subject: "Joseph with Chen Xiao Ping and Sifu Rudy", optional: true,
+    alt: "Joseph Gallop with his Yin Baguazhang teacher Chen Xiao Ping and Sifu Rudy.",
+  },
   "founder-prague-group": {
-    page: "Founder page (Lineage and training)", size: "1600×900", ratio: "16 / 9", division: "senior",
+    page: "Founder page (Lineage and training, 3rd)", size: "960×560 (original size)", ratio: "960 / 560", division: "senior",
     subject: "Joseph with Master Vincent Chu and workshop participants", optional: true,
     alt: "Joseph Gallop with Master Vincent Chu and workshop participants in Prague.",
   },
@@ -110,7 +120,7 @@ export const SLOTS = {
   "events-banner": {
     page: "Events (banner)", size: "1920×800", ratio: "12 / 5", division: "community",
     subject: "Events banner: neighbors gathered at a Qi Code Academy open house",
-    position: "center 18%", // group photo: keep faces in frame on wide screens
+    position: "center 28%", // keep Joseph's head and upper body in frame on wide screens
     alt: "Neighbors gathered at a community event",
   },
   "volunteer-banner": {

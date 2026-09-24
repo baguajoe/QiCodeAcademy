@@ -18,8 +18,30 @@
     "page_url": "",
     "credit": "Joseph Gallop — owned by founder",
     "license": "Owned by the founder; used with his permission. Permission obtained from the people shown.",
-    "alt": "Tai Chi class at the international workshop in Prague.",
-    "notes": "Group photo with Master Vincent Chu; cropped to remove the camera watermark."
+    "alt": "Joseph Gallop performing at the August Moon Festival in Boston's Chinatown.",
+    "notes": "Replaces the Prague workshop photo, which moved to the Gallery."
+  },
+  "founder-chen-xiao-ping": {
+    "file": "founder-chen-xiao-ping.jpg",
+    "type": "founder-owned",
+    "source_site": "Joseph Gallop (own photo)",
+    "photographer": "Joseph Gallop",
+    "page_url": "",
+    "credit": "Joseph Gallop — owned by founder",
+    "license": "Owned by the founder; used with his permission. Permission obtained from the people shown.",
+    "alt": "Joseph Gallop with his Yin Baguazhang teacher Chen Xiao Ping and Sifu Rudy.",
+    "notes": "Cropped to remove partial people at the left edge and bare ceiling."
+  },
+  "founder-gin-soon": {
+    "file": "founder-gin-soon.jpg",
+    "type": "founder-owned",
+    "source_site": "Joseph Gallop (own photo)",
+    "photographer": "Joseph Gallop",
+    "page_url": "",
+    "credit": "Joseph Gallop — owned by founder",
+    "license": "Owned by the founder; used with his permission. Permission obtained from the people shown.",
+    "alt": "Joseph Gallop with Master Vincent Chu at the Gin Soon Tai Chi Chuan Federation.",
+    "notes": "Original size (604×404); shown small in the lineage photo row."
   },
   "founder-graduation": {
     "file": "founder-graduation.jpg",
@@ -75,6 +97,17 @@
     "credit": "Joseph Gallop — owned by founder",
     "alt": "Tai Chi class practicing at the international workshop in Prague.",
     "notes": "Seeded as a published Gallery photo (division: senior, consent confirmed)."
+  },
+  "gallery-prague-workshop": {
+    "file": "gallery-prague-workshop.jpg",
+    "type": "founder-owned",
+    "source_site": "Joseph Gallop (own photo)",
+    "photographer": "Joseph Gallop",
+    "page_url": "",
+    "credit": "Joseph Gallop — owned by founder",
+    "license": "Owned by the founder; used with his permission. Permission obtained from the people shown.",
+    "alt": "Tai Chi class at the international workshop in Prague",
+    "notes": "Previously the events banner (camera watermark cropped out). Seeded as a published Gallery photo (community, consent confirmed)."
   },
   "gallery-vincent-birthday": {
     "file": "gallery-vincent-birthday.jpg",

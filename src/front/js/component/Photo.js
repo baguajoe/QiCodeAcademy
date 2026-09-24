@@ -97,3 +97,26 @@ export function OptionalSiteImage({ slot, className = "", sizes, ratio, caption 
     </figure>
   );
 }
+
+// A row of captioned photos shown at equal height without cropping (each photo's width
+// follows its aspect ratio). Stacks on phones. Photos that don't exist are skipped.
+export function PhotoRow({ items, label }) {
+  const { store } = useStore();
+  const shown = items.map((it) => ({ ...it, r: resolveSlot(it.slot, store.siteImages) })).filter((it) => it.r.kind !== "placeholder");
+  if (!shown.length) return null;
+  const aspect = (it) => {
+    if (it.r.src && typeof it.r.src === "object" && it.r.src.width) return it.r.src.width / it.r.src.height;
+    const m = (it.r.meta.ratio || "4 / 3").split("/").map(Number);
+    return m[0] / m[1];
+  };
+  return (
+    <div className="photo-row" role="group" aria-label={label}>
+      {shown.map((it) => (
+        <figure key={it.slot} className="photo-row-item" style={{ "--a": aspect(it) }}>
+          <Photo src={it.r.src} alt={it.r.alt} sizes="(min-width: 56rem) 18rem, 100vw" ratio={String(aspect(it))} />
+          {it.caption && <figcaption>{it.caption}</figcaption>}
+        </figure>
+      ))}
+    </div>
+  );
+}

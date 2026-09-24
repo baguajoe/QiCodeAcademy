@@ -51,7 +51,7 @@ SITE_IMAGE_SLOTS = [
     "events-banner", "volunteer-banner", "donate",
     # In-page photos (shown only when a photo exists — never as an empty placeholder)
     "seniors-tai-chi", "seniors-baguazhang", "seniors-chair-massage", "seniors-join", "youth-movement",
-    "founder-prague-group", "founder-graduation",
+    "founder-gin-soon", "founder-chen-xiao-ping", "founder-prague-group", "founder-graduation",
 ]
 
 
@@ -260,6 +260,9 @@ def seed_research_references():
 GALLERY_SEED = [
     dict(image_url="/img/site/gallery-prague-class.jpg", division="senior",
          alt_text="Tai Chi class practicing at the international workshop in Prague.",
+         caption="Tai Chi class at the international workshop in Prague."),
+    dict(image_url="/img/site/gallery-prague-workshop.jpg", division="community",
+         alt_text="Tai Chi class at the international workshop in Prague",
          caption="Tai Chi class at the international workshop in Prague."),
     dict(image_url="/img/site/gallery-vincent-birthday.jpg", division="community",
          alt_text="Joseph Gallop with Master Vincent Chu and Master Gordon Chu.",

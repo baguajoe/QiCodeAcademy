@@ -324,3 +324,8 @@ I downloaded only the four approved original files and reviewed each one.
 - **Prague group photo:** the original had already been deleted after last round's processing, so `founder-prague-group.jpg` is a copy of the processed, watermark-free `events-banner.jpg`.
 - **Graduation photo:** AI-enhanced from Joseph's own photo, an approved exception like the portrait.
 - **Gallery:** Master Vincent Chu's birthday photo (community, consent confirmed, published), seeded by `flask seed`. It's cropped to remove the partial person at the left edge and most of the shelving, keeping all three people.
+
+## Lineage photos and events banner (September 2026)
+- **"Lineage and training" photo row:** the Gin Soon Tai Chi Chuan Federation photo, then Chen Xiao Ping and Sifu Rudy, then the Prague group, each captioned. `PhotoRow` gives each photo a width in proportion to its shape, so all three share one height **without cropping** and stay modest in size (the Gin Soon photo is only 604×404 and is never enlarged). The row stacks on phones. The teaching photo stays near the top of the page.
+- **Events banner:** now Joseph performing at the August Moon Festival in Chinatown, focused slightly above center to keep him in frame. The previous Prague banner photo moved to the Gallery (community, consent confirmed, published, seeded).
+- **Chen Xiao Ping photo:** cropped to remove the partial people at the left edge and the bare ceiling. The other two photos are used at their original framing.
