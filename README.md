@@ -88,7 +88,8 @@ Memory savers for the ~8 GB Codespace: `NO_RELOAD=1 ./start.sh` skips Flask's re
 ├── start.sh                 # dev launcher (Flask + webpack dev server)
 ├── webpack.common.js / webpack.dev.js / webpack.prod.js
 ├── babel.config.js, package.json, template.html
-├── render.yaml, render_build.sh, Procfile
+├── render.yaml, render_build.sh, Procfile    # Render / Heroku-style
+├── railway.json, nixpacks.toml, scripts/railway-*.sh  # Railway
 ├── requirements.txt
 ├── migrations/              # Alembic (Flask-Migrate)
 ├── scripts/i18n-sync.js     # npm run i18n:sync
@@ -129,6 +130,49 @@ All are documented in [.env.example](.env.example). **Production needs:**
 | `SENDGRID_API_KEY` (or `SMTP_*`), `MAIL_FROM`, `MAIL_REPLY_TO`, `ADMIN_NOTIFY_EMAIL` | email |
 | `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`, `STRIPE_SUCCESS_URL` (`…/donate/thank-you`), `STRIPE_CANCEL_URL` (`…/donate/cancelled`) | donations |
 | `R2_ACCOUNT_ID`, `R2_ACCESS_KEY_ID`, `R2_SECRET_ACCESS_KEY`, `R2_BUCKET`, `R2_PUBLIC_URL` | photo storage (required in production; Render's disk is wiped each deploy) |
+
+### Deploying to Railway
+The repo is ready for [Railway](https://railway.com). The Render files (`render.yaml`, `render_build.sh`) are kept too, in case you switch later.
+
+**How it builds and runs** (`railway.json` + `nixpacks.toml`):
+- **Build (Nixpacks, Python 3.12 + Node 20):** `pip install -r requirements.txt` into `/opt/venv` → `npm ci` → `npm run build`, which puts the production site in `dist_manual/`.
+- **Pre-deploy (every deploy, before it goes live):** `scripts/railway-predeploy.sh` runs `flask db upgrade` and then `flask seed --no-samples`. The seed is safe to repeat: it creates the first admin, settings, founder bio, curriculum, and gallery, **and never adds `[SAMPLE]` data**.
+- **Start:** `scripts/railway-start.sh`, the same gunicorn command as the Procfile's `web` line, bound to Railway's `$PORT`.
+- **Health check:** `/api/health`.
+
+**Steps**
+1. In Railway: **New Project → Deploy from GitHub repo** and pick this repo. Railway finds `railway.json` automatically.
+2. In the same project: **New → Database → PostgreSQL**.
+3. Open the web service → **Variables** and add `DATABASE_URL` with the value `${{Postgres.DATABASE_URL}}`, which links it to the database. A `postgres://` URL is converted to `postgresql://` automatically.
+4. Add the variables below, then deploy (or redeploy).
+5. **Settings → Networking → Generate Domain** (or add your own domain). Then set `SITE_URL` and `CORS_ORIGINS` to that address and redeploy.
+
+**Required variables**
+
+| Variable | Value |
+|---|---|
+| `DATABASE_URL` | `${{Postgres.DATABASE_URL}}` (reference to the Postgres service) |
+| `APP_ENV` | `production` |
+| `SECRET_KEY` | a long random string, e.g. from `python -c "import secrets; print(secrets.token_hex(32))"` |
+| `JWT_SECRET_KEY` | a *different* long random string |
+| `SITE_URL` | your public address, e.g. `https://qicodeacademy.org` or `https://<app>.up.railway.app` (if unset, the Railway domain is used) |
+| `CORS_ORIGINS` | the same address(es), comma-separated, e.g. `https://qicodeacademy.org,https://www.qicodeacademy.org` |
+| `ADMIN_EMAIL` | the first staff login |
+| `ADMIN_PASSWORD` | 10+ characters (only used to create the admin the first time; change it later in the admin) |
+
+**Optional variables**
+
+| Feature | Variables | If not set |
+|---|---|---|
+| Email (SendGrid) | `SENDGRID_API_KEY`, `MAIL_FROM`, `MAIL_REPLY_TO`, `ADMIN_NOTIFY_EMAIL` | No emails are sent (forms still work and save to the admin) |
+| Email (any SMTP instead) | `SMTP_HOST`, `SMTP_PORT`, `SMTP_USERNAME`, `SMTP_PASSWORD`, `SMTP_USE_TLS` | — |
+| Donations (Stripe) | `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`, `STRIPE_SUCCESS_URL` (`<site>/donate/thank-you`), `STRIPE_CANCEL_URL` (`<site>/donate/cancelled`) | **Donations stay off.** The Donate page says online giving isn't available yet |
+| Photo uploads (Cloudflare R2) | `R2_ACCOUNT_ID`, `R2_ACCESS_KEY_ID`, `R2_SECRET_ACCESS_KEY`, `R2_BUCKET`, `R2_PUBLIC_URL` | Uploads save to the server's disk and **disappear on the next deploy** |
+| Performance | `WEB_CONCURRENCY` (gunicorn workers, default 2) | — |
+
+> **Donations stay off** until the Stripe variables are set, and the site says so politely. After adding them, create the Stripe webhook as described under Render step 4, using your Railway address.
+>
+> **Uploaded images need Cloudflare R2.** Railway's disk isn't permanent: anything uploaded in the admin (news photos, gallery, replacement site photos) is lost on every redeploy unless R2 is configured. The built-in site photos in `src/front/img/site/` are part of the build and are always safe.
 
 ### Deploying to Render
 1. Push to GitHub. In Render, choose **New → Blueprint** and pick the repo. It reads `render.yaml` and creates the web service plus Postgres.

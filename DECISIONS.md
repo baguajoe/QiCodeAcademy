@@ -329,3 +329,16 @@ I downloaded only the four approved original files and reviewed each one.
 - **"Lineage and training" photo row:** the Gin Soon Tai Chi Chuan Federation photo, then Chen Xiao Ping and Sifu Rudy, then the Prague group, each captioned. `PhotoRow` gives each photo a width in proportion to its shape, so all three share one height **without cropping** and stay modest in size (the Gin Soon photo is only 604×404 and is never enlarged). The row stacks on phones. The teaching photo stays near the top of the page.
 - **Events banner:** now Joseph performing at the August Moon Festival in Chinatown, focused slightly above center to keep him in frame. The previous Prague banner photo moved to the Gallery (community, consent confirmed, published, seeded).
 - **Chen Xiao Ping photo:** cropped to remove the partial people at the left edge and the bare ceiling. The other two photos are used at their original framing.
+
+## Railway deployment (September 2026)
+- **Files:** `railway.json` (builder NIXPACKS, pre-deploy command, start command, `/api/health` health check, restart on failure), `nixpacks.toml` (Python 3.12 + Node 20 providers), `scripts/railway-predeploy.sh`, and `scripts/railway-start.sh`. The Render files are unchanged.
+- **Verified with a real local Nixpacks Docker build** and a simulated deploy against Postgres 16 from a `postgres://` URL:
+  - Migrations applied and the seed ran, with no samples. A second pre-deploy was a no-op.
+  - Gunicorn bound to `$PORT`, and the health check, pages, API, 404s, and admin login all worked.
+  - Donations returned 503 (off) as expected.
+- **Two Nixpacks pitfalls fixed:**
+  1. Nixpacks turns the Procfile `release:` line into a *build-time* phase. There's no database during a Railway build, so it's overridden with a no-op, and migrations run in the pre-deploy step instead. The Procfile keeps working for Render/Heroku.
+  2. The Python provider's `LD_LIBRARY_PATH` puts an older libstdc++ in front of Node 20, which crashed `npm ci` ("CXXABI_1.3.15 not found"). The npm steps now run with that variable cleared; Node is only used at build time.
+- **Scripts:** start and pre-deploy are shell scripts (not inline commands) so `${PORT}`/`${WEB_CONCURRENCY}` expand the same way everywhere, and `/opt/venv/bin` is on `PATH`.
+- `flask seed --no-samples` is used as requested. Samples are opt-in (`--with-samples`) anyway, so this is belt and braces.
+- `SITE_URL` falls back to Railway's `RAILWAY_PUBLIC_DOMAIN` when unset. Tests cover this and the `postgres://` → `postgresql://` conversion.

@@ -37,7 +37,7 @@ def _database_url():
         instance = REPO_ROOT / "instance"
         instance.mkdir(exist_ok=True)
         return f"sqlite:///{instance / 'dev.db'}"
-    # Render/Heroku hand out postgres:// which SQLAlchemy 2 no longer accepts.
+    # Render/Heroku/Railway may hand out postgres:// which SQLAlchemy 2 no longer accepts.
     if url.startswith("postgres://"):
         url = url.replace("postgres://", "postgresql://", 1)
     return url
@@ -62,7 +62,10 @@ class Config:
     SQLALCHEMY_ENGINE_OPTIONS = {"pool_pre_ping": True}
 
     # --- URLs / CORS --------------------------------------------------------
-    SITE_URL = (os.getenv("SITE_URL") or "http://localhost:3001").rstrip("/")
+    # SITE_URL falls back to Railway's auto-provided public domain, then localhost.
+    SITE_URL = (os.getenv("SITE_URL")
+                or (f"https://{os.getenv('RAILWAY_PUBLIC_DOMAIN')}" if os.getenv("RAILWAY_PUBLIC_DOMAIN") else "")
+                or "http://localhost:3001").rstrip("/")
     CORS_ORIGINS = _list("CORS_ORIGINS")
     # Regexes allowed in development only (Codespaces forwarded ports + localhost).
     DEV_CORS_ORIGIN_PATTERNS = [
