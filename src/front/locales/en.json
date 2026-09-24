@@ -69,7 +69,8 @@
     "privacy": "Privacy",
     "terms": "Terms",
     "menu": "Menu",
-    "close": "Close menu"
+    "close": "Close menu",
+    "photoCredits": "Photo credits"
   },
   "footer": {
     "blurb": "A Boston nonprofit bringing technology education to young people and traditional movement and wellness to older adults, in Dorchester, Roxbury, Mattapan, Hyde Park, the South End, and beyond.",
@@ -665,5 +666,17 @@
     },
     "time": "Time",
     "activity": "Activity"
+  },
+  "credits": {
+    "title": "Photo credits",
+    "lead": "Where the photos on this website come from.",
+    "where": "Where it appears",
+    "credit": "Credit",
+    "type": "Type",
+    "license": "License",
+    "stock": "Stock photo",
+    "own": "Qi Code Academy / founder",
+    "none": "No photo credits yet.",
+    "note": "Stock photos show models, not Qi Code Academy participants. We'll replace them with photos from our own programs over time."
   }
 }

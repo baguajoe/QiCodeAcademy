@@ -32,6 +32,7 @@ const DonateCancelled = lazy(() => donate().then((m) => ({ default: m.DonateCanc
 const legal = () => import(/* webpackChunkName: "legal" */ "./pages/Legal");
 const Privacy = lazy(() => legal().then((m) => ({ default: m.Privacy })));
 const Terms = lazy(() => legal().then((m) => ({ default: m.Terms })));
+const PhotoCredits = lazy(() => import(/* webpackChunkName: "credits" */ "./pages/PhotoCredits"));
 const AdminApp = lazy(() => import(/* webpackChunkName: "admin" */ "./admin/AdminApp"));
 const NotFound = lazy(() => import(/* webpackChunkName: "notfound" */ "./pages/NotFound"));
 
@@ -113,6 +114,7 @@ export default function Layout() {
           <Route path="/donate/cancelled" element={<DonateCancelled />} />
           <Route path="/privacy" element={<Privacy />} />
           <Route path="/terms" element={<Terms />} />
+          <Route path="/photo-credits" element={<PhotoCredits />} />
           <Route path="*" element={<NotFound />} />
         </Route>
       </Routes>

@@ -46,6 +46,7 @@ export function Footer() {
               <li><Link to="/donate">{t("nav.donate")}</Link></li>
               <li><Link to="/privacy">{t("nav.privacy")}</Link></li>
               <li><Link to="/terms">{t("nav.terms")}</Link></li>
+              <li><Link to="/photo-credits">{t("nav.photoCredits")}</Link></li>
             </ul>
           </nav>
           <div>

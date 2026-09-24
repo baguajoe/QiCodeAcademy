@@ -165,3 +165,11 @@ section[id], div[id] { scroll-margin-top: 7rem; }
 .check-list li::before { content: "✓"; position: absolute; left: 0; top: 0; font-weight: 800; color: var(--senior); }
 .research-note { background: var(--surface); border: 1px solid var(--line); border-left: 6px solid var(--research); border-radius: var(--radius); padding: var(--space-5) var(--space-6); }
 .research-note h2 { font-size: 1.4rem; }
+.credits-table th, .credits-table td { padding: var(--space-3) var(--space-4); text-align: left; vertical-align: top; border-bottom: 1px solid var(--line); }
+.credits-table thead th { background: var(--surface-alt); font-size: 0.9rem; }
+@media (max-width: 40rem) {
+  .credits-table thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+  .credits-table, .credits-table tbody, .credits-table tr, .credits-table th, .credits-table td { display: block; width: 100%; }
+  .credits-table tr { border-bottom: 2px solid var(--line); padding: var(--space-2) 0; }
+  .credits-table th, .credits-table td { border: 0; padding: var(--space-1) var(--space-3); overflow-wrap: anywhere; }
+}

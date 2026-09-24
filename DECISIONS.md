@@ -219,7 +219,7 @@ Decisions made while building the backend without stopping to ask. Each can be r
   - senior: `learning_goals` is "What we practice", `projects` is "Progression"
 
 ## Section 5: Youth program (4 levels, ages 14–18)
-- **The old 7-step pathway is gone.** The pathway SVG, copy, SEO text, and curriculum now use the four levels. "Starts around 5th grade" was removed everywhere. The page now says "For teens ages 14–18. Programs for younger students are planned for the future."
+- **The old 7-step pathway is gone.** The pathway SVG, copy, SEO text, and curriculum now use the four levels. The old elementary-grade starting point was removed everywhere. The page now says "For teens ages 14–18. Programs for younger students are planned for the future."
 - **Curriculum seed** (`flask seed`, idempotent, never overwrites edits):
   - Level 1 has the full format, summary, quick facts, and 12 weekly projects. Status is `in_development` with the badge "Launching 2027".
   - Levels 2–4 are `in_development` with title and one sentence. **I drafted those three sentences** because none were supplied; they're in `commands.py` and editable in Admin → Curriculum.
@@ -293,3 +293,12 @@ I downloaded only the four approved original files and reviewed each one.
 
   These are good slots for real program photos, or for a manual Unsplash/Pexels pick.
 - A new test checks that every photo file has a credit entry, that stock is used only in allowed slots, and that stock alt text never says "our", "students", "participants", and so on.
+
+## Section 11: Finish
+- **Photos:** all are at most 1920px, compressed progressive JPEG, in `src/front/img/site/<slot>.jpg`. The build makes a WebP `srcset` (480/960/1440/1920, never upscaled), and photos lazy-load except the hero and banners.
+- **`IMAGE_CREDITS.md`** is generated from `credits.json` (`npm run credits`).
+- **New public `/photo-credits` page**, linked in the footer as "Photo credits". It lists default photos and any admin uploads that have a credit, and notes that stock photos show models, not participants.
+- **`IMAGE_GUIDE.md`** now has the photo rules and each slot's status.
+- **Retired wording** (the old lineage spelling variants, the old center name, the old youth grade, and "Cheng Style"): zero matches in the code, seed data, or database. A test now guards against it coming back.
+- **Checks:** Home, About, Founder, Youth, Seniors, Research, and Donate (plus Contact and Photo credits) checked at 390px and 1280px, with 0 axe violations and no page overflow.
+- **Dev note:** an old `./start.sh` webpack dev server keeps writing dev builds into `dist_manual/`. Stop it before running `npm run build`.

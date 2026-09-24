@@ -55,6 +55,7 @@ STATIC_PAGES = {
     "/donate/cancelled": ("Your donation was cancelled", MISSION, None, False),
     "/privacy": ("Privacy Policy", MISSION, None, False),
     "/terms": ("Terms of Use", MISSION, None, False),
+    "/photo-credits": ("Photo credits", "Where the photos on this website come from.", None, True),
     "/register": ("Register", "Choose a program to begin registration.", None, False),
     "/programs": (None, MISSION, "hero-home", False),  # redirects client-side
 }

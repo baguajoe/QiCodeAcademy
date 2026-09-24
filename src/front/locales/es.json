@@ -69,7 +69,8 @@
     "privacy": "TODO: Privacy",
     "terms": "TODO: Terms",
     "menu": "TODO: Menu",
-    "close": "TODO: Close menu"
+    "close": "TODO: Close menu",
+    "photoCredits": "TODO: Photo credits"
   },
   "footer": {
     "blurb": "TODO: A Boston nonprofit bringing technology education to young people and traditional movement and wellness to older adults, in Dorchester, Roxbury, Mattapan, Hyde Park, the South End, and beyond.",
@@ -665,5 +666,17 @@
     },
     "time": "TODO: Time",
     "activity": "TODO: Activity"
+  },
+  "credits": {
+    "title": "TODO: Photo credits",
+    "lead": "TODO: Where the photos on this website come from.",
+    "where": "TODO: Where it appears",
+    "credit": "TODO: Credit",
+    "type": "TODO: Type",
+    "license": "TODO: License",
+    "stock": "TODO: Stock photo",
+    "own": "TODO: Qi Code Academy / founder",
+    "none": "TODO: No photo credits yet.",
+    "note": "TODO: Stock photos show models, not Qi Code Academy participants. We'll replace them with photos from our own programs over time."
   }
 }

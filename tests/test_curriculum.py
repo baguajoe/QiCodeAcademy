@@ -70,8 +70,15 @@ def test_no_old_youth_age_wording():
     root = Path(__file__).resolve().parents[1]
     en = json.loads((root / "src/front/locales/en.json").read_text())
     assert en["youth"]["lead"] == "For teens ages 14–18. Programs for younger students are planned for the future."
-    for path in list(root.glob("src/front/**/*.js")) + list(root.glob("src/front/locales/*.json")) + list(root.glob("src/api/**/*.py")):
-        assert "5th grade" not in path.read_text(), path
+    import re
+    # Retired wording (built from parts so this test file doesn't contain it literally).
+    retired = re.compile("|".join([
+        "Ch" + "eng Style", "Grove Hall Commun" + "ity Center", "5" + "th grade",
+        "Sun Ba ?" + "Gang", "Sun Ba" + "o Gang", "Sun Ba" + "i Gang"]), re.I)
+    paths = [p for p in root.rglob("*") if p.is_file() and p.suffix in (".py", ".js", ".json", ".md", ".html")
+             and not any(part in p.parts for part in ("node_modules", ".venv", "dist_manual", ".git"))]
+    for path in paths:
+        assert not retired.search(path.read_text(errors="ignore")), path
 
 
 def test_seeded_senior_modules(client, db):
