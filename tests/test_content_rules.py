@@ -78,9 +78,16 @@ def test_research_roadmap_is_future_tense_and_notify_note():
     assert en["research"]["notifyNote"] == "Joining this list does not enroll you in any study."
 
 
-def test_no_research_references_or_gallery_seeded():
-    src = (ROOT / "src/api/commands.py").read_text()
-    assert "ResearchReference(" not in src and "GalleryPhoto(" not in src
+def test_research_references_seeded_hidden_and_no_gallery(client, db):
+    from api.commands import seed_research_references
+    from api.models import ResearchReference
+    assert "GalleryPhoto(" not in (ROOT / "src/api/commands.py").read_text()
+    assert seed_research_references() == 3
+    assert seed_research_references() == 0
+    db.session.commit()
+    refs = db.session.query(ResearchReference).all()
+    assert all(r.is_verified is False and not r.url for r in refs)
+    assert client.get("/api/research/references").get_json()["items"] == []  # hidden until verified
 
 
 def test_samples_are_labeled_and_no_stats_seeded():

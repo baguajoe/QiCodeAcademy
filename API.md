@@ -209,7 +209,7 @@ Always show `settings.tax_status` near donation UI rather than hard-coding a ded
 ### Research
 
 #### `GET /api/research/references`
-→ `{"items": [{"id","title","authors","year","url","summary","created_at","updated_at"}]}`, verified references only. The list is empty until admins add some.
+→ `{"items": [{"id","title","authors","publication","year","url","summary","created_at","updated_at"}]}`, verified references only. The list is empty until admins add some.
 
 #### `POST /api/research/inquiries` (research partnership)
 ```json
@@ -298,7 +298,7 @@ Responses use the same object shapes as the public API plus the admin-only field
 | `settings` | **`key`** (`[a-z0-9_.-]`), `value`, `is_public` (controls whether it appears in `GET /api/settings`) | key | `is_public` | `key` |
 | `site-images` | **`slot_key`** (`[a-z0-9-]`), `image_url`, `alt_text` | slot_key | none | `slot_key` |
 | `gallery` | **`image_url`**, **`alt_text`**, `caption`, `division`, `consent_confirmed`, `is_published` (**can't be true unless `consent_confirmed` is true**), `sort_order` | caption, alt_text | `division`, `is_published`, `consent_confirmed` | `-created_at` |
-| `research-references` | **`title`**, `authors`, `year`, `url`, `summary`, `is_verified` (only verified ones are public) | title, authors | `is_verified` | `-created_at` |
+| `research-references` | **`title`**, `authors`, `publication` (journal/source), `year`, `url`, `summary`, `is_verified` (only verified ones are public) | title, authors | `is_verified` | `-created_at` |
 | `research-inquiries` | **`name`**, **`institution`**, `role`, **`email`**, `area_of_interest`, `message`, `is_read` | name, institution, email | `is_read` | `-created_at` |
 | `research-interest` | **`name`**, **`email_or_phone`**, `neighborhood`, **`consent_to_contact`** (must be true) | name, email_or_phone, neighborhood | none | `-created_at` |
 

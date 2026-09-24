@@ -8,7 +8,7 @@ from sqlalchemy import select
 from .extensions import db
 from .founder_content import (FOUNDER_CREDENTIALS, FOUNDER_FULL_BIO, FOUNDER_NAME, FOUNDER_ROLE,
                               FOUNDER_SHORT_BIO, LEGACY_FINGERPRINTS, fingerprint)
-from .models import CurriculumModule, Event, ImpactStat, Program, SiteImage, SiteSetting, TeamMember, User
+from .models import CurriculumModule, Event, ResearchReference, ImpactStat, Program, SiteImage, SiteSetting, TeamMember, User
 
 SAMPLE = "[SAMPLE]"
 
@@ -217,6 +217,31 @@ def seed_curriculum():
     return added
 
 
+# Background research to be checked by Joseph. Seeded UNVERIFIED with empty URLs, so
+# they stay hidden on the public site until someone adds the link and marks them verified.
+RESEARCH_REFERENCES_SEED = [
+    dict(title="Exercise for preventing falls in older people living in the community",
+         authors="Sherrington C, Fairhall NJ, Wallbank GK, et al.",
+         publication="Cochrane Database of Systematic Reviews", year=2019,
+         summary="Across 7 studies and 2,655 participants, Tai Chi may reduce the rate of falls by about 19% "
+                 "(low-certainty evidence)."),
+    dict(title="Tai Chi for fall prevention and balance improvement in older adults: a systematic review and "
+               "meta-analysis of randomized controlled trials",
+         authors="Chen W, Li M, Li H, Lin Y, Feng Z.", publication="Frontiers in Public Health", year=2023),
+    dict(title="Systematic review and meta-analysis: Tai Chi for preventing falls in older adults",
+         authors="Huang Z-G, Feng Y-H, Li Y-H, Lv C-S.", publication="BMJ Open, 7(2):e013661", year=2017),
+]
+
+
+def seed_research_references():
+    added = 0
+    for ref in RESEARCH_REFERENCES_SEED:
+        if not db.session.scalar(select(ResearchReference).where(ResearchReference.title == ref["title"])):
+            db.session.add(ResearchReference(**ref, url=None, is_verified=False))
+            added += 1
+    return added
+
+
 def upgrade_founder_text():
     """Replace earlier seeded founder text with the current version — only where staff
     haven't edited it (matched by fingerprint). Returns the number of fields updated."""
@@ -276,6 +301,8 @@ def register_commands(app):
             click.echo("Added founder team member.")
         if (n := seed_curriculum()):
             click.echo(f"Added {n} curriculum module(s).")
+        if (n := seed_research_references()):
+            click.echo(f"Added {n} research reference(s) — unverified and hidden until checked in the admin.")
         if (n := upgrade_founder_text()):
             click.echo(f"Updated {n} founder text field(s) to the current version.")
 

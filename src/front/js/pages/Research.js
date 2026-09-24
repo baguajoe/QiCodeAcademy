@@ -7,6 +7,7 @@ import { Empty, PageBanner, SectionHeader } from "../component/common";
 import { NewsCard } from "../component/Cards";
 import { PartnershipDiagram, StepsDiagram } from "../component/Diagrams";
 import { FormShell, TextArea, TextField, useForm } from "../component/Form";
+import { ModuleCard, useCurriculum } from "../component/Curriculum";
 
 function References() {
   const { t } = useTranslation();
@@ -21,12 +22,28 @@ function References() {
           <p style={{ margin: 0 }}>
             <strong>{r.url ? <a href={r.url} target="_blank" rel="noopener noreferrer">{r.title}<span className="sr-only"> ({t("common.opensNewTab")})</span></a> : r.title}</strong>
             {r.authors && <> — {r.authors}</>}
+            {r.publication && <> <em>{r.publication}</em>.</>}
             {r.year && <> ({r.year})</>}
           </p>
           {r.summary && <p className="muted" style={{ margin: 0 }}>{r.summary}</p>}
         </li>
       ))}
     </ol>
+  );
+}
+
+// Hidden until at least one research curriculum module is published in the admin.
+function ResearchProgram() {
+  const { t } = useTranslation();
+  const { modules } = useCurriculum("research");
+  if (!modules.length) return null;
+  return (
+    <section className="section section-alt" aria-labelledby="rprogram-title">
+      <div className="container">
+        <SectionHeader title={t("research.programTitle")} lead={t("research.programLead")} id="rprogram-title" />
+        <div className="grid grid-2">{modules.map((m) => <ModuleCard key={m.id} module={m} />)}</div>
+      </div>
+    </section>
   );
 }
 
@@ -125,6 +142,8 @@ export default function Research() {
           <StepsDiagram division="research" title={t("research.roadmapTitle")} steps={t("research.roadmap", { returnObjects: true })} />
         </div>
       </section>
+
+      <ResearchProgram />
 
       <section className="section section-alt" aria-labelledby="refs-title">
         <div className="container">

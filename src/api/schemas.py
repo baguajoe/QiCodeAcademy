@@ -496,6 +496,7 @@ class GalleryPhotoSchema(AdminSchema):
 class ResearchReferenceSchema(AdminSchema):
     title = Req(300)
     authors = S(500)
+    publication = S(300)
     year = fields.Integer(allow_none=True, validate=validate.Range(min=1800, max=2100))
     url = Url()
     summary = S(10000)

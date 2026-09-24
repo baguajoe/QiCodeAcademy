@@ -250,3 +250,9 @@ Decisions made while building the backend without stopping to ask. Each can be r
   - the research note linking to /research
   - open programs, shown only when they exist
   - the wellness disclaimer
+
+## Section 7: Research references
+- **Added `ResearchReference.publication`** (journal or source, with a migration), because the three references need their journal names.
+- **The three references are seeded** by `flask seed`, idempotently, with `is_verified = false` and empty URLs. **They don't appear on the site** until someone adds a link and ticks Verified in Admin → Research references. That list now has a "Link?" column showing which ones are missing.
+- The **"Our 12-week Baguazhang program"** section on the Research page stays hidden until at least one `research` curriculum module is published.
+- The content-rules test now checks that these references are seeded unverified and hidden.

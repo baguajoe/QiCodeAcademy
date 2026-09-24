@@ -347,13 +347,14 @@ export const RESOURCES = {
   },
   "research-references": {
     label: "Research references", singular: "reference", group: "Research",
-    help: "Only mark a reference Verified after someone has checked that the source exists and says what the summary says. Never add invented citations.",
-    columns: [{ key: "title", label: "Title" }, { key: "authors", label: "Authors" }, { key: "year", label: "Year" }, { key: "is_verified", label: "Verified?", format: yesNo }],
+    help: "Only mark a reference Verified after someone has checked that the source exists, added its link, and confirmed the summary matches it. Unverified references never appear on the website.",
+    columns: [{ key: "title", label: "Title" }, { key: "year", label: "Year" }, { key: "url", label: "Link?", format: (v) => (v ? "Yes" : "Missing") }, { key: "is_verified", label: "Verified?", format: yesNo }],
     filters: [{ key: "is_verified", label: "Verified?", options: [["true", "Verified"], ["false", "Not yet"]] }],
     search: "Search title or authors",
     fields: [
       { key: "title", label: "Title", required: true },
       { key: "authors", label: "Authors" },
+      { key: "publication", label: "Journal / source", hint: "e.g. BMJ Open, 7(2):e013661" },
       { key: "year", label: "Year", type: "number" },
       { key: "url", label: "Link (DOI or journal page)", type: "url" },
       { key: "summary", label: "Plain-language summary", type: "textarea", hint: "Describe what the study found without overstating it." },

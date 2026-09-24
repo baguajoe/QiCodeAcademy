@@ -435,7 +435,9 @@
       "emailOrPhone": "Email or phone",
       "emailOrPhoneHint": "We'll only use this to tell you about future research opportunities.",
       "notifyMe": "Notify me"
-    }
+    },
+    "programTitle": "Our 12-week Baguazhang program",
+    "programLead": "The standardized curriculum we are developing for future research partnerships."
   },
   "events": {
     "title": "Events",

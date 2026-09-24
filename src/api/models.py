@@ -387,6 +387,7 @@ class ResearchReference(TimestampMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(300), nullable=False)
     authors = db.Column(db.String(500))
+    publication = db.Column(db.String(300))  # journal / source, with volume/issue if known
     year = db.Column(db.Integer)
     url = db.Column(db.String(500))
     summary = db.Column(db.Text)
