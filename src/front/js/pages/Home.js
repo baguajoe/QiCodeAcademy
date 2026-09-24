@@ -6,7 +6,7 @@ import { useSeo } from "../seo";
 import { useStore } from "../store/appContext";
 import { Photo, SiteImage, isSlotPlaceholder } from "../component/Photo";
 import { EventCard, NewsCard } from "../component/Cards";
-import { Empty, SectionHeader } from "../component/common";
+import { SectionHeader } from "../component/common";
 
 function Hero() {
   const { t } = useTranslation();
@@ -86,9 +86,11 @@ export function Neighborhoods({ alt = true }) {
   );
 }
 
+// Hidden entirely until an admin publishes an upcoming event (never an empty box).
 function UpcomingEvents() {
   const { t } = useTranslation();
   const { data } = useApi(() => api.get("/events", { params: { per_page: 3 } }), []);
+  if (!data || !data.items.length) return null;
   return (
     <section className="section" aria-labelledby="events-title">
       <div className="container">
@@ -96,16 +98,13 @@ function UpcomingEvents() {
           <h2 id="events-title" style={{ margin: 0 }}>{t("home.eventsTitle")}</h2>
           <Link className="more-link" to="/events">{t("home.allEvents")}</Link>
         </div>
-        {data && data.items.length ? (
-          <div className="grid grid-3">{data.items.map((e) => <EventCard key={e.id} event={e} />)}</div>
-        ) : data ? (
-          <Empty>{t("home.noEvents")}</Empty>
-        ) : null}
+        <div className="grid grid-3">{data.items.map((e) => <EventCard key={e.id} event={e} />)}</div>
       </div>
     </section>
   );
 }
 
+// Hidden entirely until an admin adds real, verifiable impact numbers.
 function ImpactStats() {
   const { t } = useTranslation();
   const { data } = useApi(() => api.get("/impact-stats"), []);
@@ -127,10 +126,12 @@ function ImpactStats() {
   );
 }
 
+// Hidden entirely until an admin publishes gallery photos.
 function GalleryStrip() {
   const { t } = useTranslation();
   const { data } = useApi(() => api.get("/gallery", { params: { per_page: 6 } }), []);
   const items = data ? data.items : [];
+  if (!items.length) return null;
   return (
     <section className="section" aria-labelledby="gallery-title">
       <div className="container">
@@ -139,19 +140,13 @@ function GalleryStrip() {
           <Link className="more-link" to="/gallery">{t("home.galleryAll")}</Link>
         </div>
         <ul className="photo-grid photo-grid-6">
-          {items.length
-            ? items.map((p) => (
-                <li key={p.id}>
-                  <Link to="/gallery" aria-label={p.alt_text}>
-                    <Photo src={p.image_url} alt={p.alt_text} sizes="(min-width: 72rem) 16vw, (min-width: 48rem) 33vw, 50vw" />
-                  </Link>
-                </li>
-              ))
-            : [0, 1, 2].map((i) => (
-                <li key={i}>
-                  <Photo ratio="1" placeholder={{ division: ["youth", "senior", "intergenerational"][i], subject: "Gallery photo (added in admin → Gallery)", size: "1200×1200" }} />
-                </li>
-              ))}
+          {items.map((p) => (
+            <li key={p.id}>
+              <Link to="/gallery" aria-label={p.alt_text}>
+                <Photo src={p.image_url} alt={p.alt_text} sizes="(min-width: 72rem) 16vw, (min-width: 48rem) 33vw, 50vw" />
+              </Link>
+            </li>
+          ))}
         </ul>
       </div>
     </section>
@@ -180,6 +175,7 @@ function Ctas() {
   );
 }
 
+// Hidden entirely until an admin publishes news.
 function LatestNews() {
   const { t } = useTranslation();
   const { data } = useApi(() => api.get("/news", { params: { per_page: 3 } }), []);

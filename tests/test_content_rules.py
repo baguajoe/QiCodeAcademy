@@ -83,9 +83,22 @@ def test_no_research_references_or_gallery_seeded():
     assert "ResearchReference(" not in src and "GalleryPhoto(" not in src
 
 
-def test_samples_are_labeled():
-    from api.commands import SAMPLE_STATS, sample_events, sample_programs
+def test_samples_are_labeled_and_no_stats_seeded():
+    import api.commands as commands
     from datetime import date
-    assert all(p["title"].startswith("[SAMPLE]") for p in sample_programs(date.today()))
-    assert all(e["title"].startswith("[SAMPLE]") for e in sample_events(date.today()))
-    assert all(label.startswith("[SAMPLE]") for label, _ in SAMPLE_STATS)
+    assert all(p["title"].startswith("[SAMPLE]") for p in commands.sample_programs(date.today()))
+    assert all(e["title"].startswith("[SAMPLE]") for e in commands.sample_events(date.today()))
+    assert not hasattr(commands, "SAMPLE_STATS")
+    assert "ImpactStat(" not in (ROOT / "src/api/commands.py").read_text()
+
+
+def test_seed_adds_no_fake_content(app, db):
+    from api.models import Event, ImpactStat, Program
+    runner = app.test_cli_runner()
+    result = runner.invoke(args=["seed"])
+    assert result.exit_code == 0, result.output
+    assert db.session.query(ImpactStat).count() == 0
+    assert db.session.query(Program).count() == 0 and db.session.query(Event).count() == 0
+    runner.invoke(args=["seed", "--with-samples"])
+    assert db.session.query(Program).count() > 0  # opt-in dev samples still work
+    assert db.session.query(ImpactStat).count() == 0

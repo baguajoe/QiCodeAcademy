@@ -302,7 +302,7 @@ export const RESOURCES = {
   },
   "impact-stats": {
     label: "Impact stats", singular: "stat", group: "Content",
-    help: "Shown on the home page. Use real, verifiable numbers only. Delete the [SAMPLE] rows before launch.",
+    help: "Shown on the home page only when at least one stat exists. Use real, verifiable numbers only — never estimates or goals.",
     columns: [{ key: "value", label: "Number" }, { key: "label", label: "Label" }, { key: "sort_order", label: "Order" }],
     fields: [
       { key: "value", label: "Number (as displayed)", required: true, hint: "e.g. 40+" },

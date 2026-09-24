@@ -13,4 +13,4 @@ fi
 export FLASK_APP=src/app.py
 flask db upgrade
 # Idempotent: creates the admin (from ADMIN_EMAIL/ADMIN_PASSWORD) + default settings only.
-flask seed --no-samples
+flask seed

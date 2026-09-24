@@ -39,7 +39,7 @@ Go to **`https://<your-site>/admin`** and log in with your staff email and passw
 | Add the organization's **email / phone** | Site settings & text → Organization | Shown on the Contact page and in the footer. Use organization contact info only, never personal numbers or addresses. |
 | Add a **research reference** | Research references | Only check **Verified** after someone has read the source and confirmed the summary. Never add a citation you haven't checked. |
 | Update **"current research status"** | Site settings & text → Research | |
-| Update **impact numbers** on the home page | Impact stats | Use real, verifiable numbers. Delete the `[SAMPLE]` rows before launch. |
+| Add **impact numbers** to the home page | Impact stats | The "Our impact" section stays hidden until you add one. Use real, verifiable numbers only. |
 | Add another **staff login** | Admin users → *Add admin user* | Passwords need 10+ characters. |
 
 ### Photo rules (please read)
@@ -76,9 +76,9 @@ The dev server also writes the build to `dist_manual/`, so :3001 serves the same
 In a second terminal, seed the database (safe to re-run):
 ```bash
 source .venv/bin/activate
-flask --app src/app.py seed   # admin user, settings, founder bio, photo slots, [SAMPLE] programs/events/stats
+flask --app src/app.py seed   # admin user, settings, founder bio, photo slots, curriculum (no fake content)
 ```
-Then log in at http://localhost:3000/admin.
+Then log in at http://localhost:3000/admin. Home-page sections for events, impact stats, gallery, and news stay hidden until they have content.
 
 Memory savers for the ~8 GB Codespace: `NO_RELOAD=1 ./start.sh` skips Flask's reloader; `SKIP_WEBPACK=1 ./start.sh` runs the API only. The Node heap is capped at 1.5 GB.
 
@@ -109,8 +109,9 @@ source .venv/bin/activate && export FLASK_APP=src/app.py
 python -m pytest                 # backend + content-rule tests
 npm run build                    # production build → dist_manual/
 npm run i18n:sync                # add new English keys to es/ht as TODO
-flask seed [--no-samples]        # idempotent
-flask remove-samples             # delete [SAMPLE] programs/events/stats before launch
+flask seed                       # idempotent; never seeds impact stats or other made-up numbers
+flask seed --with-samples        # LOCAL DEV ONLY: adds [SAMPLE] programs/events for layout testing
+flask remove-samples             # delete any [SAMPLE] records
 flask create-admin you@example.org --name "You"
 flask db migrate -m "…" && flask db upgrade   # after model changes
 ```
@@ -124,7 +125,7 @@ All are documented in [.env.example](.env.example). **Production needs:**
 | `SECRET_KEY`, `JWT_SECRET_KEY` | long random strings (render.yaml generates them) |
 | `DATABASE_URL` | Postgres (render.yaml wires this up) |
 | `SITE_URL` | e.g. `https://qicodeacademy.org`; used for canonical URLs, sitemap, share images, emails |
-| `ADMIN_EMAIL`, `ADMIN_PASSWORD` | first admin account (created at deploy by `flask seed --no-samples`) |
+| `ADMIN_EMAIL`, `ADMIN_PASSWORD` | first admin account (created at deploy by `flask seed`) |
 | `SENDGRID_API_KEY` (or `SMTP_*`), `MAIL_FROM`, `MAIL_REPLY_TO`, `ADMIN_NOTIFY_EMAIL` | email |
 | `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`, `STRIPE_SUCCESS_URL` (`…/donate/thank-you`), `STRIPE_CANCEL_URL` (`…/donate/cancelled`) | donations |
 | `R2_ACCOUNT_ID`, `R2_ACCESS_KEY_ID`, `R2_SECRET_ACCESS_KEY`, `R2_BUCKET`, `R2_PUBLIC_URL` | photo storage (required in production; Render's disk is wiped each deploy) |
@@ -132,7 +133,7 @@ All are documented in [.env.example](.env.example). **Production needs:**
 ### Deploying to Render
 1. Push to GitHub. In Render, choose **New → Blueprint** and pick the repo. It reads `render.yaml` and creates the web service plus Postgres.
 2. Fill in the `sync: false` variables (table above).
-3. Each deploy runs `render_build.sh`: pip install → `npm ci` + `npm run build` → `flask db upgrade` → `flask seed --no-samples`. Gunicorn then serves the API and the built site, with server-side SEO tags, `/sitemap.xml`, `/robots.txt`, gzip/Brotli, and long-lived caching for hashed assets.
+3. Each deploy runs `render_build.sh`: pip install → `npm ci` + `npm run build` → `flask db upgrade` → `flask seed`. Gunicorn then serves the API and the built site, with server-side SEO tags, `/sitemap.xml`, `/robots.txt`, gzip/Brotli, and long-lived caching for hashed assets.
 4. **Stripe:** add a webhook to `https://<domain>/api/stripe/webhook` with the events `checkout.session.completed`, `checkout.session.async_payment_succeeded`, `checkout.session.async_payment_failed`, `checkout.session.expired`, `invoice.paid`, `customer.subscription.updated`, `customer.subscription.deleted`, `charge.refunded`. Put its signing secret in `STRIPE_WEBHOOK_SECRET`.
 5. **R2:** create a bucket, enable public access (r2.dev or a custom domain) and set `R2_PUBLIC_URL` to it; create an API token with Object Read & Write.
 6. **SendGrid:** verify the `MAIL_FROM` sender or domain.

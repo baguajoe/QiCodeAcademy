@@ -187,3 +187,12 @@ Decisions made while building the backend without stopping to ask. Each can be r
 - `--include=dev` is there because webpack and Babel are devDependencies.
 - Render's native Python runtime includes Node; `NODE_VERSION=20` is pinned in `render.yaml`. Check the first deploy log to confirm the frontend build step ran.
 - **README** now starts with "How to update content and photos", a plain-language guide for non-technical staff, followed by the developer setup.
+
+---
+
+# Content update (September 2026)
+
+## Section 1: No fake numbers, and empty sections are hidden
+- `flask seed` **never seeds impact stats** or any other made-up numbers. `[SAMPLE]` programs and events are now opt-in (`flask seed --with-samples`, local dev only), and Render's build runs a plain `flask seed`. `--no-samples` still works but does nothing.
+- On the home page, **Upcoming events, Our impact, the gallery strip, and Latest news are hidden completely** until they have content, including while they load, so an empty box or placeholder tiles never appear.
+- My local test data (`[DEV TEST]` news, color-block gallery photos, test registrations and messages) and all sample records were deleted from the dev database.

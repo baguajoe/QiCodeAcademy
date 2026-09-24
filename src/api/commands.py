@@ -49,15 +49,15 @@ def sample_programs(today):
         dict(division="youth", title=f"{SAMPLE} Intro to Python for Teens",
              description="A beginner-friendly 8-week course where teens build small games and "
                          "tools in Python, with short movement breaks to stay focused.",
-             age_range="Ages 12–15", neighborhood="Dorchester",
+             age_range="Ages 14–18", neighborhood="Dorchester",
              location="Dorchester Branch Library (sample location)",
              schedule="Saturdays, 10:00 AM – 12:00 PM",
              start_date=today + timedelta(days=21), end_date=today + timedelta(days=77),
              capacity=16, cost="Free"),
         dict(division="youth", title=f"{SAMPLE} Web Design Club",
-             description="Middle schoolers learn HTML, CSS, and design basics by building a "
+             description="Teens learn HTML, CSS, and design basics by building a "
                          "personal website they can share with family.",
-             age_range="Ages 10–13", neighborhood="Roxbury",
+             age_range="Ages 14–18", neighborhood="Roxbury",
              location="Roxbury community center (sample location)",
              schedule="Wednesdays, 3:30 PM – 5:00 PM",
              start_date=today + timedelta(days=14), end_date=today + timedelta(days=70),
@@ -119,12 +119,6 @@ def sample_events(today):
     ]
 
 
-SAMPLE_STATS = [
-    (f"{SAMPLE} Youth learners", "40+"),
-    (f"{SAMPLE} Older adults in movement classes", "60+"),
-    (f"{SAMPLE} Boston neighborhoods", "5"),
-    (f"{SAMPLE} Volunteer hours", "300+"),
-]
 
 
 def seed_settings():
@@ -165,9 +159,14 @@ def seed_admin(email, password, name="Administrator"):
 
 def register_commands(app):
     @app.cli.command("seed")
-    @click.option("--no-samples", is_flag=True, help="Only seed admin + settings.")
-    def seed(no_samples):
-        """Seed admin user, site settings, image slots and [SAMPLE] content (idempotent)."""
+    @click.option("--with-samples", is_flag=True,
+                  help="LOCAL DEV ONLY: also add [SAMPLE] programs and events for testing layouts.")
+    @click.option("--no-samples", is_flag=True, hidden=True, help="Deprecated no-op (samples are off by default).")
+    def seed(with_samples, no_samples):
+        """Seed admin user, site settings, photo slots, founder, curriculum, research refs (idempotent).
+
+        No impact stats or other made-up numbers are ever seeded. [SAMPLE] programs/events
+        are only added with --with-samples, for local layout testing."""
         _, msg = seed_admin(os.getenv("ADMIN_EMAIL"), os.getenv("ADMIN_PASSWORD"),
                             os.getenv("ADMIN_NAME", "Administrator"))
         click.echo(msg)
@@ -175,26 +174,22 @@ def register_commands(app):
         if seed_founder():
             click.echo("Added founder team member.")
 
-        if not no_samples:
+        if with_samples and not no_samples:
             today = date.today()
             if not db.session.scalar(select(Program).where(Program.title.startswith(SAMPLE))):
                 for p in sample_programs(today):
                     db.session.add(Program(**p, is_active=True))
-                click.echo("Added sample programs.")
+                click.echo("Added sample programs (local dev only).")
             if not db.session.scalar(select(Event).where(Event.title.startswith(SAMPLE))):
                 for e in sample_events(today):
                     db.session.add(Event(**e, is_published=True))
-                click.echo("Added sample events.")
-            if not db.session.scalar(select(ImpactStat)):
-                for i, (label, value) in enumerate(SAMPLE_STATS):
-                    db.session.add(ImpactStat(label=label, value=value, sort_order=i))
-                click.echo("Added sample impact stats.")
+                click.echo("Added sample events (local dev only).")
         db.session.commit()
         click.echo("Seed complete.")
 
     @app.cli.command("remove-samples")
     def remove_samples():
-        """Delete every record whose title/label starts with [SAMPLE] (programs with registrations are kept)."""
+        """Delete every [SAMPLE] program/event/impact stat (programs with registrations are kept)."""
         n = 0
         for model, col in ((Program, Program.title), (Event, Event.title), (ImpactStat, ImpactStat.label)):
             for obj in db.session.scalars(select(model).where(col.startswith(SAMPLE))):
