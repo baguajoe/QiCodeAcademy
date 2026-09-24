@@ -8,7 +8,7 @@ from sqlalchemy import select
 from .extensions import db
 from .founder_content import (FOUNDER_CREDENTIALS, FOUNDER_FULL_BIO, FOUNDER_NAME, FOUNDER_ROLE,
                               FOUNDER_SHORT_BIO, LEGACY_FINGERPRINTS, fingerprint)
-from .models import Event, ImpactStat, Program, SiteImage, SiteSetting, TeamMember, User
+from .models import CurriculumModule, Event, ImpactStat, Program, SiteImage, SiteSetting, TeamMember, User
 
 SAMPLE = "[SAMPLE]"
 
@@ -135,6 +135,60 @@ def seed_settings():
     return added
 
 
+# ---------------------------------------------------------------------------
+# Curriculum (real program content — seeded once, editable in the admin)
+# ---------------------------------------------------------------------------
+YOUTH_LEVEL_1_PROJECTS = [
+    "Guess the Number — variables, input and output, conditionals, loops, reading error messages",
+    "Rock-Paper-Scissors — functions, randomization, branching logic",
+    "Trivia Battle — lists, dictionaries, scoring systems",
+    "Pong — introduction to Pygame: coordinates, game loops, keyboard input, collision",
+    "Snake — continuous movement, game state, spawning objects",
+    "Space Shooter — sprites, projectiles, sound, health systems",
+    "Mini Fighting Game — object-oriented programming, character state, animation, hit detection",
+    "Racing / Dodge — timers, difficulty progression, game balancing",
+    "Intelligent Enemies — algorithms, state machines, decision logic, agent behavior",
+    "Introduction to AI & Games — AI literacy, how Python powers modern AI, responsible use",
+    "Original Game Project — design documents, teamwork, project management",
+    "Finish, Portfolio & Demo Day — debugging, version control, portfolios, presenting your work",
+]
+
+CURRICULUM_SEED = [
+    dict(division="youth", sort_order=1, title="Level 1 — Python & Game Development",
+         age_range="Ages 14–18", duration="12 weeks · 2 sessions a week · 90 minutes each",
+         summary="Students learn Python by building games — writing code on the first day and playing what they "
+                 "wrote before they leave. Each week adds a new project, ending with an original game students "
+                 "design themselves and present at a public Demo Day.",
+         format_notes=["Free for families", "Up to 15 students", "No coding experience needed"],
+         projects=YOUTH_LEVEL_1_PROJECTS, status="in_development", launch_label="Launching 2027"),
+    # Levels 2–4: title + one-sentence summary only (summaries drafted; see DECISIONS.md).
+    dict(division="youth", sort_order=2, title="Level 2 — Web & Application Development",
+         summary="Students build websites and apps, learning how the software they use every day is made.",
+         status="in_development"),
+    dict(division="youth", sort_order=3, title="Level 3 — Intelligent Applications",
+         summary="Students build applications that use data and AI, and learn to use these tools responsibly.",
+         status="in_development"),
+    dict(division="youth", sort_order=4, title="Level 4 — Advanced Projects, Entrepreneurship & Career Preparation",
+         summary="Students lead advanced projects, explore entrepreneurship, and prepare portfolios for college "
+                 "and careers.",
+         status="in_development"),
+]
+
+
+def seed_curriculum():
+    """Add any seeded curriculum module that doesn't exist yet (matched by division + title).
+    Never overwrites staff edits."""
+    added = 0
+    for mod in CURRICULUM_SEED:
+        exists = db.session.scalar(select(CurriculumModule).where(
+            CurriculumModule.division == mod["division"], CurriculumModule.title == mod["title"]))
+        if not exists:
+            db.session.add(CurriculumModule(**{"format_notes": [], "learning_goals": [], "projects": [], **mod},
+                                            is_published=True))
+            added += 1
+    return added
+
+
 def upgrade_founder_text():
     """Replace earlier seeded founder text with the current version — only where staff
     haven't edited it (matched by fingerprint). Returns the number of fields updated."""
@@ -192,6 +246,8 @@ def register_commands(app):
         click.echo(f"Settings added: {seed_settings()}")
         if seed_founder():
             click.echo("Added founder team member.")
+        if (n := seed_curriculum()):
+            click.echo(f"Added {n} curriculum module(s).")
         if (n := upgrade_founder_text()):
             click.echo(f"Updated {n} founder text field(s) to the current version.")
 

@@ -31,7 +31,9 @@
     "cost": "Cost",
     "neighborhood": "Neighborhood",
     "notOpen": "Registration closed",
-    "breadcrumb": "Breadcrumb"
+    "breadcrumb": "Breadcrumb",
+    "inDevelopment": "In development",
+    "availableNow": "Available now"
   },
   "seo": {
     "defaultDescription": "Qi Code Academy empowers youth and older adults in Boston's inner-city communities through technology education, workforce development, wellness, community engagement, and research."
@@ -97,7 +99,7 @@
       "name": "Youth Technology & Workforce Development",
       "short": "Youth",
       "motto": "Code • Create • Build the Future",
-      "summary": "Python, game development, AI, 3D animation, and career readiness for young people, starting around 5th grade."
+      "summary": "Python, game development, web and intelligent applications, and career preparation for teens ages 14–18."
     },
     "senior": {
       "name": "Senior Wellness & Healthy Aging",
@@ -190,7 +192,7 @@
   },
   "youth": {
     "title": "Youth Technology & Workforce Development",
-    "lead": "Hands-on technology learning for young people in Boston's neighborhoods, starting around 5th grade.",
+    "lead": "For teens ages 14–18. Programs for younger students are planned for the future.",
     "introTitle": "Code, create, and build the future",
     "intro": "Young people build practical skills in Python programming, game development, artificial intelligence, 3D animation, and emerging technologies while developing pathways toward higher education, entrepreneurship, and careers.",
     "focusTitle": "What students learn",
@@ -204,21 +206,100 @@
       "Career Readiness",
       "Workforce Development"
     ],
-    "pathwayTitle": "The learning pathway",
-    "pathwayLead": "Students start around 5th grade and build skills step by step, from first lines of code to a portfolio and career preparation.",
+    "pathwayTitle": "The four-level pathway",
+    "pathwayLead": "Students move from their first lines of Python to advanced projects, entrepreneurship, and career preparation.",
     "pathway": [
-      "Python",
-      "Game Development",
-      "AI",
-      "3D Animation",
-      "Digital Technology",
-      "Portfolio Development",
-      "Career & Workforce Preparation"
+      "Level 1 — Python & Game Development",
+      "Level 2 — Web & Application Development",
+      "Level 3 — Intelligent Applications",
+      "Level 4 — Advanced Projects, Entrepreneurship & Career Preparation"
     ],
-    "programsTitle": "Current youth programs",
+    "programsTitle": "Open youth programs",
     "noPrograms": "No youth programs are open right now. Check back soon, or contact us to be notified.",
     "guardianNote": "A parent or guardian completes registration for students under 18.",
-    "pathwayStart": "Starts around 5th grade"
+    "pathwayStart": "For teens ages 14–18",
+    "ageNote": "For teens ages 14–18. Programs for younger students are planned for the future.",
+    "levelOneEyebrow": "Start here",
+    "facts": {
+      "ages": "Ages",
+      "format": "Format"
+    },
+    "weeklyTitle": "Week by week",
+    "week": "Week {{n}}",
+    "sessionTitle": "What a session looks like",
+    "sessionLead": "Each 90-minute session mixes movement, live coding, and hands-on building.",
+    "session": [
+      {
+        "time": "0:00–0:05",
+        "activity": "Movement (Tai Chi, Qigong, breathing)"
+      },
+      {
+        "time": "0:05–0:10",
+        "activity": "Community check-in"
+      },
+      {
+        "time": "0:10–0:22",
+        "activity": "Live coding demonstration"
+      },
+      {
+        "time": "0:22–0:45",
+        "activity": "Hands-on build"
+      },
+      {
+        "time": "0:45–0:50",
+        "activity": "Movement reset"
+      },
+      {
+        "time": "0:50–1:00",
+        "activity": "Live coding, part two"
+      },
+      {
+        "time": "1:00–1:25",
+        "activity": "Hands-on build"
+      },
+      {
+        "time": "1:25–1:30",
+        "activity": "Reflection and close"
+      }
+    ],
+    "featuresTitle": "How we teach",
+    "features": [
+      {
+        "title": "Games first",
+        "body": "Every concept is introduced because a game needs it."
+      },
+      {
+        "title": "Movement built in",
+        "body": "Each class opens, resets, and closes with Tai Chi and Qigong-based movement to help students stay focused."
+      },
+      {
+        "title": "Mistakes are part of learning",
+        "body": "The instructor codes live, errors included, so students see that debugging is normal."
+      },
+      {
+        "title": "Never stranded",
+        "body": "Each week starts from a ready-made starter file, so a missed session doesn't leave anyone behind."
+      },
+      {
+        "title": "Career exploration",
+        "body": "Career spotlights and guest speakers connect each project to real jobs in software, games, data, cybersecurity, design, and 3D animation."
+      },
+      {
+        "title": "Demo Day",
+        "body": "Students present their original games to family and community."
+      },
+      {
+        "title": "Responsible AI",
+        "body": "AI tools are introduced in Week 10 only with written parental consent, and students learn to check AI output critically."
+      },
+      {
+        "title": "Privacy",
+        "body": "Students are never required to publish their full names or personal information online."
+      }
+    ],
+    "moreLevelsTitle": "Levels 2–4",
+    "moreLevelsLead": "The next levels are in development.",
+    "inDevelopment": "In development"
   },
   "seniors": {
     "title": "Senior Wellness & Healthy Aging",
@@ -524,5 +605,24 @@
     "draft": "DRAFT — REVIEW BEFORE LAUNCH",
     "privacyTitle": "Privacy Policy",
     "termsTitle": "Terms of Use"
+  },
+  "curriculum": {
+    "youth": {
+      "goals": "What students learn",
+      "projects": "Projects",
+      "adaptations": "Adaptations"
+    },
+    "senior": {
+      "goals": "What we practice",
+      "projects": "Progression",
+      "adaptations": "For older adults"
+    },
+    "research": {
+      "goals": "What the program covers",
+      "projects": "Program phases",
+      "adaptations": "Adaptations"
+    },
+    "time": "Time",
+    "activity": "Activity"
   }
 }

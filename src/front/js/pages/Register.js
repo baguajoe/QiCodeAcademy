@@ -186,8 +186,9 @@ function RegistrationForm({ program }) {
     if (!last) return next();
     form.submit();
   };
-  const grades = ["3", "4", "5", "6", "7", "8", "9", "10", "11", "12"];
-  const ordinal = (g) => ({ "3": "3rd" }[g] || `${g}th`);
+  // Youth programs are for teens ages 14–18.
+  const grades = ["8", "9", "10", "11", "12"];
+  const ordinal = (g) => `${g}th`;
 
   return (
     <form id="register" onSubmit={onSubmit} noValidate aria-busy={form.status === "sending"} className="register-form">

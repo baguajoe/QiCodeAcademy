@@ -3,16 +3,84 @@ import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useSeo } from "../seo";
 import { PageBanner, SectionHeader, WellnessDisclaimer } from "../component/common";
-import { ProgramList } from "../component/ProgramList";
+import { ProgramList, ProgramSection } from "../component/ProgramList";
+import { FeatureGrid, ModuleCard, ScheduleTable, StatusBadge, WeeklyProjects, useCurriculum } from "../component/Curriculum";
 import { SessionFlowDiagram, StepsDiagram } from "../component/Diagrams";
 
 function FocusList({ items }) {
   return <ul className="tag-list">{items.map((i) => <li key={i}>{i}</li>)}</ul>;
 }
 
+// Level 1 in full; Levels 2–4 as short "in development" cards. All from /api/curriculum.
+function YouthCurriculum() {
+  const { t } = useTranslation();
+  const { modules } = useCurriculum("youth");
+  if (!modules.length) return null;
+  const [first, ...rest] = modules;
+  const facts = [
+    first.age_range && [t("youth.facts.ages"), first.age_range],
+    first.duration && [t("youth.facts.format"), first.duration],
+  ].filter(Boolean);
+  return (
+    <>
+      <section className="section" aria-labelledby="level1-title">
+        <div className="container">
+          <div className="level-one">
+            <div>
+              <span className="eyebrow">{t("youth.levelOneEyebrow")}</span>
+              <div className="cluster" style={{ gap: "0.5rem", marginBottom: "0.5rem" }}><StatusBadge module={first} /></div>
+              <h2 id="level1-title">{first.title}</h2>
+              {first.summary && <p className="page-intro">{first.summary}</p>}
+              {facts.length > 0 && (
+                <dl className="level-facts">
+                  {facts.map(([k, v]) => (<div key={k}><dt>{k}</dt><dd>{v}</dd></div>))}
+                </dl>
+              )}
+              {first.format_notes && first.format_notes.length > 0 && (
+                <ul className="fact-chips">{first.format_notes.map((f) => <li key={f}>{f}</li>)}</ul>
+              )}
+            </div>
+            {first.projects && first.projects.length > 0 && (
+              <div>
+                <h3>{t("youth.weeklyTitle")}</h3>
+                <WeeklyProjects projects={first.projects} weekLabel={(n) => t("youth.week", { n })} />
+              </div>
+            )}
+          </div>
+        </div>
+      </section>
+
+      <section className="section section-accent" aria-labelledby="session-title">
+        <div className="container split" style={{ alignItems: "start" }}>
+          <div>
+            <SectionHeader title={t("youth.sessionTitle")} lead={t("youth.sessionLead")} id="session-title" />
+          </div>
+          <ScheduleTable caption={t("youth.sessionTitle")} rows={t("youth.session", { returnObjects: true })} />
+        </div>
+      </section>
+
+      <section className="section" aria-labelledby="features-title">
+        <div className="container">
+          <SectionHeader title={t("youth.featuresTitle")} id="features-title" />
+          <FeatureGrid items={t("youth.features", { returnObjects: true })} />
+        </div>
+      </section>
+
+      {rest.length > 0 && (
+        <section className="section section-alt" aria-labelledby="levels-title">
+          <div className="container">
+            <SectionHeader title={t("youth.moreLevelsTitle")} lead={t("youth.moreLevelsLead")} id="levels-title" />
+            <div className="grid grid-3">{rest.map((m) => <ModuleCard key={m.id} module={m} />)}</div>
+          </div>
+        </section>
+      )}
+    </>
+  );
+}
+
 export function YouthPrograms() {
   const { t } = useTranslation();
-  useSeo({ title: t("youth.title"), description: t("youth.intro"), imageSlot: "youth-banner" });
+  useSeo({ title: t("youth.title"), description: `${t("youth.intro")} ${t("youth.ageNote")}`, imageSlot: "youth-banner" });
   return (
     <div className="theme-youth">
       <PageBanner slot="youth-banner" motto={t("divisions.youth.motto")} title={t("youth.title")} lead={t("youth.lead")} />
@@ -31,15 +99,14 @@ export function YouthPrograms() {
           <SectionHeader title={t("youth.pathwayTitle")} lead={t("youth.pathwayLead")} id="pathway-title" />
           <StepsDiagram division="youth" motif="grid" title={t("youth.pathwayTitle")}
             startNote={t("youth.pathwayStart")} steps={t("youth.pathway", { returnObjects: true })} />
+          <p className="center muted" style={{ marginTop: "1rem" }}>{t("youth.ageNote")}</p>
         </div>
       </section>
-      <section className="section" aria-labelledby="youth-programs-title">
+      <YouthCurriculum />
+      <ProgramSection division="youth" title={t("youth.programsTitle")} lead={t("youth.guardianNote")} id="youth-programs-title" />
+      <section className="section">
         <div className="container">
-          <SectionHeader title={t("youth.programsTitle")} lead={t("youth.guardianNote")} id="youth-programs-title" />
-          <ProgramList division="youth" emptyText={t("youth.noPrograms")} />
-          <p style={{ marginTop: "2rem" }}>
-            <Link className="more-link" to="/programs/intergenerational">{t("home.interCta")}</Link>
-          </p>
+          <Link className="more-link" to="/programs/intergenerational">{t("home.interCta")}</Link>
         </div>
       </section>
     </div>

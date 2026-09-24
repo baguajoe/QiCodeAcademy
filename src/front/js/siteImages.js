@@ -42,7 +42,7 @@ export const SLOTS = {
   },
   "youth-banner": {
     page: "Youth Programs (banner)", size: "1920×800", ratio: "12 / 5", division: "youth",
-    subject: "Youth banner: middle/high school students building a game in Python",
+    subject: "Youth banner: teens coding or on laptops",
     alt: "Students building a computer game together",
   },
   "seniors-banner": {

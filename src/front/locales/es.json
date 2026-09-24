@@ -31,7 +31,9 @@
     "cost": "TODO: Cost",
     "neighborhood": "TODO: Neighborhood",
     "notOpen": "TODO: Registration closed",
-    "breadcrumb": "TODO: Breadcrumb"
+    "breadcrumb": "TODO: Breadcrumb",
+    "inDevelopment": "TODO: In development",
+    "availableNow": "TODO: Available now"
   },
   "seo": {
     "defaultDescription": "TODO: Qi Code Academy empowers youth and older adults in Boston's inner-city communities through technology education, workforce development, wellness, community engagement, and research."
@@ -97,7 +99,7 @@
       "name": "TODO: Youth Technology & Workforce Development",
       "short": "TODO: Youth",
       "motto": "TODO: Code • Create • Build the Future",
-      "summary": "TODO: Python, game development, AI, 3D animation, and career readiness for young people, starting around 5th grade."
+      "summary": "TODO: Python, game development, web and intelligent applications, and career preparation for teens ages 14–18."
     },
     "senior": {
       "name": "TODO: Senior Wellness & Healthy Aging",
@@ -190,7 +192,7 @@
   },
   "youth": {
     "title": "TODO: Youth Technology & Workforce Development",
-    "lead": "TODO: Hands-on technology learning for young people in Boston's neighborhoods, starting around 5th grade.",
+    "lead": "TODO: For teens ages 14–18. Programs for younger students are planned for the future.",
     "introTitle": "TODO: Code, create, and build the future",
     "intro": "TODO: Young people build practical skills in Python programming, game development, artificial intelligence, 3D animation, and emerging technologies while developing pathways toward higher education, entrepreneurship, and careers.",
     "focusTitle": "TODO: What students learn",
@@ -204,21 +206,100 @@
       "TODO: Career Readiness",
       "TODO: Workforce Development"
     ],
-    "pathwayTitle": "TODO: The learning pathway",
-    "pathwayLead": "TODO: Students start around 5th grade and build skills step by step, from first lines of code to a portfolio and career preparation.",
+    "pathwayTitle": "TODO: The four-level pathway",
+    "pathwayLead": "TODO: Students move from their first lines of Python to advanced projects, entrepreneurship, and career preparation.",
     "pathway": [
-      "TODO: Python",
-      "TODO: Game Development",
-      "TODO: AI",
-      "TODO: 3D Animation",
-      "TODO: Digital Technology",
-      "TODO: Portfolio Development",
-      "TODO: Career & Workforce Preparation"
+      "TODO: Level 1 — Python & Game Development",
+      "TODO: Level 2 — Web & Application Development",
+      "TODO: Level 3 — Intelligent Applications",
+      "TODO: Level 4 — Advanced Projects, Entrepreneurship & Career Preparation"
     ],
-    "programsTitle": "TODO: Current youth programs",
+    "programsTitle": "TODO: Open youth programs",
     "noPrograms": "TODO: No youth programs are open right now. Check back soon, or contact us to be notified.",
     "guardianNote": "TODO: A parent or guardian completes registration for students under 18.",
-    "pathwayStart": "TODO: Starts around 5th grade"
+    "pathwayStart": "TODO: For teens ages 14–18",
+    "ageNote": "TODO: For teens ages 14–18. Programs for younger students are planned for the future.",
+    "levelOneEyebrow": "TODO: Start here",
+    "facts": {
+      "ages": "TODO: Ages",
+      "format": "TODO: Format"
+    },
+    "weeklyTitle": "TODO: Week by week",
+    "week": "TODO: Week {{n}}",
+    "sessionTitle": "TODO: What a session looks like",
+    "sessionLead": "TODO: Each 90-minute session mixes movement, live coding, and hands-on building.",
+    "session": [
+      {
+        "time": "TODO: 0:00–0:05",
+        "activity": "TODO: Movement (Tai Chi, Qigong, breathing)"
+      },
+      {
+        "time": "TODO: 0:05–0:10",
+        "activity": "TODO: Community check-in"
+      },
+      {
+        "time": "TODO: 0:10–0:22",
+        "activity": "TODO: Live coding demonstration"
+      },
+      {
+        "time": "TODO: 0:22–0:45",
+        "activity": "TODO: Hands-on build"
+      },
+      {
+        "time": "TODO: 0:45–0:50",
+        "activity": "TODO: Movement reset"
+      },
+      {
+        "time": "TODO: 0:50–1:00",
+        "activity": "TODO: Live coding, part two"
+      },
+      {
+        "time": "TODO: 1:00–1:25",
+        "activity": "TODO: Hands-on build"
+      },
+      {
+        "time": "TODO: 1:25–1:30",
+        "activity": "TODO: Reflection and close"
+      }
+    ],
+    "featuresTitle": "TODO: How we teach",
+    "features": [
+      {
+        "title": "TODO: Games first",
+        "body": "TODO: Every concept is introduced because a game needs it."
+      },
+      {
+        "title": "TODO: Movement built in",
+        "body": "TODO: Each class opens, resets, and closes with Tai Chi and Qigong-based movement to help students stay focused."
+      },
+      {
+        "title": "TODO: Mistakes are part of learning",
+        "body": "TODO: The instructor codes live, errors included, so students see that debugging is normal."
+      },
+      {
+        "title": "TODO: Never stranded",
+        "body": "TODO: Each week starts from a ready-made starter file, so a missed session doesn't leave anyone behind."
+      },
+      {
+        "title": "TODO: Career exploration",
+        "body": "TODO: Career spotlights and guest speakers connect each project to real jobs in software, games, data, cybersecurity, design, and 3D animation."
+      },
+      {
+        "title": "TODO: Demo Day",
+        "body": "TODO: Students present their original games to family and community."
+      },
+      {
+        "title": "TODO: Responsible AI",
+        "body": "TODO: AI tools are introduced in Week 10 only with written parental consent, and students learn to check AI output critically."
+      },
+      {
+        "title": "TODO: Privacy",
+        "body": "TODO: Students are never required to publish their full names or personal information online."
+      }
+    ],
+    "moreLevelsTitle": "TODO: Levels 2–4",
+    "moreLevelsLead": "TODO: The next levels are in development.",
+    "inDevelopment": "TODO: In development"
   },
   "seniors": {
     "title": "TODO: Senior Wellness & Healthy Aging",
@@ -482,8 +563,8 @@
     "noInfo": "TODO: Please use the form on this page and we'll reply by email.",
     "mapTitle": "TODO: Map",
     "mapPlaceholder": "TODO: Map coming soon. Program locations are listed below.",
-    "locationsTitle": "TODO: Program locations",
-    "noLocations": "TODO: Program locations will be listed here as programs open.",
+    "locationsTitle": "TODO: Where we teach",
+    "noLocations": "TODO: Class locations will be listed here soon.",
     "submit": "TODO: Send message"
   },
   "donate": {
@@ -524,5 +605,24 @@
     "draft": "TODO: DRAFT — REVIEW BEFORE LAUNCH",
     "privacyTitle": "TODO: Privacy Policy",
     "termsTitle": "TODO: Terms of Use"
+  },
+  "curriculum": {
+    "youth": {
+      "goals": "TODO: What students learn",
+      "projects": "TODO: Projects",
+      "adaptations": "TODO: Adaptations"
+    },
+    "senior": {
+      "goals": "TODO: What we practice",
+      "projects": "TODO: Progression",
+      "adaptations": "TODO: For older adults"
+    },
+    "research": {
+      "goals": "TODO: What the program covers",
+      "projects": "TODO: Program phases",
+      "adaptations": "TODO: Adaptations"
+    },
+    "time": "TODO: Time",
+    "activity": "TODO: Activity"
   }
 }

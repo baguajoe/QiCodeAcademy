@@ -34,8 +34,8 @@ STATIC_PAGES = {
     "/about": ("About", MISSION, "about-banner", True),
     "/about/founder": (f"{FOUNDER_NAME}, {FOUNDER_ROLE}", FOUNDER_SHORT_BIO.split("\n\n")[0], "founder-portrait", True),
     "/programs/youth": ("Youth Technology & Workforce Development",
-                        "Python, game development, AI, 3D animation, and career readiness for young people in "
-                        "Boston's neighborhoods, starting around 5th grade.", "youth-banner", True),
+                        "Python, game development, web and intelligent applications, and career preparation for "
+                        "teens ages 14–18 in Boston's neighborhoods.", "youth-banner", True),
     "/programs/seniors": ("Senior Wellness & Healthy Aging",
                           "Traditional Tai Chi, Baguazhang, yoga, wellness education, and social time for older "
                           "adults, designed to encourage healthy and active aging.", "seniors-banner", True),

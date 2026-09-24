@@ -217,3 +217,20 @@ Decisions made while building the backend without stopping to ask. Each can be r
 - **Field labels depend on the division:**
   - youth: `learning_goals` is "What students learn", `projects` is "Weekly projects"
   - senior: `learning_goals` is "What we practice", `projects` is "Progression"
+
+## Section 5: Youth program (4 levels, ages 14–18)
+- **The old 7-step pathway is gone.** The pathway SVG, copy, SEO text, and curriculum now use the four levels. "Starts around 5th grade" was removed everywhere. The page now says "For teens ages 14–18. Programs for younger students are planned for the future."
+- **Curriculum seed** (`flask seed`, idempotent, never overwrites edits):
+  - Level 1 has the full format, summary, quick facts, and 12 weekly projects. Status is `in_development` with the badge "Launching 2027".
+  - Levels 2–4 are `in_development` with title and one sentence. **I drafted those three sentences** because none were supplied; they're in `commands.py` and editable in Admin → Curriculum.
+- **Youth page layout:**
+  - intro
+  - 4-level pathway diagram
+  - Level 1 in full, with a week-by-week timeline
+  - "What a session looks like", a 90-minute schedule table
+  - "How we teach", the eight feature blurbs
+  - a Levels 2–4 card grid
+  - "Open youth programs", which appears only when real programs exist
+- The session schedule and feature blurbs are page copy in `en.json`. The level details come from the curriculum API, so staff can edit them. No budgets, statistics, or staffing details appear.
+- **Registration:** the grade choices are now 8th–12th, plus Other.
+- **Translation sync:** `i18n:sync` now refreshes untranslated `TODO` values when the English changes, and lists of objects fall back to English until they're fully translated.

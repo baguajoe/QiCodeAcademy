@@ -41,3 +41,34 @@ def test_admin_curriculum_crud_with_line_lists(client, auth_headers):
                        json={"division": "youth", "title": "x", "status": "maybe"}).status_code == 400
     assert client.get("/api/admin/curriculum?division=senior", headers=auth_headers).get_json()["total"] == 1
     assert client.delete(f"/api/admin/curriculum/{body['id']}", headers=auth_headers).status_code == 200
+
+
+def test_seeded_youth_levels(client, db):
+    from api.commands import seed_curriculum
+    assert seed_curriculum() >= 4
+    db.session.commit()
+    assert seed_curriculum() == 0  # idempotent
+    items = client.get("/api/curriculum?division=youth").get_json()["items"]
+    assert [m["title"] for m in items] == [
+        "Level 1 — Python & Game Development",
+        "Level 2 — Web & Application Development",
+        "Level 3 — Intelligent Applications",
+        "Level 4 — Advanced Projects, Entrepreneurship & Career Preparation",
+    ]
+    l1 = items[0]
+    assert (l1["status"], l1["launch_label"], l1["age_range"]) == ("in_development", "Launching 2027", "Ages 14–18")
+    assert l1["format_notes"] == ["Free for families", "Up to 15 students", "No coding experience needed"]
+    assert len(l1["projects"]) == 12 and l1["projects"][0].startswith("Guess the Number — ")
+    assert l1["projects"][-1] == "Finish, Portfolio & Demo Day — debugging, version control, portfolios, presenting your work"
+    for m in items[1:]:
+        assert m["status"] == "in_development" and m["projects"] == [] and m["summary"].count(".") == 1
+
+
+def test_no_old_youth_age_wording():
+    import json
+    from pathlib import Path
+    root = Path(__file__).resolve().parents[1]
+    en = json.loads((root / "src/front/locales/en.json").read_text())
+    assert en["youth"]["lead"] == "For teens ages 14–18. Programs for younger students are planned for the future."
+    for path in list(root.glob("src/front/**/*.js")) + list(root.glob("src/front/locales/*.json")) + list(root.glob("src/api/**/*.py")):
+        assert "5th grade" not in path.read_text(), path

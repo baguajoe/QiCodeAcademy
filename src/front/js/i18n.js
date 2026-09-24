@@ -14,7 +14,8 @@ function stripTodo(obj) {
   const out = {};
   Object.entries(obj).forEach(([k, v]) => {
     if (Array.isArray(v)) {
-      if (!v.some((x) => typeof x === "string" && x.startsWith("TODO"))) out[k] = v;
+      // Lists (including lists of objects) fall back to English until fully translated.
+      if (!JSON.stringify(v).includes('"TODO')) out[k] = v;
     } else if (v && typeof v === "object") out[k] = stripTodo(v);
     else if (typeof v === "string" && !v.startsWith("TODO")) out[k] = v;
   });
