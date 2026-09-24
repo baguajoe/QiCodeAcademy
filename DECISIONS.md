@@ -264,3 +264,16 @@ Decisions made while building the backend without stopping to ask. Each can be r
 - **Stock alt text can't use "our", "we", "Qi Code", "participants", or "members."** It has to describe the scene, not claim the people are ours.
 - **Photo files dropped into the code** (`src/front/img/site/`) are described in `src/front/img/site/credits.json`: type, source, photographer, page URL, license, credit line, and accurate alt text. The site uses that alt text. The admin Site photos screen shows "**Stock photo** — replace when you have real program photos" for stock photos (uploaded or file) and lists the credit.
 - **Gallery, Team, and News** admin screens now say "no stock photos." Those models have no stock option at all.
+
+## Section 9: Photos from Joseph's site
+I downloaded only the four approved original files and reviewed each one.
+- **Used:** `4c5f1f_28267833…` ("About Instructor" photo), Joseph alone, as **`founder-portrait.jpg`**.
+  - It's cropped to 4:5 at its native 393×491. The original is only 540×491, so an 800×1000 crop would have meant a blurry 2× enlargement; the build doesn't upscale either. **A higher-resolution portrait is recommended.**
+  - A small clothing logo is visible on the jacket.
+  - Credit: "Joseph Gallop / bostontaichibodywork.com — owned by founder."
+- **Not used, because they show other identifiable people (need consent confirmation):**
+  - `988734_9f7aea50…` (homepage banner): indoor class with several identifiable students.
+  - `4c5f1f_b83cb836…` (tai chi photo): about ten identifiable people practicing on a pier.
+  - `4c5f1f_2496c486…` (Baguazhang photo): Joseph in a stance, with identifiable students in orange shirts behind him. With permission it could be cropped to Joseph alone, though that crop is too narrow for the 16:9 founder-teaching slot.
+- **Result:** founder-teaching stays a placeholder, since none of the approved photos shows Joseph teaching without other identifiable people. The seniors banner and card get stock photos (Section 10).
+- Nothing with IDs `11062b_`, `fe1f5a63`, `42041be4`, or `4c5f1f_f0569442` was downloaded.
