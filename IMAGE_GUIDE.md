@@ -4,7 +4,7 @@ Every photo spot on the site starts as a **labeled placeholder**. The placeholde
 
 > ### ⚠️ Photo consent comes first
 > **Only use photos of people who have given photo/video consent.** For anyone under 18, a parent or guardian must have given it. Registration forms record each participant's photo/video choice. In the admin, open **Registrations** and filter by **Photo consent = Yes** to check.
-> - No AI-generated photos of people, and no random stock photos.
+> - No AI-generated photos of people, and no random stock photos. (One approved exception: the founder portrait is an AI-enhanced version of Joseph's own real photo.)
 > - When in doubt, choose a photo where faces aren't identifiable (hands on a keyboard, feet during circle walking, a wide shot from behind), or leave the placeholder.
 
 ---
@@ -44,7 +44,7 @@ There are three kinds of photos:
 | Home (Seniors card) | `home-card-seniors.jpg` | 1200×750 | Older adults in a Tai Chi class | Yes | ✅ Stock (Nappy): older couple, black and white. Replace with real class photo |
 | Home (Research card) | `home-card-research.jpg` | 1200×750 | Calm movement / nature | Yes | ✅ Stock (Nappy): person at an overlook |
 | About (banner) | `about-banner.jpg` | 1920×800 | Youth and older adults at a Qi Code Academy gathering | **No** | ⬜ Placeholder (needs a real program photo) |
-| About + Founder page | `founder-portrait.jpg` | **800×1000 portrait** | Joseph Gallop | **No** | ✅ Founder-owned (bostontaichibodywork.com). **Only 393×491; please supply a larger portrait** |
+| About + Founder page | `founder-portrait.jpg` | **800×1000 portrait** | Joseph Gallop | **No** | ✅ Founder-owned: AI-enhanced from Joseph's own real photo (approved exception), 800×1000 |
 | Founder page | `founder-teaching.jpg` | 1600×900 | Joseph Gallop teaching a class | **No** | ⬜ Placeholder. Joseph's teaching photos show other identifiable people (consent needed) |
 | Youth Programs (banner) | `youth-banner.jpg` | 1920×800 | Black teens coding or on laptops | Yes | ✅ Stock (Nappy): young man at a laptop and microphone |
 | Senior Programs (banner) | `seniors-banner.jpg` | 1920×800 | Older adults (ideally Black or brown) doing tai chi, yoga, or stretching, outdoors | Yes | ⬜ Placeholder. No suitable stock found; a founder-owned practice photo would be ideal |
@@ -75,7 +75,6 @@ Banner and hero photos sit under a dark overlay with white text on top, so the l
 
 ## Before launch checklist
 
-- [ ] A larger `founder-portrait.jpg` (current one is 393×491)
 - [ ] `founder-teaching.jpg`, `seniors-banner.jpg`, `intergenerational-banner.jpg`, `about-banner.jpg`, `events-banner.jpg`, `volunteer-banner.jpg`
 - [ ] Stock photos replaced with real program photos as they become available
 - [ ] Every spot in the first table has a real photo, or you've knowingly chosen to keep the placeholder

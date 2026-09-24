@@ -45,7 +45,7 @@ export const SLOTS = {
   "founder-portrait": {
     page: "About (founder card) + Founder page", size: "800×1000 (portrait)", ratio: "4 / 5", division: "senior",
     subject: "Founder portrait: Joseph Gallop",
-    alt: "Portrait of Joseph Gallop, founder of Qi Code Academy",
+    alt: "Portrait of Joseph Gallop, founder of Qi Code Academy.",
   },
   "founder-teaching": {
     page: "Founder page", size: "1600×900", ratio: "16 / 9", division: "senior",

@@ -2,14 +2,13 @@
   "founder-portrait": {
     "file": "founder-portrait.jpg",
     "type": "founder-owned",
-    "source_site": "bostontaichibodywork.com",
-    "photographer": "Joseph Gallop (founder-owned)",
+    "source_site": "Joseph Gallop (own photo)",
+    "photographer": "Joseph Gallop",
     "page_url": "https://www.bostontaichibodywork.com/",
-    "original_url": "https://static.wixstatic.com/media/4c5f1f_28267833e85148aa9c3426313776b91a~mv2.jpg",
     "license": "Owned by the founder; used with his permission",
-    "credit": "Joseph Gallop / bostontaichibodywork.com — owned by founder",
-    "alt": "Joseph Gallop outdoors in a dark jacket, hands raised in front of him",
-    "notes": "Cropped to 4:5 from the 540×491 original (no upscaling). Replace with a higher-resolution portrait (800×1000 or larger) when available."
+    "credit": "Joseph Gallop — owned by founder (AI-enhanced from original photo)",
+    "alt": "Portrait of Joseph Gallop, founder of Qi Code Academy.",
+    "notes": "AI-enhanced version of the founder's own real photo — an approved exception to the no-AI-photos rule. Cropped to 4:5 and resized to 800×1000 (downscaled from 1086×1358)."
   },
   "hero-home": {
     "file": "hero-home.jpg",
