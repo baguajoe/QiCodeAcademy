@@ -23,3 +23,14 @@ public/bundle.js
 
 .DS_Store
 .vscode/
+
+# Photo uploads dropped in the project root are ORIGINALS — never commit them.
+# Only processed copies in src/front/img/site/ belong in git.
+/*.jpg
+/*.jpeg
+/*.png
+/*.webp
+/*.heic
+/*.JPG
+/*.JPEG
+/*.PNG

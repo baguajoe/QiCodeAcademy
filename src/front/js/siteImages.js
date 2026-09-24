@@ -100,6 +100,7 @@ export const SLOTS = {
   "events-banner": {
     page: "Events (banner)", size: "1920×800", ratio: "12 / 5", division: "community",
     subject: "Events banner: neighbors gathered at a Qi Code Academy open house",
+    position: "center 18%", // group photo: keep faces in frame on wide screens
     alt: "Neighbors gathered at a community event",
   },
   "volunteer-banner": {

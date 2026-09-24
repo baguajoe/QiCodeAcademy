@@ -26,14 +26,14 @@ export function Placeholder({ division = "community", subject, size }) {
 }
 
 // Renders an uploaded URL, a build-time local image object, or a placeholder.
-export function Photo({ src, alt = "", sizes = "100vw", priority = false, placeholder, ratio, className = "", fit = "cover" }) {
+export function Photo({ src, alt = "", sizes = "100vw", priority = false, placeholder, ratio, className = "", fit = "cover", position }) {
   const style = ratio ? { "--ratio": ratio } : undefined;
   const cls = `photo ${ratio ? "photo-frame" : ""} ${className}`.trim();
   const imgProps = {
     alt,
     loading: priority ? "eager" : "lazy",
     decoding: "async",
-    style: { objectFit: fit },
+    style: { objectFit: fit, ...(position ? { objectPosition: position } : {}) },
     ...(priority ? { fetchpriority: "high" } : {}),
   };
 
@@ -74,6 +74,7 @@ export function SiteImage({ slot, sizes, priority, ratio, className, alt }) {
       priority={priority}
       ratio={ratio === undefined ? r.meta.ratio : ratio}
       className={className}
+      position={r.meta.position}
       placeholder={{ division: r.meta.division, subject: r.meta.subject, size: r.meta.size }}
     />
   );

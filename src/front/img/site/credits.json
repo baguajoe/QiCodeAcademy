@@ -10,6 +10,17 @@
     "alt": "Three teenagers sitting on the grass in a city park, reading books",
     "notes": "Stock photo — replace when you have real program photos."
   },
+  "events-banner": {
+    "file": "events-banner.jpg",
+    "type": "founder-owned",
+    "source_site": "Joseph Gallop (own photo)",
+    "photographer": "Joseph Gallop",
+    "page_url": "",
+    "credit": "Joseph Gallop — owned by founder",
+    "license": "Owned by the founder; used with his permission. Permission obtained from the people shown.",
+    "alt": "Tai Chi class at the international workshop in Prague.",
+    "notes": "Group photo with Master Vincent Chu; cropped to remove the camera watermark."
+  },
   "founder-portrait": {
     "file": "founder-portrait.jpg",
     "type": "founder-owned",

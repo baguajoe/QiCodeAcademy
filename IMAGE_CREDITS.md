@@ -7,6 +7,7 @@ plus credits for any photos uploaded in the admin.
 | Slot | File | Type | Credit | Source site | Photographer | Page URL | License |
 |---|---|---|---|---|---|---|---|
 | `donate` | `src/front/img/site/donate.jpg` | stock | Photo: childrennaturenetwork / Nappy (CC0) | Nappy (nappy.co) | childrennaturenetwork | https://nappy.co/photo/children-and-nature%2B2NxvMju7HGHOsk_V1h0pa | Nappy License (CC0) — free for commercial and personal use; credit appreciated, not required. https://nappy.co/license |
+| `events-banner` | `src/front/img/site/events-banner.jpg` | founder-owned | Joseph Gallop — owned by founder | Joseph Gallop (own photo) | Joseph Gallop | — | Owned by the founder; used with his permission. Permission obtained from the people shown. |
 | `founder-portrait` | `src/front/img/site/founder-portrait.jpg` | founder-owned | Joseph Gallop — owned by founder (AI-enhanced from original photo) | Joseph Gallop (own photo) | Joseph Gallop | https://www.bostontaichibodywork.com/ | Owned by the founder; used with his permission |
 | `founder-teaching` | `src/front/img/site/founder-teaching.jpg` | founder-owned | Joseph Gallop — owned by founder | Joseph Gallop (own photo) | Joseph Gallop | — | Owned by the founder; used with his permission. Permission obtained from the people shown. |
 | `gallery-prague-class` | `src/front/img/site/gallery-prague-class.jpg` | founder-owned | Joseph Gallop — owned by founder | Joseph Gallop (own photo) | Joseph Gallop | — | Owned by the founder; used with his permission. Permission obtained from the people shown. |

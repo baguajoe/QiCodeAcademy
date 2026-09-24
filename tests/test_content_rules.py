@@ -159,4 +159,8 @@ def test_no_loose_or_unblurred_photos_in_repo():
     assert all(f.startswith(allowed) for f in images), [f for f in images if not f.startswith(allowed)]
     assert not [f for f in images if "youth" in f.lower() and "movement" not in f.lower() and "banner" not in f.lower()
                 and "card" not in f.lower()]
-    assert not [f for f in (ROOT).iterdir() if f.suffix.lower() in (".jpg", ".jpeg", ".png", ".webp")]
+    # Loose originals in the project root must be git-ignored so they can never be committed.
+    loose = [f.name for f in ROOT.iterdir() if f.suffix.lower() in (".jpg", ".jpeg", ".png", ".webp", ".heic")]
+    if loose:
+        ignored = subprocess.run(["git", "check-ignore", *loose], cwd=ROOT, capture_output=True, text=True).stdout.splitlines()
+        assert set(loose) == set(ignored), f"not git-ignored: {set(loose) - set(ignored)}"

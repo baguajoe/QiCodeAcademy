@@ -55,7 +55,7 @@ There are three kinds of photos:
 | Senior Programs (Join anytime) | `seniors-join.jpg` | 900×1200 portrait | **No** | ✅ Founder-owned: seniors practicing |
 | Intergenerational (banner) | `intergenerational-banner.jpg` | 1920×800 | Yes | Placeholder |
 | Research (banner) | `research-banner.jpg` | 1920×800 | Yes | ✅ Founder-owned: seniors circle walking |
-| Events (banner) | `events-banner.jpg` | 1920×800 | **No** | Placeholder. Waiting for "me teaching in prague with vincent" (not uploaded yet) |
+| Events (banner) | `events-banner.jpg` | 1920×800 | **No** | ✅ Founder-owned: Prague workshop group photo with Master Vincent Chu |
 | Get Involved (banner) | `volunteer-banner.jpg` | 1920×800 | **No** | Placeholder |
 | Donate | `donate.jpg` | 1200×1500 portrait | Yes | Stock (Nappy): three teens reading in a park |
 | Gallery | `gallery-prague-class.jpg` | — | **No** | ✅ Founder-owned: Prague workshop class (seeded, published, consent confirmed) |
@@ -83,7 +83,7 @@ Banner and hero photos sit under a dark overlay with white text on top, so the l
 
 ## Before launch checklist
 
-- [ ] `founder-teaching.jpg`, `seniors-banner.jpg`, `intergenerational-banner.jpg`, `about-banner.jpg`, `events-banner.jpg`, `volunteer-banner.jpg`
+- [ ] `intergenerational-banner.jpg`, `about-banner.jpg`, `volunteer-banner.jpg`, and "me teaching seniors3" (for home-card-seniors + the Tai Chi module; blur the lanyard name badge)
 - [ ] Stock photos replaced with real program photos as they become available
 - [ ] Every spot in the first table has a real photo, or you've knowingly chosen to keep the placeholder
 - [ ] Every person pictured has photo/video consent on file
