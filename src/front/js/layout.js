@@ -32,6 +32,7 @@ const DonateCancelled = lazy(() => donate().then((m) => ({ default: m.DonateCanc
 const legal = () => import(/* webpackChunkName: "legal" */ "./pages/Legal");
 const Privacy = lazy(() => legal().then((m) => ({ default: m.Privacy })));
 const Terms = lazy(() => legal().then((m) => ({ default: m.Terms })));
+const AdminApp = lazy(() => import(/* webpackChunkName: "admin" */ "./admin/AdminApp"));
 const NotFound = lazy(() => import(/* webpackChunkName: "notfound" */ "./pages/NotFound"));
 
 function useRouteFocus() {
@@ -88,6 +89,7 @@ export default function Layout() {
   return (
     <BrowserRouter>
       <Routes>
+        <Route path="/admin/*" element={<Suspense fallback={<Loading />}><AdminApp /></Suspense>} />
         <Route element={<PublicLayout />}>
           <Route path="/" element={<Home />} />
           <Route path="/about" element={<About />} />

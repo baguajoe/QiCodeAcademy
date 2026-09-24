@@ -141,3 +141,17 @@ Decisions made while building the backend without stopping to ask. Each can be r
   The thank-you (`/donate/thank-you`) and cancelled (`/donate/cancelled`) pages are `noindex`. **The default `STRIPE_CANCEL_URL` is now `/donate/cancelled`.**
 - **Privacy/Terms** are English placeholder drafts under a "DRAFT — REVIEW BEFORE LAUNCH" banner. They aren't put into the translation files, because the final text should come from legal review first.
 - The utility bar (text size, contrast, language) now sits outside the sticky header, so only the main nav bar stays pinned. This saves screen space on phones.
+
+## Phase 5: Admin UI
+- **Location:** `/admin`, a separately lazy-loaded chunk (`admin/AdminApp.js`). The admin is **English only**, because it's for staff.
+- **Login:** the JWT is kept in memory and in `sessionStorage`, so it's gone when the tab closes. Any 401 logs the user out and returns them to the login page with a "session ended" note. Admin pages are marked `noindex`.
+- **Screens are driven by config:** `admin/resources.js` defines each resource's columns, filters, search, and form fields. It includes friendly labels and hints, and conditional fields (youth-only vs senior-only registration fields).
+- **Registrations:** the list has an inline status dropdown. Confirming sends the confirmation email, and the screen says so. There are filters for program, status, type, and photo consent, plus a CSV download that respects the program/status filters. Volunteers and the research interest list also have CSV downloads.
+- **Auto-mark read:** opening a message or research inquiry marks it read automatically. The sidebar shows badges for pending registrations, unread messages, and new inquiries.
+- **Image fields:** they upload to `/api/admin/upload` and show a preview. **Alt text is required** before saving: both the client and the API enforce it. For team headshots and partner logos, the alt text comes from the name.
+- **Gallery:** the "Published" checkbox stays disabled until "consent confirmed" is checked. The API enforces the same rule.
+- **News editor:** a dependency-free `contentEditable` editor with a toolbar (bold, italic, H2/H3, lists, quote, links, an insert-photo button that asks for alt text, clear formatting) and an "Edit HTML" mode. The server sanitizes everything on save.
+- **Site photos screen:** one card per photo slot, showing the recommended size and subject and what's displayed now (uploaded photo, default file, or placeholder). Staff can upload a replacement with alt text or go back to the default.
+- **Settings screen:** friendly fields for the tax status, research status, organization email/phone, social links, press links, founder full bio, and credentials.
+- **Uploads now also save 640px and 1280px versions**, and file names carry the size (`<uuid>-<W>x<H>`). The frontend builds a responsive `srcset` for any uploaded image straight from its URL.
+- **Money fields** take dollars in the admin and are stored as cents.

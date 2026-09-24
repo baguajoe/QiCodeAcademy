@@ -9,6 +9,7 @@ from . import storage
 
 ALLOWED_FORMATS = {"JPEG", "PNG", "WEBP"}
 ALLOWED_EXTENSIONS = {"jpg", "jpeg", "png", "webp"}
+VARIANT_WIDTHS = (640, 1280)
 # Guard against decompression bombs (e.g. a tiny PNG claiming 100k x 100k pixels).
 Image.MAX_IMAGE_PIXELS = 60_000_000
 
@@ -48,21 +49,36 @@ def process_and_store(file_bytes, filename, max_width=1920, folder="images"):
         img = img.resize((max_width, height), Image.Resampling.LANCZOS)
 
     has_alpha = img.mode in ("RGBA", "LA") or (img.mode == "P" and "transparency" in img.info)
-    webp_img = img.convert("RGBA" if has_alpha else "RGB")
-    webp_buf = io.BytesIO()
-    webp_img.save(webp_buf, "WEBP", quality=82, method=4)
 
-    jpeg_buf = io.BytesIO()
-    _flatten(img).save(jpeg_buf, "JPEG", quality=85, optimize=True, progressive=True)
+    def encode(im):
+        webp_buf, jpeg_buf = io.BytesIO(), io.BytesIO()
+        im.convert("RGBA" if has_alpha else "RGB").save(webp_buf, "WEBP", quality=82, method=4)
+        _flatten(im).save(jpeg_buf, "JPEG", quality=85, optimize=True, progressive=True)
+        return webp_buf.getvalue(), jpeg_buf.getvalue()
 
+    # Names encode the size (<uuid>-<W>x<H>) so the frontend can build a srcset
+    # from the URL alone: <base>-640.webp / <base>-1280.webp exist when narrower.
     now = datetime.now(timezone.utc)
-    base = f"{folder}/{now:%Y/%m}/{uuid.uuid4().hex}"
+    base = f"{folder}/{now:%Y/%m}/{uuid.uuid4().hex}-{img.width}x{img.height}"
+    webp, jpeg = encode(img)
     result = {
-        "webp_url": storage.save_bytes(f"{base}.webp", webp_buf.getvalue(), "image/webp"),
-        "jpeg_url": storage.save_bytes(f"{base}.jpg", jpeg_buf.getvalue(), "image/jpeg"),
+        "webp_url": storage.save_bytes(f"{base}.webp", webp, "image/webp"),
+        "jpeg_url": storage.save_bytes(f"{base}.jpg", jpeg, "image/jpeg"),
         "width": img.width,
         "height": img.height,
+        "variants": [],
         "storage": storage.backend_name(),
     }
+    for vw in VARIANT_WIDTHS:
+        if vw >= img.width:
+            continue
+        small = img.resize((vw, round(img.height * vw / img.width)), Image.Resampling.LANCZOS)
+        v_webp, v_jpeg = encode(small)
+        result["variants"].append({
+            "width": vw,
+            "webp_url": storage.save_bytes(f"{base}-{vw}.webp", v_webp, "image/webp"),
+            "jpeg_url": storage.save_bytes(f"{base}-{vw}.jpg", v_jpeg, "image/jpeg"),
+        })
+        small.close()
     img.close()
     return result

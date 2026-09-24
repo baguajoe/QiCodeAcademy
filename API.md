@@ -61,7 +61,7 @@ All requests and responses are JSON unless noted. Send `Content-Type: applicatio
   "age_range": "Ages 12–15", "neighborhood": "Dorchester", "location": "…",
   "schedule": "Saturdays, 10:00 AM – 12:00 PM",
   "start_date": "2026-10-14", "end_date": "2026-12-09",
-  "capacity": 16, "cost": "Free", "is_active": true, "image_url": null,
+  "capacity": 16, "cost": "Free", "is_active": true, "image_url": null, "image_alt": null,
   "seats_left": 16, "is_full": false,
   "created_at": "2026-09-23T23:20:33Z", "updated_at": "2026-09-23T23:20:33Z"
 }
@@ -79,6 +79,7 @@ All requests and responses are JSON unless noted. Send `Content-Type: applicatio
 | `when` | `upcoming` (default; not yet ended, soonest first), `past` (most recent first), `all` |
 | `division` | One value or a comma list |
 | `neighborhood` | Case-insensitive match |
+| `start`, `end` | Optional date window `YYYY-MM-DD` (Boston dates, inclusive) on the start time; use with `when=all` for a month calendar (`per_page` max 200) |
 
 Only published events are returned.
 
@@ -88,7 +89,7 @@ Only published events are returned.
   "id": 1, "division": "community", "title": "Open House", "slug": "open-house",
   "description": "…", "neighborhood": "Dorchester", "location": "…",
   "start_datetime": "2026-10-03T11:00", "end_datetime": "2026-10-03T13:00",
-  "timezone": "America/New_York", "image_url": null, "is_published": true,
+  "timezone": "America/New_York", "image_url": null, "image_alt": null, "is_published": true,
   "created_at": "…Z", "updated_at": "…Z"
 }
 ```
@@ -164,7 +165,7 @@ Required: `name`, `email`, `message`. `type` defaults to `general`; use `guest_i
 #### `GET /api/news` (paginated, default `per_page=9`, max 50)
 Query: `category`. Returns published posts, newest first. Items **omit `body`** and include `excerpt`:
 ```json
-{"id": 1, "title": "…", "slug": "…", "cover_image_url": null, "category": "youth",
+{"id": 1, "title": "…", "slug": "…", "cover_image_url": null, "cover_image_alt": null, "category": "youth",
  "is_published": true, "published_at": "2026-09-20T14:00:00Z", "excerpt": "Plain text…",
  "created_at": "…Z", "updated_at": "…Z"}
 ```
@@ -179,11 +180,11 @@ Query: `category`. Returns published posts, newest first. Items **omit `body`** 
 | `GET /api/team` | `group` | `{"items": [{"id","name","role_title","bio","photo_url","group","sort_order",…}]}` sorted by `sort_order` |
 | `GET /api/partners` | `type` | `{"items": [{"id","name","type","logo_url","website_url","sort_order",…}]}` |
 | `GET /api/impact-stats` | none | `{"items": [{"id","label","value","sort_order",…}]}` (`value` is display text, e.g. `"40+"`) |
-| `GET /api/settings` | none | Flat map of **public** settings, e.g. `{"tax_status": "…", "research_status": "…", "social_facebook": "", "social_instagram": "", "social_youtube": ""}` |
+| `GET /api/settings` | none | Flat map of **public** settings. Seeded keys: `tax_status`, `research_status`, `social_facebook`, `social_instagram`, `social_youtube`, `founder_full_bio` (paragraphs separated by blank lines; `## ` lines are headings), `founder_credentials` (one per line), `press_globe_url`, `press_wcvb_url`, `org_contact_email`, `org_contact_phone` (blank = hide) |
 | `GET /api/site-images` | none | `{"hero-home": {"image_url": "https://…" or null, "alt_text": "…"}, "youth-banner": {…}, …}` |
 | `GET /api/gallery` | `division`, `page`, `per_page` (default 24) | Paginated `{"items": [{"id","image_url","caption","division","alt_text","created_at"}], …}`. Only published photos with confirmed consent are returned. |
 
-Seeded site image slots: `hero-home`, `youth-banner`, `seniors-banner`, `research-banner`, `intergenerational-banner`, `founder-portrait`, `donate`, `volunteer-banner`, `about-banner`, `events-banner`. Admins can add more. Use a fallback when `image_url` is `null`.
+Seeded site image slots: `hero-home`, `home-card-youth`, `home-card-seniors`, `home-card-research`, `about-banner`, `founder-portrait`, `founder-teaching`, `youth-banner`, `seniors-banner`, `intergenerational-banner`, `research-banner`, `events-banner`, `volunteer-banner`, `donate` (see IMAGE_GUIDE.md). Admins can add more. Use a fallback when `image_url` is `null`.
 
 Always show `settings.tax_status` near donation UI rather than hard-coding a deductibility claim.
 
@@ -220,7 +221,7 @@ Required: `name`, `email_or_phone` (a valid email or phone), `consent_to_contact
 → `200 {"url": "https://checkout.stripe.com/…", "id": "cs_…"}`. Redirect with `window.location.href = url`.
 If `url` is `null` (honeypot), do nothing. `503 donations_unavailable` means Stripe isn't configured yet. `502` means Stripe had an error; ask the donor to try again.
 
-After payment, Stripe redirects to `STRIPE_SUCCESS_URL?session_id=cs_…`, or to `STRIPE_CANCEL_URL` if the donor cancels. The thank-you page doesn't need to call the API. The donation is recorded by the webhook, which also emails a receipt.
+After payment, Stripe redirects to `STRIPE_SUCCESS_URL?session_id=cs_…` (the frontend uses `/donate/thank-you`), or to `STRIPE_CANCEL_URL` (`/donate/cancelled`) if the donor cancels. The thank-you page doesn't need to call the API. The donation is recorded by the webhook, which also emails a receipt.
 
 #### `POST /api/stripe/webhook`
 Stripe only. The `Stripe-Signature` header is verified. → `200 {"received": true}` · `400` bad signature. The frontend never calls this.
@@ -265,13 +266,13 @@ Responses use the same object shapes as the public API plus the admin-only field
 | Resource | Writable fields (bold = required on create) | Search `q` | Filters | Default sort |
 |---|---|---|---|---|
 | `users` | **`email`**, `name`, `is_active`, **`password`** (write-only, 10+ chars; omit on update to keep). *(read-only: `last_login_at`)* | email, name | `is_active` | `-created_at` |
-| `programs` | **`division`**, **`title`**, `slug` (auto from title if blank), `description`, `age_range`, `neighborhood`, `location`, `schedule`, `start_date`, `end_date`, `capacity`, `cost`, `is_active`, `image_url` *(read-only: `seats_left`, `is_full`)* | title, neighborhood, location | `division`, `neighborhood`, `is_active` | `-start_date` |
-| `events` | **`division`**, **`title`**, `slug`, `description`, `neighborhood`, `location`, **`start_datetime`**, `end_datetime`, `image_url`, `is_published` | title, neighborhood, location | `division`, `neighborhood`, `is_published` | `-start_datetime` |
-| `registrations` | Same fields and rules as the public POST, plus `status`, `admin_notes`. *(read-only: `program_title`)* | participant names, guardian name/email, email | `program_id`, `type`, `status` | `-created_at` |
+| `programs` | **`division`**, **`title`**, `slug` (auto from title if blank), `description`, `age_range`, `neighborhood`, `location`, `schedule`, `start_date`, `end_date`, `capacity`, `cost`, `is_active`, `image_url`, `image_alt` (required when `image_url` is set) *(read-only: `seats_left`, `is_full`)* | title, neighborhood, location | `division`, `neighborhood`, `is_active` | `-start_date` |
+| `events` | **`division`**, **`title`**, `slug`, `description`, `neighborhood`, `location`, **`start_datetime`**, `end_datetime`, `image_url`, `image_alt` (required with an image), `is_published` | title, neighborhood, location | `division`, `neighborhood`, `is_published` | `-start_datetime` |
+| `registrations` | Same fields and rules as the public POST, plus `status`, `admin_notes`. *(read-only: `program_title`)* | participant names, guardian name/email, email | `program_id`, `type`, `status`, `photo_consent` | `-created_at` |
 | `volunteers` | **`name`**, **`email`**, `phone`, **`roles`**, `availability`, `message` | name, email | none | `-created_at` |
 | `contact-messages` | `type`, **`name`**, **`email`**, `organization`, `subject`, **`message`**, `is_read` | name, email, subject, organization | `type`, `is_read` | `-created_at` |
 | `donations` | **`amount_cents`**, `currency`, `recurring`, `designation`, `donor_name`, `donor_email`, `status`, `subscription_status`, `stripe_*` ids. *(read-only: `receipt_sent_at`)* | donor_name, donor_email | `designation`, `status`, `recurring` | `-created_at` |
-| `news` | **`title`**, `slug`, `body` (HTML, sanitized on save), `cover_image_url`, `category`, `is_published`, `published_at` (set automatically on first publish; a future date schedules the post) | title | `category`, `is_published` | `-created_at` |
+| `news` | **`title`**, `slug`, `body` (HTML, sanitized on save), `cover_image_url`, `cover_image_alt` (required with an image), `category`, `is_published`, `published_at` (set automatically on first publish; a future date schedules the post) | title | `category`, `is_published` | `-created_at` |
 | `team` | **`name`**, `role_title`, `bio`, `photo_url`, `group`, `sort_order` | name, role_title | `group` | `sort_order` |
 | `partners` | **`name`**, `type`, `logo_url`, `website_url`, `sort_order` | name | `type` | `sort_order` |
 | `impact-stats` | **`label`**, **`value`**, `sort_order` | none | none | `sort_order` |
@@ -346,10 +347,15 @@ The image is auto-rotated, its EXIF/GPS metadata is stripped, and it's resized t
 
 → `201`
 ```json
-{"webp_url": "https://cdn…/gallery/2026/09/<uuid>.webp",
- "jpeg_url": "https://cdn…/gallery/2026/09/<uuid>.jpg",
- "width": 1920, "height": 1280, "storage": "r2"}
+{"webp_url": "https://cdn…/gallery/2026/09/<uuid>-1920x1280.webp",
+ "jpeg_url": "https://cdn…/gallery/2026/09/<uuid>-1920x1280.jpg",
+ "width": 1920, "height": 1280, "storage": "r2",
+ "variants": [
+   {"width": 640,  "webp_url": "…/<uuid>-1920x1280-640.webp",  "jpeg_url": "…/<uuid>-1920x1280-640.jpg"},
+   {"width": 1280, "webp_url": "…/<uuid>-1920x1280-1280.webp", "jpeg_url": "…/<uuid>-1920x1280-1280.jpg"}
+ ]}
 ```
+File names encode the full size (`-<W>x<H>`). Narrower copies at 640 and 1280px exist only when the image is wider than that, so a frontend can build a `srcset` from the stored URL alone (see `uploadedSources()` in `src/front/js/siteImages.js`).
 With local storage (dev), URLs look like `/uploads/gallery/2026/09/<uuid>.webp`. Save the returned URL into the record's `image_url` / `photo_url` / `logo_url` / `cover_image_url` field. Uploading doesn't create a record by itself. Render with `<picture><source srcset={webp_url} type="image/webp"><img src={jpeg_url} alt=…></picture>`.
 
 Errors: `400 invalid_image` / `validation_error`, `413` too large, `401`.

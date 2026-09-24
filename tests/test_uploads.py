@@ -29,6 +29,9 @@ def test_upload_local_resizes_and_writes_both_formats(app, client, auth_headers)
     assert (body["width"], body["height"]) == (1920, 960)
     assert body["webp_url"].startswith("/uploads/gallery/") and body["webp_url"].endswith(".webp")
     assert body["jpeg_url"].endswith(".jpg")
+    assert body["webp_url"].endswith("-1920x960.webp")
+    assert [v["width"] for v in body["variants"]] == [640, 1280]
+    assert body["variants"][0]["webp_url"] == body["webp_url"].replace(".webp", "-640.webp")
 
     root = Path(app.config["UPLOAD_FOLDER"])
     webp = Image.open(root / body["webp_url"].removeprefix("/uploads/"))
@@ -43,6 +46,7 @@ def test_small_png_with_alpha_not_upscaled(client, auth_headers):
     data = _image_bytes("PNG", size=(400, 300), mode="RGBA", color=(0, 0, 0, 0))
     body = _upload(client, auth_headers, data, "logo.png").get_json()
     assert (body["width"], body["height"]) == (400, 300)
+    assert body["variants"] == []  # never upscaled
 
 
 def test_upload_webp_input(client, auth_headers):
@@ -77,4 +81,5 @@ def test_upload_to_r2_when_configured(app, client, auth_headers, monkeypatch):
     assert body["storage"] == "r2"
     assert body["webp_url"].startswith("https://cdn.example.org/images/")
     assert {c["ContentType"] for c in calls} == {"image/webp", "image/jpeg"}
+    assert len(calls) == 4  # 800px source: full size + 640 variant, each as WebP + JPEG
     assert all(c["Bucket"] == "qicode" for c in calls)
