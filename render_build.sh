@@ -6,7 +6,7 @@ pip install --upgrade pip
 pip install -r requirements.txt
 
 if [ -d src/front ] && [ -f webpack.prod.js ]; then
-  npm ci --no-audit --no-fund || npm install --no-audit --no-fund
+  npm ci --include=dev --no-audit --no-fund || npm install --include=dev --no-audit --no-fund
   npm run build
 fi
 

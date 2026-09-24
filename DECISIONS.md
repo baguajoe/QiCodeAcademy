@@ -181,3 +181,9 @@ Decisions made while building the backend without stopping to ask. Each can be r
   - The initial load is about 86 KB gzipped JS (React, router, i18next, app shell) plus 8 KB CSS. Every page, the admin, and the non-English locales are separate chunks.
   - Images are lazy-loaded, except the hero/banner, which is eager with `fetchpriority=high`. They use responsive `srcset`s both for uploads and for files dropped into `img/site/`. Fonts are system fonts, so no web-font downloads.
   - Flask serves hashed assets with a one-year cache, `index.html` with `no-cache`, and compresses responses with Brotli/gzip (**Flask-Compress** was added to `requirements.txt`).
+
+## Phase 8: Production & docs
+- **Production:** Render runs `render_build.sh`, which does `npm ci --include=dev` and `npm run build` into `dist_manual/`. Gunicorn then serves the built React app and the API from one service. I verified this locally with gunicorn in `APP_ENV=production`: pages 200, unknown pages 404, canonical URLs from `SITE_URL`, HSTS enabled, Brotli on.
+- `--include=dev` is there because webpack and Babel are devDependencies.
+- Render's native Python runtime includes Node; `NODE_VERSION=20` is pinned in `render.yaml`. Check the first deploy log to confirm the frontend build step ran.
+- **README** now starts with "How to update content and photos", a plain-language guide for non-technical staff, followed by the developer setup.

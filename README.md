@@ -1,94 +1,144 @@
 # Qi Code Academy
 
-Website for **Qi Code Academy, Inc.**, a Boston nonprofit. A Flask API (this repo's backend) and a React frontend (in `src/front/`, coming next), in the 4Geeks react-flask-hello layout.
+Website for **Qi Code Academy, Inc.**, a Boston nonprofit. *Learn. Move. Create. Connect.*
 
-- **API reference:** [API.md](API.md)
-- **Design decisions:** [DECISIONS.md](DECISIONS.md)
+It's a React frontend (`src/front/`) and a Flask API (`src/api/`) in one repo, following the 4Geeks react-flask-hello layout. In production, Flask serves the built site and the API from a single Render service.
 
-```
-.
-├── start.sh              # dev launcher (use this, not npm start)
-├── render.yaml           # Render blueprint (web service + Postgres)
-├── render_build.sh       # Render build step
-├── Procfile              # gunicorn entry (Heroku-style hosts)
-├── requirements.txt      # Python deps
-├── package.json          # Node deps/scripts (frontend)
-├── migrations/           # Alembic migrations (Flask-Migrate)
-├── src/
-│   ├── app.py            # entry point: loads .env, create_app()
-│   ├── api/              # Flask package (app factory in __init__.py)
-│   │   ├── config.py     # all settings from env vars
-│   │   ├── models.py     # SQLAlchemy models + model-layer rules
-│   │   ├── schemas.py    # marshmallow validation / serialization
-│   │   ├── routes/       # public, auth, admin CRUD, uploads, donations
-│   │   ├── services/     # email, notifications, storage (R2), images, ics
-│   │   ├── admin_panel.py# Flask-Admin backup back-office (/flask-admin)
-│   │   └── commands.py   # flask seed / remove-samples / create-admin
-│   └── front/            # React app (to be added)
-└── tests/                # pytest suite
-```
+- **[How to update content and photos](#how-to-update-content-and-photos)**: start here if you're on staff
+- [API.md](API.md): every API endpoint
+- [IMAGE_GUIDE.md](IMAGE_GUIDE.md): every photo spot, file name, and size
+- [DECISIONS.md](DECISIONS.md): why things were built the way they were
 
-## Backend setup
+---
+
+## How to update content and photos
+
+*For staff. No coding needed.*
+
+### Logging in
+Go to **`https://<your-site>/admin`** and log in with your staff email and password. You'll see the **Dashboard**: new registrations, unread messages, donations, and more. The menu on the left (or the **Menu** button on a phone) lists every section.
+
+> If the main admin ever has a problem, there's a plain backup panel at `/flask-admin` that uses the same login.
+
+### Common tasks
+
+| I want to… | Go to | Notes |
+|---|---|---|
+| Add or change a **program** | Programs → *Add program* / *Open* | Set **Capacity**. When a program is full, new sign-ups go to the waitlist automatically. Leave capacity blank for unlimited. Uncheck **Open for registration** to close it. |
+| Add an **event** | Events → *Add event* | Times are Boston time. Check **Published** to show it on the site. Every event page gets an "Add to calendar" button automatically. |
+| Confirm a **registration** | Registrations | Change the **Status** dropdown to *Confirmed*. The family (or senior participant) gets a confirmation email automatically. Use the filters to see one program's list or the waitlist. |
+| Download a **sign-up list** | Registrations / Volunteers / Research interest list → *Download spreadsheet (CSV)* | Opens in Excel or Google Sheets. |
+| Read **messages** | Messages | Contact, guest instructor, and partner inquiries. Opening one marks it read. Reply from your own email. |
+| Post **news** | News → *Add news post* | Use the toolbar for headings, lists, and links. *Insert photo* asks you to describe the photo. Check **Published** when ready. |
+| Add **gallery photos** | Gallery → *Add photo* | You can't publish a photo until you check **"I confirm everyone pictured has given photo/video consent."** |
+| Replace a **site photo** (home hero, banners, founder portrait, donate photo…) | Site photos | Upload, describe the photo, and click *Save photo*. *Use default instead* undoes it. |
+| Edit **team / board** members | Team | Groups: Board of Directors, Staff, Instructor, Advisor. Lower *Sort order* shows first. |
+| Change the **founder bio** | Short bio: Team → Joseph Gallop. Full bio and credentials: *Site settings & text* → Founder page | In the full bio, start a line with `## ` to make a section heading. Please double-check lineage names and dates. |
+| Update the **tax-exempt status** text | Site settings & text → Organization | Shown in the footer and on the Donate page. Update it when the IRS grants 501(c)(3) status. |
+| Add **social media** or **press links** | Site settings & text | Blank links stay hidden. The "As featured in" outlet names become clickable once a link is added. |
+| Add the organization's **email / phone** | Site settings & text → Organization | Shown on the Contact page and in the footer. Use organization contact info only, never personal numbers or addresses. |
+| Add a **research reference** | Research references | Only check **Verified** after someone has read the source and confirmed the summary. Never add a citation you haven't checked. |
+| Update **"current research status"** | Site settings & text → Research | |
+| Update **impact numbers** on the home page | Impact stats | Use real, verifiable numbers. Delete the `[SAMPLE]` rows before launch. |
+| Add another **staff login** | Admin users → *Add admin user* | Passwords need 10+ characters. |
+
+### Photo rules (please read)
+1. **Only use photos of people who have given photo/video consent.** For kids, that means a parent or guardian gave it. In **Registrations**, filter by *Photo consent = Yes* to check.
+2. **Always describe the photo** (the "alt text" box) so people using screen readers know what's in it. The site won't save a photo without it.
+3. No AI-generated photos of people and no random stock photos.
+
+See **[IMAGE_GUIDE.md](IMAGE_GUIDE.md)** for every photo spot and its ideal size. A developer can also drop photo files into `src/front/img/site/` using the names in that guide.
+
+### Words to avoid (health and research)
+Never say Tai Chi, Baguazhang, yoga, or bodywork **prevents falls, treats, or cures** anything. Use phrases like "may support," "potential relationship," or "being studied." Don't publish research results or statistics we haven't verified, and never call donations "tax-deductible" (the tax-status setting covers that).
+
+### Translations
+The language menu offers Español and Kreyòl ayisyen. Anything not yet translated shows in English. Translators edit `src/front/locales/es.json` and `ht.json` (see `src/front/locales/README.md`). Content typed in the admin (programs, events, news) is shown as entered.
+
+---
+
+## Developer setup
 
 ### Requirements
-Python 3.11+ (developed on 3.14, deployed on 3.12), Node 20+ once the frontend exists. SQLite is used locally automatically; Postgres in production.
+Python 3.11+ (developed on 3.14, deployed on 3.12) and Node 20+. SQLite is used locally automatically; production uses Postgres.
 
-### First run (Codespace or local)
+### Run it (Codespace or local)
 ```bash
-cp .env.example .env          # then fill in what you need (all optional for local dev)
-# set ADMIN_EMAIL and ADMIN_PASSWORD (10+ chars) in .env, then:
-./start.sh                    # creates .venv, installs deps, runs migrations, starts Flask on :3001
+cp .env.example .env          # set ADMIN_EMAIL and ADMIN_PASSWORD (10+ chars); everything else is optional in dev
+./start.sh                    # use this, NOT npm start
 ```
+`start.sh` creates `.venv`, installs Python and Node dependencies (only when they change), runs migrations, and starts:
+- **the website at http://localhost:3000** (webpack dev server with hot reload; in a Codespace, open the forwarded port 3000)
+- the Flask API on :3001. The dev server proxies `/api`, `/uploads`, `/flask-admin`, `/sitemap.xml`, and `/robots.txt` to it.
+
+The dev server also writes the build to `dist_manual/`, so :3001 serves the same site. **Clean rebuild:** `rm -rf dist_manual && ./start.sh`.
+
 In a second terminal, seed the database (safe to re-run):
 ```bash
 source .venv/bin/activate
-flask --app src/app.py seed            # admin user + settings + [SAMPLE] programs/events/stats
+flask --app src/app.py seed   # admin user, settings, founder bio, photo slots, [SAMPLE] programs/events/stats
 ```
+Then log in at http://localhost:3000/admin.
 
-- API: `http://localhost:3001/api/...` (in a Codespace, use the forwarded port 3001 URL)
-- Flask-Admin backup panel: `http://localhost:3001/flask-admin` (log in with ADMIN_EMAIL / ADMIN_PASSWORD)
-- Health check: `GET /api/health`
+Memory savers for the ~8 GB Codespace: `NO_RELOAD=1 ./start.sh` skips Flask's reloader; `SKIP_WEBPACK=1 ./start.sh` runs the API only. The Node heap is capped at 1.5 GB.
 
-`start.sh` runs Flask and, once `src/front/` and `webpack.config.js` exist, `webpack --watch` into `dist_manual/`, which Flask serves on the same port. For a clean frontend rebuild: `rm -rf dist_manual && ./start.sh`.
-
-Memory savers for the ~8 GB Codespace: `NO_RELOAD=1 ./start.sh` skips Flask's reloader process; `SKIP_WEBPACK=1 ./start.sh` runs the API only. The Node heap is capped at 1.5 GB by default.
+### Project layout
+```
+.
+├── start.sh                 # dev launcher (Flask + webpack dev server)
+├── webpack.common.js / webpack.dev.js / webpack.prod.js
+├── babel.config.js, package.json, template.html
+├── render.yaml, render_build.sh, Procfile
+├── requirements.txt
+├── migrations/              # Alembic (Flask-Migrate)
+├── scripts/i18n-sync.js     # npm run i18n:sync
+├── src/
+│   ├── app.py               # Flask entry point
+│   ├── api/                 # Flask package: config, models, schemas, routes/, services/, seo.py, admin_panel.py
+│   └── front/
+│       ├── js/              # index.js, layout.js, pages/, component/, admin/, store/ (flux.js + appContext.js)
+│       ├── styles/          # tokens.css (design tokens), base, layout, components, pages, admin
+│       ├── locales/         # en.json (source), es.json, ht.json
+│       └── img/site/        # drop-in site photos (see IMAGE_GUIDE.md)
+└── tests/                   # pytest (API, SEO, content rules, founder text)
+```
 
 ### Useful commands
 ```bash
-source .venv/bin/activate
-export FLASK_APP=src/app.py
-flask seed [--no-samples]        # idempotent; never overwrites an existing admin password
-flask remove-samples             # delete [SAMPLE] programs/events/stats (keeps programs with registrations)
-flask create-admin you@example.org --name "You"   # prompts for a password
-flask db migrate -m "describe change"   # after editing models.py
-flask db upgrade
-python -m pytest                 # run the test suite
+source .venv/bin/activate && export FLASK_APP=src/app.py
+python -m pytest                 # backend + content-rule tests
+npm run build                    # production build → dist_manual/
+npm run i18n:sync                # add new English keys to es/ht as TODO
+flask seed [--no-samples]        # idempotent
+flask remove-samples             # delete [SAMPLE] programs/events/stats before launch
+flask create-admin you@example.org --name "You"
+flask db migrate -m "…" && flask db upgrade   # after model changes
 ```
 
 ### Environment variables
-Every variable is documented in [.env.example](.env.example). For **production**, you need:
+All are documented in [.env.example](.env.example). **Production needs:**
 
 | Variable | Purpose |
 |---|---|
 | `APP_ENV=production` | strict mode (required secrets, production CORS, secure cookies, async email) |
 | `SECRET_KEY`, `JWT_SECRET_KEY` | long random strings (render.yaml generates them) |
-| `DATABASE_URL` | Postgres (render.yaml wires this from the database) |
-| `SITE_URL` | e.g. `https://qicodeacademy.org`; also the default allowed CORS origin |
-| `ADMIN_EMAIL`, `ADMIN_PASSWORD` | first admin account (created by the build's `flask seed --no-samples`) |
-| `SENDGRID_API_KEY` (or `SMTP_*`), `MAIL_FROM`, `ADMIN_NOTIFY_EMAIL` | email |
-| `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`, `STRIPE_SUCCESS_URL`, `STRIPE_CANCEL_URL` | donations |
-| `R2_ACCOUNT_ID`, `R2_ACCESS_KEY_ID`, `R2_SECRET_ACCESS_KEY`, `R2_BUCKET`, `R2_PUBLIC_URL` | image storage |
+| `DATABASE_URL` | Postgres (render.yaml wires this up) |
+| `SITE_URL` | e.g. `https://qicodeacademy.org`; used for canonical URLs, sitemap, share images, emails |
+| `ADMIN_EMAIL`, `ADMIN_PASSWORD` | first admin account (created at deploy by `flask seed --no-samples`) |
+| `SENDGRID_API_KEY` (or `SMTP_*`), `MAIL_FROM`, `MAIL_REPLY_TO`, `ADMIN_NOTIFY_EMAIL` | email |
+| `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`, `STRIPE_SUCCESS_URL` (`…/donate/thank-you`), `STRIPE_CANCEL_URL` (`…/donate/cancelled`) | donations |
+| `R2_ACCOUNT_ID`, `R2_ACCESS_KEY_ID`, `R2_SECRET_ACCESS_KEY`, `R2_BUCKET`, `R2_PUBLIC_URL` | photo storage (required in production; Render's disk is wiped each deploy) |
 
 ### Deploying to Render
-1. Push to GitHub. In Render: **New → Blueprint**, pick the repo; it reads `render.yaml` and creates the web service and a Postgres database.
-2. Fill in the `sync: false` variables when prompted (table above).
-3. Each deploy runs `render_build.sh`: install deps → build the frontend (when present) → `flask db upgrade` → `flask seed --no-samples`. Run `flask seed` from the Render Shell once if you want the `[SAMPLE]` content, and `flask remove-samples` before launch.
-4. **Stripe:** add a webhook endpoint `https://<your-domain>/api/stripe/webhook` with events `checkout.session.completed`, `checkout.session.async_payment_succeeded`, `checkout.session.async_payment_failed`, `checkout.session.expired`, `invoice.paid`, `customer.subscription.updated`, `customer.subscription.deleted`, `charge.refunded`, then copy its signing secret into `STRIPE_WEBHOOK_SECRET`.
-5. **R2:** create a bucket, enable public access (r2.dev or a custom domain) and set `R2_PUBLIC_URL` to it; create an API token with Object Read & Write for the bucket. Render's disk is ephemeral, so without R2 uploaded images disappear on each deploy.
-6. **SendGrid:** verify the `MAIL_FROM` sender/domain in SendGrid.
+1. Push to GitHub. In Render, choose **New → Blueprint** and pick the repo. It reads `render.yaml` and creates the web service plus Postgres.
+2. Fill in the `sync: false` variables (table above).
+3. Each deploy runs `render_build.sh`: pip install → `npm ci` + `npm run build` → `flask db upgrade` → `flask seed --no-samples`. Gunicorn then serves the API and the built site, with server-side SEO tags, `/sitemap.xml`, `/robots.txt`, gzip/Brotli, and long-lived caching for hashed assets.
+4. **Stripe:** add a webhook to `https://<domain>/api/stripe/webhook` with the events `checkout.session.completed`, `checkout.session.async_payment_succeeded`, `checkout.session.async_payment_failed`, `checkout.session.expired`, `invoice.paid`, `customer.subscription.updated`, `customer.subscription.deleted`, `charge.refunded`. Put its signing secret in `STRIPE_WEBHOOK_SECRET`.
+5. **R2:** create a bucket, enable public access (r2.dev or a custom domain) and set `R2_PUBLIC_URL` to it; create an API token with Object Read & Write.
+6. **SendGrid:** verify the `MAIL_FROM` sender or domain.
 
 ### Testing Stripe locally
 ```bash
-stripe listen --forward-to localhost:3001/api/stripe/webhook   # prints a whsec_... → STRIPE_WEBHOOK_SECRET
+stripe listen --forward-to localhost:3001/api/stripe/webhook   # copy the whsec_… into STRIPE_WEBHOOK_SECRET
 ```
-Use test card `4242 4242 4242 4242`.
+Test card: `4242 4242 4242 4242`.
