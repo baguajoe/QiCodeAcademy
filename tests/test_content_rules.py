@@ -102,3 +102,15 @@ def test_seed_adds_no_fake_content(app, db):
     runner.invoke(args=["seed", "--with-samples"])
     assert db.session.query(Program).count() > 0  # opt-in dev samples still work
     assert db.session.query(ImpactStat).count() == 0
+
+
+def test_teaching_locations_names_only(client, db):
+    from api.commands import seed_settings
+    seed_settings()
+    db.session.commit()
+    locs = client.get("/api/settings").get_json()["teaching_locations"].splitlines()
+    assert locs == ["Grove Hall Senior Center", "Codman Square Library", "Boston City Parks"]
+    # No street addresses (a number followed by a street word) anywhere in seeded settings or copy.
+    street = re.compile(r"\b\d{1,5}\s+\w+(\s\w+)?\s+(St|Street|Ave|Avenue|Rd|Road|Blvd|Way|Sq|Square)\b", re.I)
+    for path in COPY_FILES + [ROOT / "src/api/commands.py"]:
+        assert not street.search(path.read_text()), path

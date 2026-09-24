@@ -1,10 +1,7 @@
 import { useTranslation } from "react-i18next";
-import { api } from "../api";
-import { useApi } from "../hooks/useApi";
 import { useSeo } from "../seo";
 import { useStore } from "../store/appContext";
 import { PageBanner } from "../component/common";
-import { placeText } from "../component/Cards";
 import { FormShell, TextArea, TextField, useForm } from "../component/Form";
 
 function ContactForm() {
@@ -28,28 +25,16 @@ function ContactForm() {
   );
 }
 
+// Teaching locations come from the `teaching_locations` setting (names only, one per line).
+// Never show street addresses or personal phone numbers here.
 function Locations() {
   const { t } = useTranslation();
-  const { data } = useApi(() => api.get("/programs"), []);
-  if (!data) return null;
-  // One entry per distinct location, listing the programs held there.
-  const map = new Map();
-  data.items.forEach((p) => {
-    const place = placeText(p.location, p.neighborhood);
-    if (!place) return;
-    if (!map.has(place)) map.set(place, { place, hood: p.neighborhood, programs: [] });
-    map.get(place).programs.push(p.title);
-  });
-  const list = [...map.values()];
+  const { actions } = useStore();
+  const list = actions.setting("teaching_locations").split("\n").map((l) => l.trim()).filter(Boolean);
   if (!list.length) return <p className="muted">{t("contact.noLocations")}</p>;
   return (
-    <ul className="stack" style={{ listStyle: "none", padding: 0 }}>
-      {list.map((l) => (
-        <li key={l.place} className="card" style={{ padding: "1rem 1.25rem" }}>
-          <strong>{l.place}</strong>
-          <p className="muted small" style={{ margin: 0 }}>{l.programs.join(" · ")}</p>
-        </li>
-      ))}
+    <ul className="location-list">
+      {list.map((name) => <li key={name}>{name}</li>)}
     </ul>
   );
 }

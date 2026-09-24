@@ -130,3 +130,5 @@ section[id], div[id] { scroll-margin-top: 7rem; }
 
 .event-card-inner .card-body { min-width: 0; }
 .event-card h3, .card-body h3 { overflow-wrap: anywhere; }
+.location-list { list-style: none; padding: 0; margin: 0; display: grid; gap: var(--space-3); grid-template-columns: repeat(auto-fill, minmax(min(16rem, 100%), 1fr)); }
+.location-list li { background: var(--surface); border: 1px solid var(--line); border-left: 5px solid var(--senior); border-radius: var(--radius-sm); padding: var(--space-4); font-family: var(--font-heading); font-size: 1.2rem; font-weight: 700; }

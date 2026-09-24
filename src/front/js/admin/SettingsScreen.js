@@ -14,6 +14,8 @@ const GROUPS = [
         hint: "Shown in the footer and on the Donate pages. Update this when the IRS grants 501(c)(3) status. Don't promise deductibility unless it's confirmed." },
       { key: "org_contact_email", label: "Organization email", type: "email", hint: "Shown on the Contact page and footer. Leave blank to hide. Never use a personal address." },
       { key: "org_contact_phone", label: "Organization phone", type: "tel", hint: "Shown on the Contact page and footer. Leave blank to hide. Never use a personal number." },
+      { key: "teaching_locations", label: "Where we teach", type: "textarea", rows: 4,
+        hint: "Shown on the Contact page. One place per line, names only (e.g. \"Codman Square Library\"). Do not add street addresses." },
     ],
   },
   {

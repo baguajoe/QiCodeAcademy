@@ -26,6 +26,8 @@ DEFAULT_SETTINGS = [
     # "As featured in" links — outlet names show as plain text until a URL is filled in
     ("press_globe_url", "", True),
     ("press_wcvb_url", "", True),
+    # Where classes are taught — names only, one per line, NO street addresses (Contact page)
+    ("teaching_locations", "Grove Hall Senior Center\nCodman Square Library\nBoston City Parks", True),
     # Organization contact info shown on Contact page/footer (blank = hidden)
     ("org_contact_email", "", True),
     ("org_contact_phone", "", True),

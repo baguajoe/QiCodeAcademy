@@ -202,3 +202,8 @@ Decisions made while building the backend without stopping to ask. Each can be r
 - **Upgrading existing databases:** `flask seed`, which runs on every deploy, replaces the *previous* seeded founder text with the new version, **but only if staff haven't edited it**. The old wording isn't kept in the code at all; the seed recognizes it by SHA-256 fingerprint only, so retired phrasing like the old center name and lineage spelling is gone from the codebase.
 - **Person JSON-LD:** the `description` is now the complete short bio (its paragraphs joined), both server-side and client-side.
 - **"As featured in"** is unchanged: the outlet names show as plain text, and each becomes a link once its `press_*_url` setting is filled in.
+
+## Section 3: Teaching locations
+- A new public setting, **`teaching_locations`**, holds one place per line with names only. It's seeded with Grove Hall Senior Center, Codman Square Library, and Boston City Parks, and staff can edit it under Site settings → "Where we teach".
+- The Contact page's locations section ("Where we teach") now shows exactly this list instead of deriving locations from programs.
+- No street addresses or phone numbers from any outside site are used. A test checks that no street address appears in the seed data or public copy.
