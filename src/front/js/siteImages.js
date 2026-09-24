@@ -52,6 +52,16 @@ export const SLOTS = {
     subject: "Joseph Gallop leading a class",
     alt: "Joseph Gallop leading a Tai Chi class at the international workshop in Prague.",
   },
+  "founder-prague-group": {
+    page: "Founder page (Lineage and training)", size: "1600×900", ratio: "16 / 9", division: "senior",
+    subject: "Joseph with Master Vincent Chu and workshop participants", optional: true,
+    alt: "Joseph Gallop with Master Vincent Chu and workshop participants in Prague.",
+  },
+  "founder-graduation": {
+    page: "Founder page (Yoga, massage, and bodywork)", size: "1600×1200", ratio: "4 / 3", division: "senior",
+    subject: "Joseph's graduation from the New England School of Therapeutics", optional: true,
+    alt: "Joseph Gallop with fellow graduates of the New England School of Therapeutics.",
+  },
   "youth-banner": {
     page: "Youth Programs (banner)", size: "1920×800", ratio: "12 / 5", division: "youth",
     subject: "Youth banner: teens coding or on laptops",

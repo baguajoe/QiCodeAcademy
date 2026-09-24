@@ -318,3 +318,9 @@ I downloaded only the four approved original files and reviewed each one.
 - **New in-page photo slots:** seniors-tai-chi, seniors-baguazhang, seniors-chair-massage, seniors-join, and youth-movement. They only render when a photo exists (`OptionalSiteImage`), and staff can replace them in Admin → Site photos.
 - **Gallery:** `flask seed` adds the Prague class photo (published, consent confirmed). It's served from the build's unhashed `/img/site/` copy.
 - **Two requested photos weren't uploaded:** "me teaching seniors3" and "me teaching in prague with vincent". So home-card-seniors stays stock, the Tai Chi module has no photo, and events-banner stays a placeholder.
+
+## Founder page and gallery photos (September 2026)
+- **Founder page order:** portrait and intro, then the teaching photo (moved to the top), then each bio section. "Lineage and training" is followed by the Prague group photo with Master Vincent Chu, and "Yoga, massage, and bodywork" by the NEST graduation photo. Both have captions. Photos are matched to sections by heading, so the layout survives staff edits to the bio text, and missing photos simply don't render.
+- **Prague group photo:** the original had already been deleted after last round's processing, so `founder-prague-group.jpg` is a copy of the processed, watermark-free `events-banner.jpg`.
+- **Graduation photo:** AI-enhanced from Joseph's own photo, an approved exception like the portrait.
+- **Gallery:** Master Vincent Chu's birthday photo (community, consent confirmed, published), seeded by `flask seed`. It's cropped to remove the partial person at the left edge and most of the shelving, keeping all three people.

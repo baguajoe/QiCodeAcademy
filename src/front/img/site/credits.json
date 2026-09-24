@@ -21,6 +21,17 @@
     "alt": "Tai Chi class at the international workshop in Prague.",
     "notes": "Group photo with Master Vincent Chu; cropped to remove the camera watermark."
   },
+  "founder-graduation": {
+    "file": "founder-graduation.jpg",
+    "type": "founder-owned",
+    "source_site": "Joseph Gallop (own photo)",
+    "photographer": "Joseph Gallop",
+    "page_url": "",
+    "credit": "Joseph Gallop — owned by founder (AI-enhanced from original photo)",
+    "license": "Owned by the founder; used with his permission. Permission obtained from the people shown.",
+    "alt": "Joseph Gallop with fellow graduates of the New England School of Therapeutics.",
+    "notes": "AI-enhanced version of the founder's own real photo — approved exception to the no-AI-photos rule."
+  },
   "founder-portrait": {
     "file": "founder-portrait.jpg",
     "type": "founder-owned",
@@ -31,6 +42,17 @@
     "credit": "Joseph Gallop — owned by founder (AI-enhanced from original photo)",
     "alt": "Portrait of Joseph Gallop, founder of Qi Code Academy.",
     "notes": "AI-enhanced version of the founder's own real photo — an approved exception to the no-AI-photos rule. Cropped to 4:5 and resized to 800×1000 (downscaled from 1086×1358)."
+  },
+  "founder-prague-group": {
+    "file": "founder-prague-group.jpg",
+    "type": "founder-owned",
+    "source_site": "Joseph Gallop (own photo)",
+    "photographer": "Joseph Gallop",
+    "page_url": "",
+    "credit": "Joseph Gallop — owned by founder",
+    "license": "Owned by the founder; used with his permission. Permission obtained from the people shown.",
+    "alt": "Joseph Gallop with Master Vincent Chu and workshop participants in Prague.",
+    "notes": "Same processed photo as events-banner (camera watermark cropped out)."
   },
   "founder-teaching": {
     "file": "founder-teaching.jpg",
@@ -53,6 +75,17 @@
     "credit": "Joseph Gallop — owned by founder",
     "alt": "Tai Chi class practicing at the international workshop in Prague.",
     "notes": "Seeded as a published Gallery photo (division: senior, consent confirmed)."
+  },
+  "gallery-vincent-birthday": {
+    "file": "gallery-vincent-birthday.jpg",
+    "type": "founder-owned",
+    "source_site": "Joseph Gallop (own photo)",
+    "photographer": "Joseph Gallop",
+    "page_url": "",
+    "credit": "Joseph Gallop — owned by founder",
+    "license": "Owned by the founder; used with his permission. Permission obtained from the people shown.",
+    "alt": "Joseph Gallop with Master Vincent Chu and Master Gordon Chu.",
+    "notes": "Cropped to remove a partial person at the left edge and most of the shelving. Seeded as a published Gallery photo (community, consent confirmed)."
   },
   "hero-home": {
     "file": "hero-home.jpg",

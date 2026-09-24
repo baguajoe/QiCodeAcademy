@@ -88,7 +88,7 @@ def test_research_references_seeded_hidden_and_gallery_founder_only(client, db):
     assert seed_gallery() == len(GALLERY_SEED) and seed_gallery() == 0
     db.session.commit()
     items = client.get("/api/gallery").get_json()["items"]
-    assert [i["image_url"] for i in items] == ["/img/site/gallery-prague-class.jpg"]
+    assert sorted(i["image_url"] for i in items) == sorted(g["image_url"] for g in GALLERY_SEED)
     assert seed_research_references() == 3
     assert seed_research_references() == 0
     db.session.commit()

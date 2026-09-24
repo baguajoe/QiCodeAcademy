@@ -4,7 +4,7 @@ Every photo spot on the site starts as a **labeled placeholder**. The placeholde
 
 > ### ⚠️ Photo consent comes first
 > **Only use photos of people who have given photo/video consent.** For anyone under 18, a parent or guardian must have given it. Registration forms record each participant's photo/video choice. In the admin, open **Registrations** and filter by **Photo consent = Yes** to check.
-> - No AI-generated photos of people, and no random stock photos. (One approved exception: the founder portrait is an AI-enhanced version of Joseph's own real photo.)
+> - No AI-generated photos of people, and no random stock photos. (Approved exceptions: the founder portrait and the graduation photo are AI-enhanced versions of Joseph's own real photos.)
 > - When in doubt, choose a photo where faces aren't identifiable (hands on a keyboard, feet during circle walking, a wide shot from behind), or leave the placeholder.
 
 ---
@@ -45,7 +45,9 @@ There are three kinds of photos:
 | Home (Research card) | `home-card-research.jpg` | 1200×750 | Yes | ✅ Founder-owned: seniors circle walking |
 | About (banner) | `about-banner.jpg` | 1920×800 | **No** | Placeholder |
 | About + Founder page | `founder-portrait.jpg` | 800×1000 portrait | **No** | ✅ Founder-owned (AI-enhanced from his own photo, approved exception) |
-| Founder page (after "Lineage and training") | `founder-teaching.jpg` | 1600×900 | **No** | ✅ Founder-owned: leading the Prague workshop (1138×640 native) |
+| Founder page (top, after the intro) | `founder-teaching.jpg` | 1600×900 | **No** | ✅ Founder-owned: leading the Prague workshop (1138×640 native) |
+| Founder page ("Lineage and training") | `founder-prague-group.jpg` | 1600×900 | **No** | ✅ Founder-owned: with Master Vincent Chu and workshop participants (captioned) |
+| Founder page ("Yoga, massage, and bodywork") | `founder-graduation.jpg` | 1600×1200 | **No** | ✅ Founder-owned, AI-enhanced from his own photo (approved exception): NEST graduation (captioned) |
 | Youth Programs (banner) | `youth-banner.jpg` | 1920×800 | Yes | Stock (Nappy): young man at a laptop |
 | Youth Programs ("Movement built in") | `youth-movement.jpg` | 1200×900 | **No** | ✅ Founder-owned, **faces blurred** (unblurred original deleted) |
 | Senior Programs (banner) | `seniors-banner.jpg` | 1920×800 | Yes | ✅ Founder-owned: seated movement class |
@@ -59,6 +61,7 @@ There are three kinds of photos:
 | Get Involved (banner) | `volunteer-banner.jpg` | 1920×800 | **No** | Placeholder |
 | Donate | `donate.jpg` | 1200×1500 portrait | Yes | Stock (Nappy): three teens reading in a park |
 | Gallery | `gallery-prague-class.jpg` | — | **No** | ✅ Founder-owned: Prague workshop class (seeded, published, consent confirmed) |
+| Gallery | `gallery-vincent-birthday.jpg` | — | **No** | ✅ Founder-owned: Master Vincent Chu's birthday with Master Gordon Chu (seeded, community, consent confirmed) |
 
 In-page photos (module, feature, and Join anytime photos) appear only when a photo exists. They never show an empty placeholder box.
 
