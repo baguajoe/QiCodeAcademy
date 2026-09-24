@@ -289,3 +289,9 @@ def test_registrations_photo_consent_filter(client, db, auth_headers, make_progr
     db.session.commit()
     body = client.get("/api/admin/registrations?photo_consent=true", headers=auth_headers).get_json()
     assert body["total"] == 1 and body["items"][0]["photo_consent"] is True
+
+
+def test_script_contents_removed_from_news():
+    from api.sanitize import sanitize_html
+    out = sanitize_html('<p>Hi</p><script type="x">alert(1)</script><STYLE>p{}</STYLE><p>There</p>')
+    assert "alert" not in out and "p{}" not in out and "<p>Hi</p>" in out and "There" in out

@@ -106,3 +106,16 @@ Decisions made while building the backend without stopping to ask. Each can be r
 - **Admin filter:** registrations can be filtered by `photo_consent`.
 - **Diagrams** are hand-built SVG. Each has a wide layout and a stacked phone layout (CSS switches at 40rem so text stays ≥16px), plus `<title>`/`<desc>` listing every step. The senior session flow is drawn as a circle, echoing Bagua circle walking.
 - **`/programs`** redirects to the home page's divisions section. The three division pages are `/programs/youth`, `/programs/seniors`, and `/programs/intergenerational`.
+
+## Phase 3: Research, Events, News, Gallery
+- **Shared form system** (`component/Form.js`), used by every public form:
+  - labels, hints, and errors wired up with `aria-describedby`/`aria-invalid`
+  - an error summary (`role="alert"`) that links to each bad field; a success message (`role="status"`); both receive focus
+  - server-side field errors from the 400 response are shown on the matching fields
+  - clear messages for 429 (rate limited) and network failures
+  - submit button disabled and reading "Sending…" while in flight
+  - an off-screen `website` honeypot
+- **Research "notify me" form** collects only name, email-or-phone, and neighborhood, as the brief specified. The API requires `consent_to_contact: true`, so the form sends it on the visitor's behalf: submitting is the consent. The form says the details are used only for this purpose, and it shows "Joining this list does not enroll you in any study." Current status comes from the `research_status` setting.
+- **Events:** list and month-calendar views, with view, filters, and month kept in the URL so links are shareable. The calendar is a real `<table>` on tablets and larger, and switches to a day-by-day agenda list on phones. The Add to calendar button links straight to `/api/events/<slug>/ics`. Event pages include schema.org `Event` JSON-LD with the correct Boston UTC offset for DST.
+- **News:** the body is rendered as HTML because it's sanitized server-side. I tightened the sanitizer: `<script>`, `<style>`, `<iframe>` and similar elements now lose their *contents*, not just their tags, so no stray `alert(1)` text shows up in excerpts. There's a test for this.
+- **Gallery lightbox** uses the native `<dialog>`, which gives a built-in focus trap, Esc to close, and a backdrop click to close. Arrow keys move between photos, a live counter shows the position, and focus returns to the thumbnail that opened it.

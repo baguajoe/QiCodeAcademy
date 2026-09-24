@@ -1,4 +1,6 @@
 """Rich-text sanitizing (bleach) used for NewsPost bodies."""
+import re
+
 import bleach
 
 ALLOWED_TAGS = {
@@ -24,9 +26,15 @@ def _link_attrs(attrs, new=False):
     return attrs
 
 
+# Elements whose *contents* must go too (bleach strip=True keeps inner text).
+_DROP_WITH_CONTENT = re.compile(r"<(script|style|iframe|object|embed|noscript|template)\b[^>]*>.*?</\1\s*>",
+                                re.IGNORECASE | re.DOTALL)
+
+
 def sanitize_html(html):
     if not html:
         return html
+    html = _DROP_WITH_CONTENT.sub("", html)
     cleaned = bleach.clean(
         html,
         tags=ALLOWED_TAGS,

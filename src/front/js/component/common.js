@@ -66,11 +66,11 @@ export function WellnessDisclaimer() {
 }
 
 // Honeypot input (named "website", per API.md). Off-screen and skipped by assistive tech.
-export function Honeypot({ value, onChange }) {
+export function Honeypot({ value, onChange, idPrefix = "form" }) {
   return (
     <div className="hp-field" aria-hidden="true">
-      <label htmlFor="hp-website">Leave this field empty</label>
-      <input id="hp-website" type="text" name="website" tabIndex={-1} autoComplete="off" value={value} onChange={onChange} />
+      <label htmlFor={`${idPrefix}-website`}>Leave this field empty</label>
+      <input id={`${idPrefix}-website`} type="text" name="website" tabIndex={-1} autoComplete="off" value={value} onChange={onChange} />
     </div>
   );
 }

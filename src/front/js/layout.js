@@ -14,6 +14,14 @@ const programs = () => import(/* webpackChunkName: "programs" */ "./pages/Progra
 const YouthPrograms = lazy(() => programs().then((m) => ({ default: m.YouthPrograms })));
 const SeniorPrograms = lazy(() => programs().then((m) => ({ default: m.SeniorPrograms })));
 const IntergenerationalPrograms = lazy(() => programs().then((m) => ({ default: m.IntergenerationalPrograms })));
+const Research = lazy(() => import(/* webpackChunkName: "research" */ "./pages/Research"));
+const events = () => import(/* webpackChunkName: "events" */ "./pages/Events");
+const Events = lazy(events);
+const EventDetail = lazy(() => events().then((m) => ({ default: m.EventDetail })));
+const news = () => import(/* webpackChunkName: "news" */ "./pages/News");
+const News = lazy(news);
+const NewsPost = lazy(() => news().then((m) => ({ default: m.NewsPost })));
+const Gallery = lazy(() => import(/* webpackChunkName: "gallery" */ "./pages/Gallery"));
 const NotFound = lazy(() => import(/* webpackChunkName: "notfound" */ "./pages/NotFound"));
 
 function useRouteFocus() {
@@ -78,6 +86,12 @@ export default function Layout() {
           <Route path="/programs/youth" element={<YouthPrograms />} />
           <Route path="/programs/seniors" element={<SeniorPrograms />} />
           <Route path="/programs/intergenerational" element={<IntergenerationalPrograms />} />
+          <Route path="/research" element={<Research />} />
+          <Route path="/events" element={<Events />} />
+          <Route path="/events/:slug" element={<EventDetail />} />
+          <Route path="/news" element={<News />} />
+          <Route path="/news/:slug" element={<NewsPost />} />
+          <Route path="/gallery" element={<Gallery />} />
           <Route path="*" element={<NotFound />} />
         </Route>
       </Routes>

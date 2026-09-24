@@ -32,7 +32,7 @@ export default function Founder() {
     <div className="theme-senior">
       <section className="section">
         <div className="container">
-          <nav className="breadcrumb" aria-label="Breadcrumb">
+          <nav className="breadcrumb" aria-label={t("common.breadcrumb")}>
             <Link to="/about">← {t("founder.backToAbout")}</Link>
           </nav>
           <div className="founder-page">

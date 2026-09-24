@@ -30,7 +30,8 @@
     "dates": "TODO: Dates",
     "cost": "TODO: Cost",
     "neighborhood": "TODO: Neighborhood",
-    "notOpen": "TODO: Registration closed"
+    "notOpen": "TODO: Registration closed",
+    "breadcrumb": "TODO: Breadcrumb"
   },
   "seo": {
     "defaultDescription": "TODO: Qi Code Academy empowers youth and older adults in Boston's inner-city communities through technology education, workforce development, wellness, community engagement, and research."
@@ -304,7 +305,16 @@
     "notifyTitle": "TODO: Notify me about future research opportunities",
     "notifyLead": "TODO: Leave your name and a way to reach you, and we'll let you know if a study opens in the future.",
     "notifyNote": "TODO: Joining this list does not enroll you in any study.",
-    "studyCenter": "TODO: A formal study"
+    "studyCenter": "TODO: A formal study",
+    "form": {
+      "institution": "TODO: Institution",
+      "role": "TODO: Role or title",
+      "area": "TODO: Area of research interest",
+      "sendInquiry": "TODO: Send inquiry",
+      "emailOrPhone": "TODO: Email or phone",
+      "emailOrPhoneHint": "TODO: We'll only use this to tell you about future research opportunities.",
+      "notifyMe": "TODO: Notify me"
+    }
   },
   "events": {
     "title": "TODO: Events",
@@ -330,7 +340,11 @@
     "thisMonth": "TODO: This month",
     "noEventsDay": "TODO: No events",
     "moreOnDay": "TODO: Events on {{date}}",
-    "loadMore": "TODO: Show more events"
+    "loadMore": "TODO: Show more events",
+    "filters": "TODO: Event filters",
+    "today": "TODO: today",
+    "count_one": "TODO: {{count}} event",
+    "count_other": "TODO: {{count}} events"
   },
   "news": {
     "title": "TODO: News",
@@ -348,7 +362,8 @@
     "published": "TODO: Published {{date}}",
     "previous": "TODO: Newer posts",
     "next": "TODO: Older posts",
-    "page": "TODO: Page {{page}} of {{pages}}"
+    "page": "TODO: Page {{page}} of {{pages}}",
+    "pagination": "TODO: Pagination"
   },
   "gallery": {
     "title": "TODO: Gallery",

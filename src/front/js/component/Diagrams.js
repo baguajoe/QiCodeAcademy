@@ -51,29 +51,33 @@ function Arrowhead({ id, className = "dg-arrowhead" }) {
 // ---------------------------------------------------------------------------
 // Numbered steps: horizontal on wide screens, vertical on phones.
 // ---------------------------------------------------------------------------
-function StepsWide({ steps, title, desc, startNote, motif }) {
+function StepsWide({ steps, title, desc, startNote }) {
   const arrowId = useId().replace(/:/g, "");
-  const gap = 150;
-  const w = 80 + gap * (steps.length - 1) + 80;
+  // Spread steps across ~1000 units so fewer, longer steps get wider label columns.
+  const gap = Math.max(150, Math.floor(860 / Math.max(steps.length - 1, 1)));
+  const chars = Math.max(13, Math.floor(gap / 10.5));
+  const wrapped = steps.map((s) => wrap(s, chars));
+  const maxLines = Math.max(...wrapped.map((l) => l.length));
+  const pad = Math.max(80, Math.ceil(chars * 5.4));
+  const w = pad + gap * (steps.length - 1) + pad;
   const cy = startNote ? 110 : 80;
-  const h = cy + 170;
+  const h = cy + 66 + maxLines * 22 + 16;
   return (
     <Svg viewBox={`0 0 ${w} ${h}`} title={title} desc={desc} className="diagram-wide">
       <Arrowhead id={arrowId} />
-      {motif === "grid" && <rect x="0" y="0" width={w} height={h} className="dg-grid" />}
-      {startNote && <Lines x={40} y={36} lines={[startNote]} anchor="start" className="dg-note" />}
-      {startNote && <path d={`M80 46 V${cy - 44}`} className="dg-line" markerEnd={`url(#${arrowId})`} />}
+      {startNote && <Lines x={pad - 40} y={36} lines={[startNote]} anchor="start" className="dg-note" />}
+      {startNote && <path d={`M${pad} 46 V${cy - 44}`} className="dg-line" markerEnd={`url(#${arrowId})`} />}
       {steps.slice(0, -1).map((_, i) => (
-        <path key={i} d={`M${80 + gap * i + 42} ${cy} H${80 + gap * (i + 1) - 46}`} className="dg-line" markerEnd={`url(#${arrowId})`} />
+        <path key={i} d={`M${pad + gap * i + 42} ${cy} H${pad + gap * (i + 1) - 46}`} className="dg-line" markerEnd={`url(#${arrowId})`} />
       ))}
       {steps.map((s, i) => {
-        const x = 80 + gap * i;
+        const x = pad + gap * i;
         const last = i === steps.length - 1;
         return (
           <g key={s}>
             <circle cx={x} cy={cy} r="36" className={last ? "dg-node dg-node-final" : "dg-node"} />
             <text x={x} y={cy + 8} textAnchor="middle" className={last ? "dg-num dg-num-final" : "dg-num"}>{i + 1}</text>
-            <Lines x={x} y={cy + 66} lines={wrap(s, 13)} />
+            <Lines x={x} y={cy + 66} lines={wrapped[i]} />
           </g>
         );
       })}
@@ -113,7 +117,7 @@ export function StepsDiagram({ steps, title, startNote, motif, division, caption
   const desc = `${startNote ? startNote + ". " : ""}${steps.map((s, i) => `${i + 1}. ${s}`).join(" ")}`;
   return (
     <figure className={`diagram theme-${division}`} style={{ margin: 0 }}>
-      <StepsWide steps={steps} title={title} desc={desc} startNote={startNote} motif={motif} />
+      <StepsWide steps={steps} title={title} desc={desc} startNote={startNote} />
       <StepsNarrow steps={steps} title={title} desc={desc} startNote={startNote} />
       {caption && <figcaption className="diagram-caption">{caption}</figcaption>}
     </figure>

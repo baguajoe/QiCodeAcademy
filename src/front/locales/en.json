@@ -30,7 +30,8 @@
     "dates": "Dates",
     "cost": "Cost",
     "neighborhood": "Neighborhood",
-    "notOpen": "Registration closed"
+    "notOpen": "Registration closed",
+    "breadcrumb": "Breadcrumb"
   },
   "seo": {
     "defaultDescription": "Qi Code Academy empowers youth and older adults in Boston's inner-city communities through technology education, workforce development, wellness, community engagement, and research."
@@ -304,7 +305,16 @@
     "notifyTitle": "Notify me about future research opportunities",
     "notifyLead": "Leave your name and a way to reach you, and we'll let you know if a study opens in the future.",
     "notifyNote": "Joining this list does not enroll you in any study.",
-    "studyCenter": "A formal study"
+    "studyCenter": "A formal study",
+    "form": {
+      "institution": "Institution",
+      "role": "Role or title",
+      "area": "Area of research interest",
+      "sendInquiry": "Send inquiry",
+      "emailOrPhone": "Email or phone",
+      "emailOrPhoneHint": "We'll only use this to tell you about future research opportunities.",
+      "notifyMe": "Notify me"
+    }
   },
   "events": {
     "title": "Events",
@@ -330,7 +340,11 @@
     "thisMonth": "This month",
     "noEventsDay": "No events",
     "moreOnDay": "Events on {{date}}",
-    "loadMore": "Show more events"
+    "loadMore": "Show more events",
+    "filters": "Event filters",
+    "today": "today",
+    "count_one": "{{count}} event",
+    "count_other": "{{count}} events"
   },
   "news": {
     "title": "News",
@@ -348,7 +362,8 @@
     "published": "Published {{date}}",
     "previous": "Newer posts",
     "next": "Older posts",
-    "page": "Page {{page}} of {{pages}}"
+    "page": "Page {{page}} of {{pages}}",
+    "pagination": "Pagination"
   },
   "gallery": {
     "title": "Gallery",
