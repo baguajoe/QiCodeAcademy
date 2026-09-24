@@ -463,15 +463,29 @@ class SiteSettingSchema(AdminSchema):
         return data
 
 
+STOCK_WORDING = re.compile(r"\b(our|we|qi code|participants?|members?)\b", re.IGNORECASE)
+
+
 class SiteImageSchema(AdminSchema):
     slot_key = fields.String(required=True, validate=validate.Regexp(
         r"^[a-z0-9\-]{1,100}$", error="Use lowercase letters, numbers and dashes."))
     image_url = Url()
     alt_text = S(300)
+    is_stock = fields.Boolean(load_default=False)
+    credit = S(300)
+
+    @validates_schema
+    def _photo_rules(self, data, **kwargs):
+        if data.get("is_stock") and data.get("slot_key") not in m.STOCK_ALLOWED_SLOTS:
+            raise ValidationError({"is_stock": ["Stock photos aren't allowed here. Use a real photo of our "
+                                                "program or founder, or leave the placeholder."]})
+        if data.get("is_stock") and STOCK_WORDING.search(data.get("alt_text") or ""):
+            raise ValidationError({"alt_text": ["Describe what's in the stock photo — don't call the people "
+                                                "\"our\" students, class, or participants."]})
 
     @post_load
     def _defaults(self, data, **kwargs):
-        for k in ("image_url", "alt_text"):
+        for k in ("image_url", "alt_text", "credit"):
             if k in data and data[k] is None:
                 data[k] = ""
         return data

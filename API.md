@@ -199,7 +199,7 @@ Query: `category`. Returns published posts, newest first. Items **omit `body`** 
 | `GET /api/partners` | `type` | `{"items": [{"id","name","type","logo_url","website_url","sort_order",…}]}` |
 | `GET /api/impact-stats` | none | `{"items": [{"id","label","value","sort_order",…}]}` (`value` is display text, e.g. `"40+"`) |
 | `GET /api/settings` | none | Flat map of **public** settings. Seeded keys: `tax_status`, `research_status`, `social_facebook`, `social_instagram`, `social_youtube`, `founder_full_bio` (paragraphs separated by blank lines; `## ` lines are headings), `founder_credentials` (one per line), `press_globe_url`, `press_wcvb_url`, `org_contact_email`, `org_contact_phone` (blank = hide) |
-| `GET /api/site-images` | none | `{"hero-home": {"image_url": "https://…" or null, "alt_text": "…"}, "youth-banner": {…}, …}` |
+| `GET /api/site-images` | none | `{"hero-home": {"image_url": "https://…" or null, "alt_text": "…", "is_stock": false, "credit": ""}, "youth-banner": {…}, …}` (uploads only; default photo files and their credits ship with the frontend in `src/front/img/site/credits.json`) |
 | `GET /api/gallery` | `division`, `page`, `per_page` (default 24) | Paginated `{"items": [{"id","image_url","caption","division","alt_text","created_at"}], …}`. Only published photos with confirmed consent are returned. |
 
 Seeded site image slots: `hero-home`, `home-card-youth`, `home-card-seniors`, `home-card-research`, `about-banner`, `founder-portrait`, `founder-teaching`, `youth-banner`, `seniors-banner`, `intergenerational-banner`, `research-banner`, `events-banner`, `volunteer-banner`, `donate` (see IMAGE_GUIDE.md). Admins can add more. Use a fallback when `image_url` is `null`.
@@ -296,7 +296,7 @@ Responses use the same object shapes as the public API plus the admin-only field
 | `partners` | **`name`**, `type`, `logo_url`, `website_url`, `sort_order` | name | `type` | `sort_order` |
 | `impact-stats` | **`label`**, **`value`**, `sort_order` | none | none | `sort_order` |
 | `settings` | **`key`** (`[a-z0-9_.-]`), `value`, `is_public` (controls whether it appears in `GET /api/settings`) | key | `is_public` | `key` |
-| `site-images` | **`slot_key`** (`[a-z0-9-]`), `image_url`, `alt_text` | slot_key | none | `slot_key` |
+| `site-images` | **`slot_key`** (`[a-z0-9-]`), `image_url`, `alt_text`, `is_stock` (only allowed for `hero-home`, `youth-banner`, `seniors-banner`, `intergenerational-banner`, `research-banner`, `donate`, `home-card-youth`, `home-card-seniors`, `home-card-research`; stock alt text may not say "our"/"participants"), `credit` | slot_key | none | `slot_key` |
 | `gallery` | **`image_url`**, **`alt_text`**, `caption`, `division`, `consent_confirmed`, `is_published` (**can't be true unless `consent_confirmed` is true**), `sort_order` | caption, alt_text | `division`, `is_published`, `consent_confirmed` | `-created_at` |
 | `research-references` | **`title`**, `authors`, `publication` (journal/source), `year`, `url`, `summary`, `is_verified` (only verified ones are public) | title, authors | `is_verified` | `-created_at` |
 | `research-inquiries` | **`name`**, **`institution`**, `role`, **`email`**, `area_of_interest`, `message`, `is_read` | name, institution, email | `is_read` | `-created_at` |

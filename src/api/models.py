@@ -35,6 +35,9 @@ DONATION_STATUSES = ("pending", "completed", "failed", "expired", "refunded")
 NEWS_CATEGORIES = ("youth", "seniors", "research", "community")
 TEAM_GROUPS = ("board", "staff", "instructor", "advisor")
 PARTNER_TYPES = ("sponsor", "community", "research")
+# Photo rules: stock photos may ONLY fill these slots (never founder, gallery, team, or program news).
+STOCK_ALLOWED_SLOTS = ("hero-home", "youth-banner", "seniors-banner", "intergenerational-banner", "research-banner",
+                       "donate", "home-card-youth", "home-card-seniors", "home-card-research")
 CURRICULUM_DIVISIONS = ("youth", "senior", "research")
 CURRICULUM_STATUSES = ("available", "in_development")
 
@@ -330,6 +333,9 @@ class SiteImage(TimestampMixin, db.Model):
     slot_key = db.Column(db.String(100), unique=True, nullable=False, index=True)
     image_url = db.Column(db.String(500), nullable=False, default="")
     alt_text = db.Column(db.String(300), nullable=False, default="")
+    # True = free-license stock photo (only allowed in STOCK_ALLOWED_SLOTS); False = our own photo.
+    is_stock = db.Column(db.Boolean, nullable=False, default=False)
+    credit = db.Column(db.String(300), nullable=False, default="")  # e.g. "Photo: Jane Doe / Unsplash"
 
     def __str__(self):
         return self.slot_key
@@ -451,6 +457,9 @@ def _enforce_model_rules(session, flush_context, instances):
             # Never persist a youth participant's own email/phone.
             obj.email = None
             obj.phone = None
+
+        if isinstance(obj, SiteImage) and obj.is_stock and obj.slot_key not in STOCK_ALLOWED_SLOTS:
+            raise ModelRuleError(f"Stock photos aren't allowed for '{obj.slot_key}'. Use a real photo or the placeholder.")
 
         if isinstance(obj, GalleryPhoto) and obj.is_published and not obj.consent_confirmed:
             raise ModelRuleError("A gallery photo cannot be published until consent_confirmed is true.")

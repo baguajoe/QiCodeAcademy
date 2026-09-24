@@ -65,3 +65,4 @@
 @media (min-width: 80rem) { .slot-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 .slot-card h2 { font-size: 1.3rem; margin-bottom: var(--space-1); }
 .slot-current { max-width: 20rem; margin-bottom: var(--space-4); }
+.stock-note { background: var(--warning-soft); color: var(--warning-ink); border-left: 5px solid #b7791f; padding: var(--space-2) var(--space-3); border-radius: var(--radius-sm); }

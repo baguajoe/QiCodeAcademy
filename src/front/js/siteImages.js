@@ -1,3 +1,15 @@
+import CREDITS from "../img/site/credits.json";
+
+// Photo rules: stock photos may ONLY fill these slots (mirrors STOCK_ALLOWED_SLOTS in src/api/models.py).
+export const STOCK_ALLOWED_SLOTS = ["hero-home", "youth-banner", "seniors-banner", "intergenerational-banner",
+  "research-banner", "donate", "home-card-youth", "home-card-seniors", "home-card-research"];
+
+// Credits for files in src/front/img/site/ (type: "founder-owned" | "stock"). See IMAGE_CREDITS.md.
+export function localCredit(slot) {
+  return CREDITS[slot] || null;
+}
+export const ALL_CREDITS = CREDITS;
+
 // Photo slots. Order of precedence for each slot:
 //   1. an image uploaded in the admin (Site images screen)  → /api/site-images
 //   2. a file dropped into src/front/img/site/<slot>.jpg|png|webp (picked up at build time)
@@ -119,7 +131,7 @@ export function resolveSlot(slot, siteImages) {
   if (uploaded && uploaded.image_url) {
     return { kind: "uploaded", src: uploaded.image_url, alt: uploaded.alt_text || meta.alt, meta };
   }
-  if (LOCAL[slot]) return { kind: "local", src: LOCAL[slot], alt: meta.alt, meta };
+  if (LOCAL[slot]) return { kind: "local", src: LOCAL[slot], alt: (CREDITS[slot] && CREDITS[slot].alt) || meta.alt, meta };
   return { kind: "placeholder", meta, alt: meta.alt };
 }
 

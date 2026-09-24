@@ -263,7 +263,8 @@ def public_settings():
 @bp.get("/site-images")
 def site_images():
     rows = db.session.scalars(select(SiteImage).order_by(SiteImage.slot_key))
-    return jsonify({i.slot_key: {"image_url": i.image_url or None, "alt_text": i.alt_text or ""}
+    return jsonify({i.slot_key: {"image_url": i.image_url or None, "alt_text": i.alt_text or "",
+                                 "is_stock": bool(i.is_stock), "credit": i.credit or ""}
                     for i in rows})
 
 

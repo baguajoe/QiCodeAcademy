@@ -266,6 +266,7 @@ export const RESOURCES = {
   },
   news: {
     label: "News", singular: "news post", group: "Content",
+    help: "Posts about our programs must use real photos from our programs — no stock photos.",
     columns: [
       { key: "title", label: "Title" },
       { key: "category", label: "Category", format: label(NEWS_CATEGORIES) },
@@ -285,7 +286,7 @@ export const RESOURCES = {
   },
   gallery: {
     label: "Gallery", singular: "photo", group: "Content",
-    help: "Only publish photos where EVERY person pictured (or their parent/guardian) has given photo/video consent.",
+    help: "Only real photos from our programs — never stock photos. Only publish photos where EVERY person pictured (or their parent/guardian) has given photo/video consent.",
     columns: [
       { key: "image_url", label: "Photo", thumb: true },
       { key: "alt_text", label: "Description" },
@@ -306,6 +307,7 @@ export const RESOURCES = {
   },
   team: {
     label: "Team", singular: "team member", group: "Content",
+    help: "Use real headshots only — never stock photos.",
     columns: [
       { key: "name", label: "Name" },
       { key: "role_title", label: "Role" },

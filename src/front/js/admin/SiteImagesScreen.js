@@ -2,23 +2,34 @@ import { useEffect, useState } from "react";
 import { adminApi } from "../api";
 import { ErrorNote, Loading } from "../component/common";
 import { Photo } from "../component/Photo";
-import { SLOTS, localImage } from "../siteImages";
+import { SLOTS, STOCK_ALLOWED_SLOTS, localCredit, localImage } from "../siteImages";
 import { useStore } from "../store/appContext";
 import { ImageField } from "./ImageField";
 import { useTitle } from "./AdminApp";
 
+function StockNote() {
+  return <p className="stock-note" role="note"><strong>Stock photo</strong> — replace when you have real program photos.</p>;
+}
+
 function SlotCard({ slot, meta, row, onSaved }) {
   const [url, setUrl] = useState(row ? row.image_url : "");
   const [alt, setAlt] = useState(row ? row.alt_text : "");
+  const [isStock, setIsStock] = useState(row ? !!row.is_stock : false);
+  const [credit, setCredit] = useState(row ? row.credit || "" : "");
   const [state, setState] = useState({ saving: false, msg: "", error: "" });
-  const dirty = url !== (row ? row.image_url : "") || alt !== (row ? row.alt_text : "");
+  const dirty = url !== (row ? row.image_url : "") || alt !== (row ? row.alt_text : "")
+    || isStock !== (row ? !!row.is_stock : false) || credit !== (row ? row.credit || "" : "");
   const local = localImage(slot);
+  const localInfo = localCredit(slot);
+  const stockAllowed = STOCK_ALLOWED_SLOTS.includes(slot);
+  const showingStock = row && row.image_url ? row.is_stock : !!(local && localInfo && localInfo.type === "stock");
 
   const save = async (nextUrl = url, nextAlt = alt) => {
     if (nextUrl && !nextAlt.trim()) return setState({ saving: false, msg: "", error: "Please describe the photo (alt text) before saving." });
     setState({ saving: true, msg: "", error: "" });
     try {
-      const body = { image_url: nextUrl || "", alt_text: nextUrl ? nextAlt.trim() : "" };
+      const body = { image_url: nextUrl || "", alt_text: nextUrl ? nextAlt.trim() : "",
+        is_stock: nextUrl ? isStock : false, credit: nextUrl ? credit.trim() : "" };
       if (row) await adminApi.patch(`/admin/site-images/${row.id}`, body);
       else await adminApi.post("/admin/site-images", { slot_key: slot, ...body });
       setState({ saving: false, msg: nextUrl ? "Saved — the website now shows this photo." : "Reset to the default photo.", error: "" });
@@ -35,7 +46,10 @@ function SlotCard({ slot, meta, row, onSaved }) {
       <p><strong>Suggested photo:</strong> {meta.subject.replace(/^[^:]+:\s*/, "")}</p>
       <p className="small">
         Showing now: {row && row.image_url ? "your uploaded photo" : local ? `the default file (${slot}.jpg)` : "a placeholder"}
+        {!(row && row.image_url) && localInfo && <><br />Credit: {localInfo.credit}</>}
       </p>
+      {showingStock && <StockNote />}
+      {!stockAllowed && <p className="small muted">Stock photos aren't allowed in this spot — use a real photo or keep the placeholder.</p>}
       {!url && (
         <div className="slot-current">
           <Photo src={local} alt="" ratio={meta.ratio} sizes="20rem"
@@ -45,6 +59,21 @@ function SlotCard({ slot, meta, row, onSaved }) {
       <ImageField id={`slot-${slot}`} label={url ? "Uploaded photo" : "Upload a new photo"} value={url} onChange={setUrl}
         alt={alt} onAltChange={setAlt} folder="site" error={state.error && !state.error.includes("alt") ? state.error : ""}
         altError={state.error.includes("alt") ? state.error : ""} />
+      {url && (
+        <div className="stack" style={{ marginBottom: "1rem" }}>
+          <label className="check" htmlFor={`stock-${slot}`}>
+            <input id={`stock-${slot}`} type="checkbox" checked={isStock} disabled={!stockAllowed}
+              onChange={(e) => setIsStock(e.target.checked)} />
+            <span>This is a free-license stock photo (not our own program or founder)</span>
+          </label>
+          {isStock && <p className="hint">Describe what's in the photo — never call the people "our" students or class.</p>}
+          <div className="field" style={{ margin: 0 }}>
+            <label htmlFor={`credit-${slot}`}>Photo credit <span className="muted small">(optional)</span></label>
+            <input id={`credit-${slot}`} type="text" maxLength={300} value={credit} placeholder="e.g. Photo: Jane Doe / Unsplash"
+              onChange={(e) => setCredit(e.target.value)} />
+          </div>
+        </div>
+      )}
       {state.msg && <p className="alert alert-success" role="status">{state.msg}</p>}
       <div className="cluster">
         <button type="button" className="btn" disabled={!dirty || state.saving} onClick={() => save()}>{state.saving ? "Saving…" : "Save photo"}</button>

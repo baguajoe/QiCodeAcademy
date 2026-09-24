@@ -256,3 +256,11 @@ Decisions made while building the backend without stopping to ask. Each can be r
 - **The three references are seeded** by `flask seed`, idempotently, with `is_verified = false` and empty URLs. **They don't appear on the site** until someone adds a link and ticks Verified in Admin → Research references. That list now has a "Link?" column showing which ones are missing.
 - The **"Our 12-week Baguazhang program"** section on the Research page stays hidden until at least one `research` curriculum module is published.
 - The content-rules test now checks that these references are seeded unverified and hidden.
+
+## Section 8: Photo rules
+- Photos come in three kinds: **founder-owned** (`is_stock=false`), **stock** from free-license sites (`is_stock=true`), and **placeholders**.
+- **New SiteImage columns:** `is_stock` and `credit`, with a migration that has server defaults so it's safe on existing Postgres rows.
+- **Stock is allowed only in** hero-home, youth/seniors/intergenerational/research banners, donate, and the three home division cards. This is enforced three ways: the API returns a 400 error, a model-layer guard means Flask-Admin can't bypass it either, and the admin UI disables the stock checkbox with an explanation.
+- **Stock alt text can't use "our", "we", "Qi Code", "participants", or "members."** It has to describe the scene, not claim the people are ours.
+- **Photo files dropped into the code** (`src/front/img/site/`) are described in `src/front/img/site/credits.json`: type, source, photographer, page URL, license, credit line, and accurate alt text. The site uses that alt text. The admin Site photos screen shows "**Stock photo** — replace when you have real program photos" for stock photos (uploaded or file) and lists the credit.
+- **Gallery, Team, and News** admin screens now say "no stock photos." Those models have no stock option at all.

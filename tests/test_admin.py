@@ -295,3 +295,27 @@ def test_script_contents_removed_from_news():
     from api.sanitize import sanitize_html
     out = sanitize_html('<p>Hi</p><script type="x">alert(1)</script><STYLE>p{}</STYLE><p>There</p>')
     assert "alert" not in out and "p{}" not in out and "<p>Hi</p>" in out and "There" in out
+
+
+def test_stock_photo_rules(client, auth_headers):
+    ok = client.post("/api/admin/site-images", headers=auth_headers, json={
+        "slot_key": "hero-home", "image_url": "/uploads/h.webp", "alt_text": "Teens coding at laptops",
+        "is_stock": True, "credit": "Photo: A. Person / Unsplash"})
+    assert ok.status_code == 201 and ok.get_json()["is_stock"] is True
+    bad = client.post("/api/admin/site-images", headers=auth_headers, json={
+        "slot_key": "founder-portrait", "image_url": "/uploads/f.webp", "alt_text": "Portrait", "is_stock": True})
+    assert bad.status_code == 400 and "is_stock" in bad.get_json()["errors"]
+    wording = client.post("/api/admin/site-images", headers=auth_headers, json={
+        "slot_key": "donate", "image_url": "/uploads/d.webp", "alt_text": "Our students learning", "is_stock": True})
+    assert wording.status_code == 400 and "alt_text" in wording.get_json()["errors"]
+    pub = client.get("/api/site-images").get_json()
+    assert pub["hero-home"]["is_stock"] is True and pub["hero-home"]["credit"].endswith("Unsplash")
+
+
+def test_stock_rule_enforced_at_model_layer(db):
+    import pytest
+    from api.models import ModelRuleError, SiteImage
+    db.session.add(SiteImage(slot_key="founder-teaching", image_url="/x.webp", alt_text="x", is_stock=True))
+    with pytest.raises(ModelRuleError):
+        db.session.commit()
+    db.session.rollback()
