@@ -45,7 +45,8 @@
     "textLargest": "Largest text",
     "highContrast": "High contrast",
     "language": "Language",
-    "inProgress": "in progress"
+    "inProgress": "in progress",
+    "settings": "Display and language settings"
   },
   "nav": {
     "main": "Main",

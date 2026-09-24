@@ -74,7 +74,22 @@ export function useForm({ initial, endpoint, required = [], emails = [], validat
     }
   };
 
-  return { values, set, errors, status, message, submit, website, setWebsite, summaryRef, successRef, formId, setStatus };
+  // For multi-step forms: validate a subset of fields before moving on.
+  const checkFields = (fields) => {
+    const errs = Object.fromEntries(Object.entries(clientErrors(values)).filter(([k]) => fields.includes(k)));
+    setErrors(errs);
+    if (Object.keys(errs).length) {
+      setStatus("error");
+      setMessage(t("errors.form"));
+      focusLater(summaryRef);
+      return false;
+    }
+    setStatus("idle");
+    return true;
+  };
+
+  return { values, set, setValues, errors, setErrors, status, message, submit, website, setWebsite, summaryRef, successRef,
+    formId, setStatus, checkFields, reset: () => { setValues(initial); setErrors({}); setStatus("idle"); } };
 }
 
 export function FormStatus({ form, labels = {}, successTitle }) {

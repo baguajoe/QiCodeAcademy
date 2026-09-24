@@ -86,10 +86,10 @@ input:focus-visible, select:focus-visible, textarea:focus-visible { border-color
 [aria-invalid="true"] { border-color: var(--error) !important; }
 .field-error { color: var(--error); font-weight: 600; margin-top: var(--space-2); font-size: 0.95rem; }
 fieldset { border: 0; padding: 0; margin: 0 0 var(--space-5); min-width: 0; }
-.check { display: flex; align-items: flex-start; gap: var(--space-3); min-height: var(--tap); padding: var(--space-2) 0; cursor: pointer; font-weight: 400; }
+.check, .field label.check { display: flex; font-weight: 400; align-items: flex-start; gap: var(--space-3); min-height: var(--tap); padding: var(--space-2) 0; cursor: pointer; font-weight: 400; }
 .check input { width: 1.4rem; height: 1.4rem; margin: 0.15rem 0 0; flex: none; accent-color: var(--accent); }
 .choice-grid { display: grid; gap: var(--space-2); grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr)); }
-.choice-card { border: 2px solid var(--line); border-radius: var(--radius-sm); padding: var(--space-2) var(--space-3); background: var(--surface); }
+.field label.check.choice-card, .choice-card { font-weight: 600; } .choice-card { border: 2px solid var(--line); border-radius: var(--radius-sm); padding: var(--space-2) var(--space-3); background: var(--surface); }
 .choice-card:has(input:checked) { border-color: var(--accent); background: var(--accent-soft); }
 /* Honeypot: off-screen, not display:none (some bots skip hidden inputs) */
 .hp-field { position: absolute; left: -10000px; width: 1px; height: 1px; overflow: hidden; }

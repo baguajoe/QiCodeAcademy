@@ -42,7 +42,7 @@ def test_one_time_checkout(client, db, fake_stripe):
     assert kwargs["line_items"][0]["price_data"]["unit_amount"] == 2500
     assert "recurring" not in kwargs["line_items"][0]["price_data"]
     assert kwargs["success_url"] == "http://localhost:3001/donate/thank-you?session_id={CHECKOUT_SESSION_ID}"
-    assert kwargs["cancel_url"] == "http://localhost:3001/donate"
+    assert kwargs["cancel_url"] == "http://localhost:3001/donate/cancelled"
     assert kwargs["customer_email"] == "d@example.org"
     assert kwargs["metadata"]["designation"] == "youth"
 

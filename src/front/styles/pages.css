@@ -78,3 +78,51 @@
 .lightbox .lightbox-photo picture { display: block; height: 100%; }
 .lightbox figcaption { text-align: center; padding: var(--space-3); font-size: 1.1rem; color: #f1f1f1; }
 .lightbox-nav { display: flex; justify-content: center; gap: var(--space-4); }
+
+/* Panels & forms */
+.panel { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: var(--space-5); box-shadow: var(--shadow); border-top: 6px solid var(--accent); }
+@media (min-width: 48rem) { .panel { padding: var(--space-6); } }
+.involved-grid { display: grid; gap: var(--space-6); }
+@media (min-width: 64rem) { .involved-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: start; } }
+.jump-nav { margin-bottom: var(--space-6); }
+section[id], div[id] { scroll-margin-top: 7rem; }
+
+/* Registration steps */
+.steps { list-style: none; padding: 0; margin: 0 0 var(--space-5); display: flex; flex-wrap: wrap; gap: var(--space-2); }
+.steps li { display: flex; align-items: center; gap: var(--space-2); padding: 0.35rem 0.8rem 0.35rem 0.35rem; border-radius: 999px; background: var(--surface); border: 2px solid var(--line); font-weight: 600; font-size: 0.9rem; color: var(--ink-muted); }
+.steps .n { display: inline-grid; place-items: center; width: 1.8rem; height: 1.8rem; border-radius: 50%; background: var(--surface-alt); font-weight: 800; color: var(--ink); }
+.steps li.current { border-color: var(--accent); color: var(--ink); }
+.steps li.current .n { background: var(--accent); color: #fff; }
+.steps li.done .n { background: var(--success); color: #fff; }
+.step-title { font-size: 1.6rem; margin: var(--space-4) 0 var(--space-5); }
+.step-actions { margin-top: var(--space-6); justify-content: space-between; }
+.review-box { background: var(--surface-alt); border-radius: var(--radius); padding: var(--space-5); margin: var(--space-5) 0; }
+.review-box h3 { font-size: 1.15rem; }
+.review-box dl { margin: 0; display: grid; gap: var(--space-2); }
+.review-box dl div { display: grid; gap: 0 var(--space-4); }
+@media (min-width: 40rem) { .review-box dl div { grid-template-columns: 14rem 1fr; } }
+.review-box dt { font-weight: 700; }
+.review-box dd { margin: 0; }
+
+/* Contact */
+.map-placeholder { border-radius: var(--radius); overflow: hidden; border: 1px solid var(--line); background: var(--surface); }
+.map-placeholder svg { display: block; width: 100%; height: auto; }
+.map-placeholder p { margin: 0; padding: var(--space-3) var(--space-4); color: var(--ink-muted); font-size: 0.95rem; }
+
+/* Donate */
+.donate-layout { display: grid; gap: var(--space-6); align-items: start; }
+@media (min-width: 56rem) { .donate-layout { grid-template-columns: 5fr 6fr; } .donate-photo { position: sticky; top: 7rem; } }
+.donate-photo .photo { aspect-ratio: 4 / 5; }
+.toggle-radios { display: inline-flex; border: 2px solid var(--brand); border-radius: 999px; overflow: hidden; }
+.toggle-option { position: relative; display: inline-flex; align-items: center; justify-content: center; min-height: var(--tap); padding: 0.5rem 1.3rem; font-weight: 700; cursor: pointer; background: var(--surface); color: var(--brand); }
+.toggle-option input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+.toggle-option.is-on { background: var(--brand); color: #fff; }
+.toggle-option:has(input:focus-visible) { outline: 3px solid var(--focus); outline-offset: -3px; box-shadow: inset 0 0 0 6px var(--ink); }
+.amount-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(5.5rem, 1fr)); gap: var(--space-2); }
+.amount-grid .toggle-option:last-child { grid-column: span 2; white-space: nowrap; }
+.amount-grid .toggle-option { border: 2px solid var(--brand); border-radius: var(--radius-sm); font-size: 1.2rem; }
+.money-input { display: flex; align-items: center; gap: var(--space-2); max-width: 14rem; }
+.money-input span { font-size: 1.4rem; font-weight: 700; }
+.donate-summary { font-size: 1.1rem; font-weight: 600; background: var(--brand-soft); padding: var(--space-3) var(--space-4); border-radius: var(--radius-sm); }
+.tax-status { margin-top: var(--space-3); }
+:root[data-contrast="high"] .toggle-option.is-on { background: #000; color: #fff; }

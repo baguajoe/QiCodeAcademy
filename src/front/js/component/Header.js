@@ -30,7 +30,7 @@ function UtilityBar() {
     { id: "xl", label: "A++", aria: t("a11y.textLargest"), cls: "size-a3" },
   ];
   return (
-    <div className="utility-bar">
+    <section className="utility-bar" aria-label={t("a11y.settings")}>
       <div className="container">
         <div className="utility-group" role="group" aria-label={t("a11y.textSize")}>
           <span className="label" aria-hidden="true">{t("a11y.textSizeShort")}</span>
@@ -58,7 +58,7 @@ function UtilityBar() {
           </select>
         </div>
       </div>
-    </div>
+    </section>
   );
 }
 
@@ -106,8 +106,9 @@ export function Header() {
   ];
 
   return (
+    <>
+    <UtilityBar />
     <header className="site-header">
-      <UtilityBar />
       <div className="container bar" style={{ position: "relative" }}>
         <Link to="/" className="logo" aria-label={t("nav.homeAria")}>
           <Logo />
@@ -149,5 +150,6 @@ export function Header() {
         </nav>
       </div>
     </header>
+    </>
   );
 }

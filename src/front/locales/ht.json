@@ -45,7 +45,8 @@
     "textLargest": "TODO: Largest text",
     "highContrast": "TODO: High contrast",
     "language": "TODO: Language",
-    "inProgress": "TODO: in progress"
+    "inProgress": "TODO: in progress",
+    "settings": "TODO: Display and language settings"
   },
   "nav": {
     "main": "TODO: Main",

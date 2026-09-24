@@ -22,6 +22,16 @@ const news = () => import(/* webpackChunkName: "news" */ "./pages/News");
 const News = lazy(news);
 const NewsPost = lazy(() => news().then((m) => ({ default: m.NewsPost })));
 const Gallery = lazy(() => import(/* webpackChunkName: "gallery" */ "./pages/Gallery"));
+const Register = lazy(() => import(/* webpackChunkName: "register" */ "./pages/Register"));
+const GetInvolved = lazy(() => import(/* webpackChunkName: "involved" */ "./pages/GetInvolved"));
+const Contact = lazy(() => import(/* webpackChunkName: "contact" */ "./pages/Contact"));
+const donate = () => import(/* webpackChunkName: "donate" */ "./pages/Donate");
+const Donate = lazy(donate);
+const DonateThanks = lazy(() => donate().then((m) => ({ default: m.DonateThanks })));
+const DonateCancelled = lazy(() => donate().then((m) => ({ default: m.DonateCancelled })));
+const legal = () => import(/* webpackChunkName: "legal" */ "./pages/Legal");
+const Privacy = lazy(() => legal().then((m) => ({ default: m.Privacy })));
+const Terms = lazy(() => legal().then((m) => ({ default: m.Terms })));
 const NotFound = lazy(() => import(/* webpackChunkName: "notfound" */ "./pages/NotFound"));
 
 function useRouteFocus() {
@@ -92,6 +102,15 @@ export default function Layout() {
           <Route path="/news" element={<News />} />
           <Route path="/news/:slug" element={<NewsPost />} />
           <Route path="/gallery" element={<Gallery />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/register/:slug" element={<Register />} />
+          <Route path="/get-involved" element={<GetInvolved />} />
+          <Route path="/contact" element={<Contact />} />
+          <Route path="/donate" element={<Donate />} />
+          <Route path="/donate/thank-you" element={<DonateThanks />} />
+          <Route path="/donate/cancelled" element={<DonateCancelled />} />
+          <Route path="/privacy" element={<Privacy />} />
+          <Route path="/terms" element={<Terms />} />
           <Route path="*" element={<NotFound />} />
         </Route>
       </Routes>

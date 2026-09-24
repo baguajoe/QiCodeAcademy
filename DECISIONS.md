@@ -119,3 +119,25 @@ Decisions made while building the backend without stopping to ask. Each can be r
 - **Events:** list and month-calendar views, with view, filters, and month kept in the URL so links are shareable. The calendar is a real `<table>` on tablets and larger, and switches to a day-by-day agenda list on phones. The Add to calendar button links straight to `/api/events/<slug>/ics`. Event pages include schema.org `Event` JSON-LD with the correct Boston UTC offset for DST.
 - **News:** the body is rendered as HTML because it's sanitized server-side. I tightened the sanitizer: `<script>`, `<style>`, `<iframe>` and similar elements now lose their *contents*, not just their tags, so no stray `alert(1)` text shows up in excerpts. There's a test for this.
 - **Gallery lightbox** uses the native `<dialog>`, which gives a built-in focus trap, Esc to close, and a backdrop click to close. Arrow keys move between photos, a live counter shows the position, and focus returns to the thumbnail that opened it.
+
+## Phase 4: Forms
+- **Register** (`/register/:slug`, plus `/register` to pick a program) is a multi-step form:
+  - It shows a step indicator (`aria-current="step"`), moves focus to each step's heading, and validates each step before moving on.
+  - If the server rejects a field, the form jumps back to the step that contains it.
+  - Youth programs use Guardian → Student → Emergency → Consent & review. Senior programs use About you → Emergency → Comfort & consent. Intergenerational programs first ask who is registering.
+  - Photo/video consent is an explicit Yes/No choice with no default.
+  - **The youth payload never includes the child's email or phone.** It only sends guardian contact details.
+  - The confirmation message differs for a confirmed spot and the waitlist, based on `status`/`waitlisted` in the API response.
+- **Get Involved** has three forms on one page with jump links: volunteer (`POST /api/volunteers`), guest instructor (`POST /api/contact` with `type: "guest_instructor"`), and partner/sponsor (`type: "partner"`). It also links to the research partner form.
+- **Contact:** the organization's email and phone come only from the `org_contact_email` / `org_contact_phone` settings and are hidden when blank. The map is a simple SVG placeholder; there's no third-party embed or tracking. Program locations are listed from the active programs.
+- **Donate:**
+  - Preset amounts ($25/50/100/250) or a custom amount ($1–$25,000), a one-time/monthly toggle, and a designation.
+  - Name and email are optional; the email gets the receipt.
+  - A live summary line shows the gift before submitting.
+  - Submitting sends the donor to Stripe Checkout.
+  - A 503 shows "Online donations aren't available yet."
+  - The `tax_status` setting is displayed under the form; no deductibility wording is hard-coded.
+
+  The thank-you (`/donate/thank-you`) and cancelled (`/donate/cancelled`) pages are `noindex`. **The default `STRIPE_CANCEL_URL` is now `/donate/cancelled`.**
+- **Privacy/Terms** are English placeholder drafts under a "DRAFT — REVIEW BEFORE LAUNCH" banner. They aren't put into the translation files, because the final text should come from legal review first.
+- The utility bar (text size, contrast, language) now sits outside the sticky header, so only the main nav bar stays pinned. This saves screen space on phones.

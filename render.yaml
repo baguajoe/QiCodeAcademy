@@ -47,7 +47,7 @@ services:
       - key: STRIPE_SUCCESS_URL
         sync: false            # e.g. https://qicodeacademy.org/donate/thank-you
       - key: STRIPE_CANCEL_URL
-        sync: false            # e.g. https://qicodeacademy.org/donate
+        sync: false            # e.g. https://qicodeacademy.org/donate/cancelled
       - key: R2_ACCOUNT_ID
         sync: false
       - key: R2_ACCESS_KEY_ID

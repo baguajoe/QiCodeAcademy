@@ -155,7 +155,7 @@ class TestingConfig(Config):
     STRIPE_SECRET_KEY = "sk_test_dummy"
     STRIPE_WEBHOOK_SECRET = "whsec_test_dummy"
     STRIPE_SUCCESS_URL = "http://localhost:3001/donate/thank-you"
-    STRIPE_CANCEL_URL = "http://localhost:3001/donate"
+    STRIPE_CANCEL_URL = "http://localhost:3001/donate/cancelled"
     WTF_CSRF_ENABLED = False
 
 
