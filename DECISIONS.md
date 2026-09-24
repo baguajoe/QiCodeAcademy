@@ -299,6 +299,6 @@ I downloaded only the four approved original files and reviewed each one.
 - **`IMAGE_CREDITS.md`** is generated from `credits.json` (`npm run credits`).
 - **New public `/photo-credits` page**, linked in the footer as "Photo credits". It lists default photos and any admin uploads that have a credit, and notes that stock photos show models, not participants.
 - **`IMAGE_GUIDE.md`** now has the photo rules and each slot's status.
-- **Retired wording** (the old lineage spelling variants, the old center name, the old youth grade, and "Cheng Style"): zero matches in the code, seed data, or database. A test now guards against it coming back.
+- **Retired wording** (the old lineage spelling variants, the old center name, the old youth grade, and a retired Tai Chi style name): zero matches in the code, seed data, or database. A test now guards against it coming back.
 - **Checks:** Home, About, Founder, Youth, Seniors, Research, and Donate (plus Contact and Photo credits) checked at 390px and 1280px, with 0 axe violations and no page overflow.
 - **Dev note:** an old `./start.sh` webpack dev server keeps writing dev builds into `dist_manual/`. Stop it before running `npm run build`.
