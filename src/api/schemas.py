@@ -26,6 +26,12 @@ def _phone(value):
         raise ValidationError("Enter a valid phone number.")
 
 
+def require_alt(data, url_field, alt_field):
+    """Every image needs alt text (accessibility)."""
+    if data.get(url_field) and not (data.get(alt_field) or "").strip():
+        raise ValidationError({alt_field: ["Describe the image (alt text) for people using screen readers."]})
+
+
 def _is_email(value):
     try:
         fields.Email()._validate(value)
@@ -147,11 +153,13 @@ class ProgramSchema(AdminSchema):
     cost = S(100)
     is_active = fields.Boolean(load_default=True)
     image_url = Url()
+    image_alt = S(300)
     seats_left = fields.Integer(dump_only=True)
     is_full = fields.Boolean(dump_only=True)
 
     @validates_schema
     def _dates(self, data, **kwargs):
+        require_alt(data, "image_url", "image_alt")
         if data.get("start_date") and data.get("end_date") and data["end_date"] < data["start_date"]:
             raise ValidationError({"end_date": ["End date must be on or after the start date."]})
 
@@ -172,11 +180,13 @@ class EventSchema(AdminSchema):
     start_datetime = LocalDateTime(required=True)
     end_datetime = LocalDateTime(allow_none=True)
     image_url = Url()
+    image_alt = S(300)
     is_published = fields.Boolean(load_default=False)
     timezone = fields.Function(lambda obj: "America/New_York", dump_only=True)
 
     @validates_schema
     def _times(self, data, **kwargs):
+        require_alt(data, "image_url", "image_alt")
         s, e = data.get("start_datetime"), data.get("end_datetime")
         if s and e and e < s:
             raise ValidationError({"end_datetime": ["End must be after the start."]})
@@ -395,10 +405,15 @@ class NewsPostSchema(AdminSchema):
     slug = ProgramSchema._declared_fields["slug"]
     body = S(200000)
     cover_image_url = Url()
+    cover_image_alt = S(300)
     category = Choice(m.NEWS_CATEGORIES, load_default="community")
     is_published = fields.Boolean(load_default=False)
     published_at = UTCDateTime(allow_none=True)
     excerpt = fields.Method("get_excerpt", dump_only=True)
+
+    @validates_schema
+    def _alt(self, data, **kwargs):
+        require_alt(data, "cover_image_url", "cover_image_alt")
 
     def get_excerpt(self, obj):
         text = html.unescape(strip_tags(obj.body))

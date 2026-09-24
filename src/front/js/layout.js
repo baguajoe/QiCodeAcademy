@@ -1,5 +1,5 @@
 import { Suspense, lazy, useEffect, useRef } from "react";
-import { BrowserRouter, Outlet, Route, Routes, useLocation } from "react-router-dom";
+import { BrowserRouter, Navigate, Outlet, Route, Routes, useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useStore } from "./store/appContext";
 import { Header } from "./component/Header";
@@ -8,6 +8,12 @@ import { Loading } from "./component/common";
 
 // Every page is its own lazily-loaded chunk.
 const Home = lazy(() => import(/* webpackChunkName: "home" */ "./pages/Home"));
+const About = lazy(() => import(/* webpackChunkName: "about" */ "./pages/About"));
+const Founder = lazy(() => import(/* webpackChunkName: "founder" */ "./pages/Founder"));
+const programs = () => import(/* webpackChunkName: "programs" */ "./pages/Programs");
+const YouthPrograms = lazy(() => programs().then((m) => ({ default: m.YouthPrograms })));
+const SeniorPrograms = lazy(() => programs().then((m) => ({ default: m.SeniorPrograms })));
+const IntergenerationalPrograms = lazy(() => programs().then((m) => ({ default: m.IntergenerationalPrograms })));
 const NotFound = lazy(() => import(/* webpackChunkName: "notfound" */ "./pages/NotFound"));
 
 function useRouteFocus() {
@@ -66,6 +72,12 @@ export default function Layout() {
       <Routes>
         <Route element={<PublicLayout />}>
           <Route path="/" element={<Home />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/about/founder" element={<Founder />} />
+          <Route path="/programs" element={<Navigate to="/#divisions" replace />} />
+          <Route path="/programs/youth" element={<YouthPrograms />} />
+          <Route path="/programs/seniors" element={<SeniorPrograms />} />
+          <Route path="/programs/intergenerational" element={<IntergenerationalPrograms />} />
           <Route path="*" element={<NotFound />} />
         </Route>
       </Routes>

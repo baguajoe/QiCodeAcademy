@@ -1,4 +1,6 @@
 """Public (no auth) API endpoints."""
+from datetime import date, datetime, time, timedelta
+
 from flask import Blueprint, Response, current_app, jsonify, request
 from sqlalchemy import func, select
 
@@ -95,7 +97,17 @@ def list_events():
         q = q.order_by(Event.start_datetime.desc())
     else:
         raise APIError("`when` must be upcoming, past, or all.", 400)
-    return jsonify(paginate(q, event_public, default_per_page=20))
+    # Optional date window (Boston dates, inclusive), e.g. for a month calendar.
+    for arg, op in (("start", "ge"), ("end", "le")):
+        raw = request.args.get(arg)
+        if raw:
+            try:
+                d = date.fromisoformat(raw)
+            except ValueError:
+                raise APIError(f"`{arg}` must be a date like 2026-10-01.", 400)
+            q = q.where(Event.start_datetime >= datetime.combine(d, time.min)) if op == "ge" \
+                else q.where(Event.start_datetime < datetime.combine(d + timedelta(days=1), time.min))
+    return jsonify(paginate(q, event_public, default_per_page=20, max_per_page=200))
 
 
 @bp.get("/events/<slug>")

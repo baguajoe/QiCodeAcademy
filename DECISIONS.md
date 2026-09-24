@@ -89,3 +89,20 @@ Decisions made while building the backend without stopping to ask. Each can be r
 - **Navigation:** the desktop nav appears at ≥1200px. Below that, a large **"Menu"** button with an icon *and* the word "Menu" opens the nav. The Programs dropdown is click/keyboard-operated (Esc closes it) rather than hover-only.
 - **Photo slots** (`siteImages.js`) resolve in this order: an admin-uploaded SiteImage, then `src/front/img/site/<slot>.jpg|png|webp` (found at build time via `require.context` and turned into a WebP srcset by `responsive-loader` + `sharp`), then a styled placeholder naming the exact photo and size. Originals are also copied unhashed to `/img/site/` so they can serve as Open Graph images.
 - **Default share image:** `img/og-default.png` is generated artwork (logo circles + name), not a photo of people.
+
+## Phase 2: Core pages (+ backend additions)
+- **Founder copy is verbatim.** It lives in `src/api/founder_content.py`, and `flask seed` (including `--no-samples`, which Render's build runs) copies it into:
+  - a TeamMember "Joseph Gallop" (group `staff`, role "Founder & Principal Instructor", short bio)
+  - settings `founder_full_bio` (`## ` lines are section headings, blank lines separate paragraphs) and `founder_credentials` (one per line)
+
+  Seeding never overwrites staff edits. `src/front/js/founderContent.js` holds an identical fallback, and `tests/test_founder.py` fails if the two drift.
+- **New public settings**, seeded blank and hidden until filled: `press_globe_url`, `press_wcvb_url`, `org_contact_email`, `org_contact_phone`.
+- **"As featured in" strip:** the outlet names ("The Boston Globe", "WCVB Channel 5 Chronicles") always show as plain text, matching the bio, and each becomes a link only after its URL setting is filled.
+- **Founder's "instructor profile":** Joseph is seeded as `staff` per the brief, but the About page shows his profile (portrait, role, credentials, link to full bio) at the top of the Instructors section. The founder card above it carries the short bio.
+- **Vision statement** on About was drafted by me because none was supplied. It's in `locales/en.json` (`about.vision`). Please review.
+- **Photo slots** now also include `home-card-youth`, `home-card-seniors`, `home-card-research`, and `founder-teaching`. The backend seed list and the frontend `SLOTS` must stay in sync; a test checks this.
+- **Alt-text columns:** added `image_alt` (Program, Event) and `cover_image_alt` (NewsPost), with a migration. The API rejects an image URL that has no alt text.
+- **Events filter:** `GET /api/events` accepts `start`/`end` (YYYY-MM-DD, inclusive) for the month calendar.
+- **Admin filter:** registrations can be filtered by `photo_consent`.
+- **Diagrams** are hand-built SVG. Each has a wide layout and a stacked phone layout (CSS switches at 40rem so text stays ≥16px), plus `<title>`/`<desc>` listing every step. The senior session flow is drawn as a circle, echoing Bagua circle walking.
+- **`/programs`** redirects to the home page's divisions section. The three division pages are `/programs/youth`, `/programs/seniors`, and `/programs/intergenerational`.

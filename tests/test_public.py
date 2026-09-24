@@ -303,3 +303,12 @@ def test_rate_limit_public_posts(rate_limited_app):
     codes = [client.post("/api/contact", json=payload).status_code for _ in range(3)]
     assert codes == [201, 201, 429]
     assert client.post("/api/contact", json=payload).get_json()["error"] == "too_many_requests"
+
+
+def test_events_date_window(client, make_event):
+    from datetime import datetime
+    make_event(title="Oct", start_datetime=datetime(2030, 10, 15, 10), end_datetime=None)
+    make_event(title="Nov", start_datetime=datetime(2030, 11, 1, 9), end_datetime=None)
+    body = client.get("/api/events?when=all&start=2030-10-01&end=2030-10-31").get_json()
+    assert [e["title"] for e in body["items"]] == ["Oct"]
+    assert client.get("/api/events?when=all&start=nope").status_code == 400

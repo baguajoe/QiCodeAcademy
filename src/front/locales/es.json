@@ -215,7 +215,8 @@
     ],
     "programsTitle": "TODO: Current youth programs",
     "noPrograms": "TODO: No youth programs are open right now. Check back soon, or contact us to be notified.",
-    "guardianNote": "TODO: A parent or guardian completes registration for students under 18."
+    "guardianNote": "TODO: A parent or guardian completes registration for students under 18.",
+    "pathwayStart": "TODO: Starts around 5th grade"
   },
   "seniors": {
     "title": "TODO: Senior Wellness & Healthy Aging",
@@ -245,7 +246,8 @@
       "TODO: Community resource or guest presentation"
     ],
     "programsTitle": "TODO: Current senior programs",
-    "noPrograms": "TODO: No senior programs are open right now. Check back soon, or contact us to be notified."
+    "noPrograms": "TODO: No senior programs are open right now. Check back soon, or contact us to be notified.",
+    "flowCenter": "TODO: A typical session"
   },
   "inter": {
     "title": "TODO: Intergenerational Programs",
@@ -301,7 +303,8 @@
     "inquiryLead": "TODO: Are you a researcher, clinician, or institution interested in partnering? We'd like to hear from you.",
     "notifyTitle": "TODO: Notify me about future research opportunities",
     "notifyLead": "TODO: Leave your name and a way to reach you, and we'll let you know if a study opens in the future.",
-    "notifyNote": "TODO: Joining this list does not enroll you in any study."
+    "notifyNote": "TODO: Joining this list does not enroll you in any study.",
+    "studyCenter": "TODO: A formal study"
   },
   "events": {
     "title": "TODO: Events",

@@ -199,7 +199,7 @@ for _r in [
     Resource("registrations", Registration, RegistrationSchema,
              search=("participant_first_name", "participant_last_name", "guardian_name",
                      "guardian_email", "email"),
-             filters=("program_id", "type", "status"), before_save=_registration_before_save,
+             filters=("program_id", "type", "status", "photo_consent"), before_save=_registration_before_save,
              after_update=_registration_after_update),
     Resource("volunteers", Volunteer, VolunteerSchema, search=("name", "email")),
     Resource("contact-messages", ContactMessage, ContactMessageSchema,

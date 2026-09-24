@@ -110,6 +110,7 @@ class Program(TimestampMixin, db.Model):
     cost = db.Column(db.String(100))  # display text, e.g. "Free" or "$20 sliding scale"
     is_active = db.Column(db.Boolean, nullable=False, default=True, index=True)
     image_url = db.Column(db.String(500))
+    image_alt = db.Column(db.String(300))
 
     registrations = db.relationship("Registration", back_populates="program", lazy="select")
 
@@ -151,6 +152,7 @@ class Event(TimestampMixin, db.Model):
     start_datetime = db.Column(db.DateTime, nullable=False, index=True)  # Boston local time
     end_datetime = db.Column(db.DateTime)                               # Boston local time
     image_url = db.Column(db.String(500))
+    image_alt = db.Column(db.String(300))
     is_published = db.Column(db.Boolean, nullable=False, default=False, index=True)
 
     def __str__(self):
@@ -260,6 +262,7 @@ class NewsPost(TimestampMixin, db.Model):
     slug = db.Column(db.String(200), unique=True, nullable=False, index=True)
     body = db.Column(db.Text, nullable=False, default="")
     cover_image_url = db.Column(db.String(500))
+    cover_image_alt = db.Column(db.String(300))
     category = db.Column(db.String(20), nullable=False, default="community", index=True)
     is_published = db.Column(db.Boolean, nullable=False, default=False, index=True)
     published_at = db.Column(db.DateTime, index=True)

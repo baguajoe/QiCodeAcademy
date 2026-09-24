@@ -6,7 +6,9 @@ import click
 from sqlalchemy import select
 
 from .extensions import db
-from .models import Event, ImpactStat, Program, SiteImage, SiteSetting, User
+from .founder_content import (FOUNDER_CREDENTIALS, FOUNDER_FULL_BIO, FOUNDER_NAME, FOUNDER_ROLE,
+                              FOUNDER_SHORT_BIO)
+from .models import Event, ImpactStat, Program, SiteImage, SiteSetting, TeamMember, User
 
 SAMPLE = "[SAMPLE]"
 
@@ -18,12 +20,23 @@ DEFAULT_SETTINGS = [
     ("social_facebook", "", True),
     ("social_instagram", "", True),
     ("social_youtube", "", True),
+    # Founder page content (editable in the admin; see founder_content.py)
+    ("founder_full_bio", FOUNDER_FULL_BIO, True),
+    ("founder_credentials", FOUNDER_CREDENTIALS, True),
+    # "As featured in" links — outlet names show as plain text until a URL is filled in
+    ("press_globe_url", "", True),
+    ("press_wcvb_url", "", True),
+    # Organization contact info shown on Contact page/footer (blank = hidden)
+    ("org_contact_email", "", True),
+    ("org_contact_phone", "", True),
 ]
 
+# Keep in sync with SLOTS in src/front/js/siteImages.js and IMAGE_GUIDE.md.
 SITE_IMAGE_SLOTS = [
-    "hero-home", "youth-banner", "seniors-banner", "research-banner",
-    "intergenerational-banner", "founder-portrait", "donate", "volunteer-banner",
-    "about-banner", "events-banner",
+    "hero-home", "home-card-youth", "home-card-seniors", "home-card-research",
+    "about-banner", "founder-portrait", "founder-teaching",
+    "youth-banner", "seniors-banner", "intergenerational-banner", "research-banner",
+    "events-banner", "volunteer-banner", "donate",
 ]
 
 
@@ -126,6 +139,15 @@ def seed_settings():
     return added
 
 
+def seed_founder():
+    """Add the founder as a TeamMember once (editable afterwards in the admin)."""
+    if db.session.scalar(select(TeamMember).where(TeamMember.name == FOUNDER_NAME)):
+        return False
+    db.session.add(TeamMember(name=FOUNDER_NAME, role_title=FOUNDER_ROLE, bio=FOUNDER_SHORT_BIO,
+                              group="staff", sort_order=0))
+    return True
+
+
 def seed_admin(email, password, name="Administrator"):
     email = (email or "").strip().lower()
     if not email or not password:
@@ -150,6 +172,8 @@ def register_commands(app):
                             os.getenv("ADMIN_NAME", "Administrator"))
         click.echo(msg)
         click.echo(f"Settings added: {seed_settings()}")
+        if seed_founder():
+            click.echo("Added founder team member.")
 
         if not no_samples:
             today = date.today()

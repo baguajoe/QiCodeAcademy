@@ -115,12 +115,21 @@
       "motto": "Learn • Teach • Connect",
       "summary": "Youth help older adults learn technology: young people gain leadership experience, and seniors gain digital skills."
     },
-    "community": { "name": "Community", "short": "Community" }
+    "community": {
+      "name": "Community",
+      "short": "Community"
+    }
   },
   "neighborhoods": {
     "title": "Communities we serve",
     "lead": "Our initial service area includes these Boston neighborhoods, and we welcome participants from other underserved Boston communities too.",
-    "list": ["Dorchester", "Roxbury", "Mattapan", "Hyde Park", "South End"]
+    "list": [
+      "Dorchester",
+      "Roxbury",
+      "Mattapan",
+      "Hyde Park",
+      "South End"
+    ]
   },
   "home": {
     "missionShort": "Qi Code Academy empowers youth and older adults in Boston's inner-city communities through technology education, workforce development, wellness, community engagement, and research.",
@@ -183,13 +192,31 @@
     "introTitle": "Code, create, and build the future",
     "intro": "Young people build practical skills in Python programming, game development, artificial intelligence, 3D animation, and emerging technologies while developing pathways toward higher education, entrepreneurship, and careers.",
     "focusTitle": "What students learn",
-    "focus": ["Python", "Game Development", "Artificial Intelligence", "3D Animation", "Digital Skills", "STEM", "Career Readiness", "Workforce Development"],
+    "focus": [
+      "Python",
+      "Game Development",
+      "Artificial Intelligence",
+      "3D Animation",
+      "Digital Skills",
+      "STEM",
+      "Career Readiness",
+      "Workforce Development"
+    ],
     "pathwayTitle": "The learning pathway",
     "pathwayLead": "Students start around 5th grade and build skills step by step, from first lines of code to a portfolio and career preparation.",
-    "pathway": ["Python", "Game Development", "AI", "3D Animation", "Digital Technology", "Portfolio Development", "Career & Workforce Preparation"],
+    "pathway": [
+      "Python",
+      "Game Development",
+      "AI",
+      "3D Animation",
+      "Digital Technology",
+      "Portfolio Development",
+      "Career & Workforce Preparation"
+    ],
     "programsTitle": "Current youth programs",
     "noPrograms": "No youth programs are open right now. Check back soon, or contact us to be notified.",
-    "guardianNote": "A parent or guardian completes registration for students under 18."
+    "guardianNote": "A parent or guardian completes registration for students under 18.",
+    "pathwayStart": "Starts around 5th grade"
   },
   "seniors": {
     "title": "Senior Wellness & Healthy Aging",
@@ -197,12 +224,30 @@
     "introTitle": "Move, connect, thrive",
     "intro": "We support older adults through traditional Tai Chi, Baguazhang, yoga, movement, wellness education, social engagement, and community resources. Classes are welcoming to all experience levels.",
     "focusTitle": "What we offer",
-    "focus": ["Traditional Tai Chi", "Traditional Baguazhang", "Yoga", "Balance & Mobility", "Chair Massage / Bodywork Wellness", "Meditation", "Healthy Aging", "Social Engagement", "Food & Refreshments", "Community Resources"],
+    "focus": [
+      "Traditional Tai Chi",
+      "Traditional Baguazhang",
+      "Yoga",
+      "Balance & Mobility",
+      "Chair Massage / Bodywork Wellness",
+      "Meditation",
+      "Healthy Aging",
+      "Social Engagement",
+      "Food & Refreshments",
+      "Community Resources"
+    ],
     "flowTitle": "What a session looks like",
     "flowLead": "Each gathering blends gentle movement with time to connect.",
-    "flow": ["Tai Chi, Bagua, or Yoga", "Wellness activity", "Social time", "Food & refreshments", "Community resource or guest presentation"],
+    "flow": [
+      "Tai Chi, Bagua, or Yoga",
+      "Wellness activity",
+      "Social time",
+      "Food & refreshments",
+      "Community resource or guest presentation"
+    ],
     "programsTitle": "Current senior programs",
-    "noPrograms": "No senior programs are open right now. Check back soon, or contact us to be notified."
+    "noPrograms": "No senior programs are open right now. Check back soon, or contact us to be notified.",
+    "flowCenter": "A typical session"
   },
   "inter": {
     "title": "Intergenerational Programs",
@@ -226,9 +271,21 @@
     "partnershipTitle": "How a research partnership would work",
     "partnershipLead": "Each partner brings different strengths to a study.",
     "qcaBringsTitle": "Qi Code Academy brings",
-    "qcaBrings": ["The Baguazhang intervention", "Trained instructors", "Community connections", "A standardized curriculum"],
+    "qcaBrings": [
+      "The Baguazhang intervention",
+      "Trained instructors",
+      "Community connections",
+      "A standardized curriculum"
+    ],
     "partnersBringTitle": "Research partners bring",
-    "partnersBring": ["Principal investigator", "Study design", "IRB approval", "Informed consent", "Statistics", "Publication"],
+    "partnersBring": [
+      "Principal investigator",
+      "Study design",
+      "IRB approval",
+      "Informed consent",
+      "Statistics",
+      "Publication"
+    ],
     "roadmapTitle": "Our roadmap",
     "roadmapLead": "Where we plan to go, step by step.",
     "roadmap": [
@@ -246,7 +303,8 @@
     "inquiryLead": "Are you a researcher, clinician, or institution interested in partnering? We'd like to hear from you.",
     "notifyTitle": "Notify me about future research opportunities",
     "notifyLead": "Leave your name and a way to reach you, and we'll let you know if a study opens in the future.",
-    "notifyNote": "Joining this list does not enroll you in any study."
+    "notifyNote": "Joining this list does not enroll you in any study.",
+    "studyCenter": "A formal study"
   },
   "events": {
     "title": "Events",
@@ -279,7 +337,12 @@
     "lead": "Updates from our programs and community.",
     "category": "Category",
     "all": "All",
-    "categories": { "youth": "Youth", "seniors": "Seniors", "research": "Research", "community": "Community" },
+    "categories": {
+      "youth": "Youth",
+      "seniors": "Seniors",
+      "research": "Research",
+      "community": "Community"
+    },
     "noPosts": "No news posts yet.",
     "back": "All news",
     "published": "Published {{date}}",
@@ -418,7 +481,12 @@
     "custom": "Other amount",
     "customLabel": "Other amount in dollars",
     "designation": "Where should your gift go?",
-    "designations": { "youth": "Youth programs", "senior": "Senior programs", "research": "Research", "general": "Where it's needed most" },
+    "designations": {
+      "youth": "Youth programs",
+      "senior": "Senior programs",
+      "research": "Research",
+      "general": "Where it's needed most"
+    },
     "nameLabel": "Your name",
     "emailLabel": "Your email (for your receipt)",
     "submit": "Continue to secure payment",

@@ -266,3 +266,26 @@ def test_dashboard(client, db, auth_headers, make_program):
     assert len(d["donations"]["recent"]) == 2
     assert d["unread_messages"] == 1
     assert d["new_research_inquiries"] == 1
+
+
+def test_image_alt_required(client, auth_headers):
+    res = client.post("/api/admin/programs", headers=auth_headers, json={
+        "division": "youth", "title": "Pics", "image_url": "/uploads/x.webp"})
+    assert res.status_code == 400 and "image_alt" in res.get_json()["errors"]
+    res = client.post("/api/admin/programs", headers=auth_headers, json={
+        "division": "youth", "title": "Pics", "image_url": "/uploads/x.webp", "image_alt": "Kids coding"})
+    assert res.status_code == 201
+    res = client.post("/api/admin/news", headers=auth_headers, json={"title": "N", "cover_image_url": "/u.webp"})
+    assert "cover_image_alt" in res.get_json()["errors"]
+    res = client.post("/api/admin/events", headers=auth_headers, json={
+        "division": "youth", "title": "E", "start_datetime": "2030-01-01T10:00", "image_url": "/u.webp"})
+    assert "image_alt" in res.get_json()["errors"]
+
+
+def test_registrations_photo_consent_filter(client, db, auth_headers, make_program):
+    p = make_program()
+    db.session.add_all([Registration(**{**YOUTH, "program_id": p.id, "photo_consent": True}),
+                        Registration(**{**YOUTH, "program_id": p.id, "photo_consent": False})])
+    db.session.commit()
+    body = client.get("/api/admin/registrations?photo_consent=true", headers=auth_headers).get_json()
+    assert body["total"] == 1 and body["items"][0]["photo_consent"] is True
