@@ -38,7 +38,7 @@ export function YouthPrograms() {
           <SectionHeader title={t("youth.programsTitle")} lead={t("youth.guardianNote")} id="youth-programs-title" />
           <ProgramList division="youth" emptyText={t("youth.noPrograms")} />
           <p style={{ marginTop: "2rem" }}>
-            <Link to="/programs/intergenerational">{t("home.interCta")}</Link>
+            <Link className="more-link" to="/programs/intergenerational">{t("home.interCta")}</Link>
           </p>
         </div>
       </section>

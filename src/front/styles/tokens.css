@@ -82,7 +82,9 @@
   --tap: 44px;
   --focus: #ffbf47;
   --focus-ring: 0 0 0 3px var(--ink), 0 0 0 6px var(--focus);
-  --overlay: linear-gradient(180deg, rgb(10 16 24 / 0.45) 0%, rgb(10 16 24 / 0.72) 100%);
+  /* Overlay on hero/banner photos. Worst case (pure white photo): >= 0.6 black where headings sit
+     gives white text >= 5:1, and >= 0.75 behind body text gives >= 9:1 (WCAG AA). */
+  --overlay: linear-gradient(180deg, rgb(10 16 24 / 0.35) 0%, rgb(10 16 24 / 0.62) 35%, rgb(10 16 24 / 0.8) 100%);
 }
 
 /* Text-size toggle: A (18px), A+ (20.7px), A++ (23.4px) */

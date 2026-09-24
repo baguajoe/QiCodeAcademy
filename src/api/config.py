@@ -121,6 +121,11 @@ class Config:
     DONATION_MIN_CENTS = _int("DONATION_MIN_CENTS", 100)          # $1
     DONATION_MAX_CENTS = _int("DONATION_MAX_CENTS", 2_500_000)    # $25,000
 
+    # --- Compression (Flask-Compress: brotli/gzip for HTML, JSON, JS, CSS, SVG) ---
+    COMPRESS_MIMETYPES = ["text/html", "text/css", "text/plain", "text/xml", "text/calendar", "application/json",
+                          "application/javascript", "text/javascript", "application/xml", "image/svg+xml"]
+    COMPRESS_MIN_SIZE = 1024
+
     # --- Misc ---------------------------------------------------------------
     ORG_NAME = "Qi Code Academy"
     ORG_LEGAL_NAME = "Qi Code Academy, Inc."

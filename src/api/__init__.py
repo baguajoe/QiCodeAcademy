@@ -7,8 +7,9 @@ from sqlalchemy.exc import IntegrityError
 from werkzeug.exceptions import HTTPException
 from werkzeug.middleware.proxy_fix import ProxyFix
 
+from . import seo
 from .config import REPO_ROOT, Config, get_config
-from .extensions import cors, db, jwt, limiter, migrate
+from .extensions import compress, cors, db, jwt, limiter, migrate
 from .models import ModelRuleError
 from .utils import APIError, error_response
 
@@ -29,6 +30,7 @@ def create_app(config_object=None, **overrides):
     migrate.init_app(app, db, directory=str(REPO_ROOT / "migrations"), render_as_batch=True)
     jwt.init_app(app)
     limiter.init_app(app)
+    compress.init_app(app)
     _init_cors(app)
 
     from .routes import register_blueprints
@@ -138,6 +140,15 @@ def _register_static(app):
         return resp
 
     dist = Path(app.config["FRONTEND_DIST_DIR"])
+    YEAR = 60 * 60 * 24 * 365
+
+    @app.get("/sitemap.xml")
+    def sitemap_xml():
+        return seo.sitemap()
+
+    @app.get("/robots.txt")
+    def robots_txt():
+        return seo.robots()
 
     @app.get("/")
     @app.get("/<path:path>")
@@ -145,9 +156,12 @@ def _register_static(app):
         # Serve the built React app (webpack output) with SPA fallback.
         if path.startswith("api/"):
             return error_response("Not found.", 404, "not_found")
-        if path and (dist / path).is_file():
-            return send_from_directory(dist, path)
+        if path and path != "index.html" and (dist / path).is_file():
+            # Webpack output under js/ and css/ (and resized img/*) is content-hashed → cache for a year.
+            hashed = path.startswith(("js/", "css/")) or (path.startswith("img/") and not path.startswith("img/site/"))
+            return send_from_directory(dist, path, max_age=YEAR if hashed else 60 * 60 * 24)
         if (dist / "index.html").is_file():
-            return send_from_directory(dist, "index.html")
+            # Page-specific <title>, meta, Open Graph and JSON-LD for crawlers; 404 status for unknown pages.
+            return seo.render_index(dist, "/" + path)
         return jsonify({"name": "Qi Code Academy API", "status": "ok",
                         "docs": "See API.md", "frontend": "not built yet"})

@@ -94,7 +94,7 @@ function UpcomingEvents() {
       <div className="container">
         <div className="cluster" style={{ justifyContent: "space-between", marginBottom: "1.5rem" }}>
           <h2 id="events-title" style={{ margin: 0 }}>{t("home.eventsTitle")}</h2>
-          <Link to="/events">{t("home.allEvents")}</Link>
+          <Link className="more-link" to="/events">{t("home.allEvents")}</Link>
         </div>
         {data && data.items.length ? (
           <div className="grid grid-3">{data.items.map((e) => <EventCard key={e.id} event={e} />)}</div>
@@ -136,7 +136,7 @@ function GalleryStrip() {
       <div className="container">
         <div className="cluster" style={{ justifyContent: "space-between", marginBottom: "1.5rem" }}>
           <h2 id="gallery-title" style={{ margin: 0 }}>{t("home.galleryTitle")}</h2>
-          <Link to="/gallery">{t("home.galleryAll")}</Link>
+          <Link className="more-link" to="/gallery">{t("home.galleryAll")}</Link>
         </div>
         <ul className="photo-grid photo-grid-6">
           {items.length
@@ -189,7 +189,7 @@ function LatestNews() {
       <div className="container">
         <div className="cluster" style={{ justifyContent: "space-between", marginBottom: "1.5rem" }}>
           <h2 id="news-title" style={{ margin: 0 }}>{t("home.newsTitle")}</h2>
-          <Link to="/news">{t("home.allNews")}</Link>
+          <Link className="more-link" to="/news">{t("home.allNews")}</Link>
         </div>
         <div className="grid grid-3">{data.items.map((p) => <NewsCard key={p.id} post={p} />)}</div>
       </div>

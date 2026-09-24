@@ -161,3 +161,23 @@ Decisions made while building the backend without stopping to ask. Each can be r
 - **IMAGE_GUIDE.md** lists every photo slot (page, file name, size, subject) and the per-item photos added in the admin, with the photo-consent reminder up front.
 - **i18n:** only English is bundled. Spanish and Haitian Creole load on demand as separate ~23 KB chunks the first time someone picks them. Both files contain every key; untranslated values are `"TODO: <English>"` and fall back to English at runtime. `npm run i18n:sync` keeps them in step, and `src/front/locales/README.md` explains the rules for translators (don't translate personal, lineage, or organization names, and follow the health-language rules). The language menu labels them "(in progress)".
 - **Not translated:** the founder bio and other admin-entered content, because it lives in the database, not the translation files.
+
+## Phase 7: Accessibility, content review, SEO, performance
+- **Accessibility audit** with axe-core (WCAG 2.1 A/AA) on all 22 public routes in five modes: desktop 1280px, phone 390px, high-contrast, and the largest text size on 390px and 320px phones. The result was **0 violations and no horizontal scrolling**.
+  - Fixed along the way: grids that expanded past narrow screens (`minmax(0, 1fr)` everywhere), a header that overflowed at the largest text size, 36px buttons raised to 44px (and "see all" links given 44px targets), and an unlabeled hidden file input in the admin.
+  - Keyboard check: the skip link works, the Programs dropdown opens with Enter, Esc closes it and returns focus, the mobile Menu button works, and focus moves to the new page's `<h1>` after navigation.
+  - **Text over photos:** the overlay gradient is at least 62% black where headings sit and at least 80% behind body text, so white text passes AA even on an all-white photo. High-contrast mode uses an 82% black overlay.
+- **Health and research language review:** I searched all copy (locales, page and component files, email templates, seed data, SEO text) for claim words. There were no violations. The only matches are the founder's credential names, the disclaimers themselves, and the organization's own research-question wording ("potential relationship to … fall-risk factors").
+  - `tests/test_content_rules.py` now fails the build if claim language ("prevents falls", "cures", "reduces risk", "improves balance", "clinically proven", "studies show", "tax-deductible", …) appears anywhere in public copy.
+  - It also checks the wellness disclaimer wording, that the roadmap is in future tense, the "does not enroll you in any study" note, that no research references or gallery photos are seeded, and that every sample record is labeled `[SAMPLE]`.
+- **Founder text check:** I compared the text line by line against the brief. `tests/test_founder.py` checks that the frontend fallback and the backend seed are identical, confirms key lineage names and dates, and checks the three headings and six credentials. The founder page shows the short bio as its introduction, followed by the full bio's three headed sections. Both texts are the organization's own words; nothing was added.
+- **SEO:**
+  - Every page gets its own title, description, canonical URL, Open Graph/Twitter tags, and share image, both client-side (`useSeo`) and **server-side**. Flask (`src/api/seo.py`) injects the tags into `index.html` so link previews and crawlers see them without running JavaScript.
+  - JSON-LD: NonprofitOrganization (as `NGO` + `additionalType`) on every page, `Event` on event pages with the correct Boston UTC offset, `Person` on the founder page, and `NewsArticle` on posts.
+  - `/sitemap.xml` is generated from the database (static pages plus published events and news). `/robots.txt` blocks admin, API, register, and the donation result pages.
+  - Unknown URLs now return a real **404** status (the React 404 page still renders).
+  - The injection doesn't depend on HTML comments, because this webpack version minifies the HTML template.
+- **Performance:**
+  - The initial load is about 86 KB gzipped JS (React, router, i18next, app shell) plus 8 KB CSS. Every page, the admin, and the non-English locales are separate chunks.
+  - Images are lazy-loaded, except the hero/banner, which is eager with `fetchpriority=high`. They use responsive `srcset`s both for uploads and for files dropped into `img/site/`. Fonts are system fonts, so no web-font downloads.
+  - Flask serves hashed assets with a one-year cache, `index.html` with `no-cache`, and compresses responses with Brotli/gzip (**Flask-Compress** was added to `requirements.txt`).

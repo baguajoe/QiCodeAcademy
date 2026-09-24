@@ -9,12 +9,12 @@
 
 .division-cards .card-media { aspect-ratio: 16 / 10; }
 .division-cards h3 { font-size: 1.35rem; }
-.inter-band { display: grid; gap: var(--space-5); align-items: center; border-radius: var(--radius); background: var(--inter-soft); padding: var(--space-6); border-left: 8px solid var(--inter); }
+.inter-band { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--space-5); align-items: center; border-radius: var(--radius); background: var(--inter-soft); padding: var(--space-6); border-left: 8px solid var(--inter); }
 @media (min-width: 48rem) { .inter-band { grid-template-columns: 2fr 1fr; } }
-.two-gains { display: grid; gap: var(--space-5); }
+.two-gains { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--space-5); }
 @media (min-width: 48rem) { .two-gains { grid-template-columns: 1fr 1fr; } }
 .gain { background: var(--surface); border-radius: var(--radius); padding: var(--space-5); border-top: 6px solid var(--accent); box-shadow: var(--shadow); }
-.team-grid { display: grid; gap: var(--space-5); grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr)); }
+.team-grid { display: grid; gap: var(--space-5); grid-template-columns: repeat(auto-fill, minmax(min(15rem, 100%), 1fr)); }
 .team-card { text-align: left; }
 .team-card .photo { aspect-ratio: 4 / 5; border-radius: var(--radius) var(--radius) 0 0; }
 .team-card .card-body p { font-size: 0.95rem; }
@@ -82,7 +82,7 @@
 /* Panels & forms */
 .panel { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: var(--space-5); box-shadow: var(--shadow); border-top: 6px solid var(--accent); }
 @media (min-width: 48rem) { .panel { padding: var(--space-6); } }
-.involved-grid { display: grid; gap: var(--space-6); }
+.involved-grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--space-6); }
 @media (min-width: 64rem) { .involved-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: start; } }
 .jump-nav { margin-bottom: var(--space-6); }
 section[id], div[id] { scroll-margin-top: 7rem; }
@@ -110,19 +110,23 @@ section[id], div[id] { scroll-margin-top: 7rem; }
 .map-placeholder p { margin: 0; padding: var(--space-3) var(--space-4); color: var(--ink-muted); font-size: 0.95rem; }
 
 /* Donate */
-.donate-layout { display: grid; gap: var(--space-6); align-items: start; }
+.donate-layout { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--space-6); align-items: start; }
 @media (min-width: 56rem) { .donate-layout { grid-template-columns: 5fr 6fr; } .donate-photo { position: sticky; top: 7rem; } }
 .donate-photo .photo { aspect-ratio: 4 / 5; }
-.toggle-radios { display: inline-flex; border: 2px solid var(--brand); border-radius: 999px; overflow: hidden; }
+.toggle-radios { display: inline-flex; flex-wrap: wrap; max-width: 100%; border: 2px solid var(--brand); border-radius: 999px; overflow: hidden; }
 .toggle-option { position: relative; display: inline-flex; align-items: center; justify-content: center; min-height: var(--tap); padding: 0.5rem 1.3rem; font-weight: 700; cursor: pointer; background: var(--surface); color: var(--brand); }
 .toggle-option input { position: absolute; opacity: 0; width: 1px; height: 1px; }
 .toggle-option.is-on { background: var(--brand); color: #fff; }
 .toggle-option:has(input:focus-visible) { outline: 3px solid var(--focus); outline-offset: -3px; box-shadow: inset 0 0 0 6px var(--ink); }
-.amount-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(5.5rem, 1fr)); gap: var(--space-2); }
-.amount-grid .toggle-option:last-child { grid-column: span 2; white-space: nowrap; }
+.amount-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(5.5rem, 100%), 1fr)); gap: var(--space-2); }
+.amount-grid .toggle-option:last-child { grid-column: span 2; }
+@media (max-width: 24rem) { .amount-grid .toggle-option:last-child { grid-column: auto; } }
 .amount-grid .toggle-option { border: 2px solid var(--brand); border-radius: var(--radius-sm); font-size: 1.2rem; }
 .money-input { display: flex; align-items: center; gap: var(--space-2); max-width: 14rem; }
 .money-input span { font-size: 1.4rem; font-weight: 700; }
 .donate-summary { font-size: 1.1rem; font-weight: 600; background: var(--brand-soft); padding: var(--space-3) var(--space-4); border-radius: var(--radius-sm); }
 .tax-status { margin-top: var(--space-3); }
 :root[data-contrast="high"] .toggle-option.is-on { background: #000; color: #fff; }
+
+.event-card-inner .card-body { min-width: 0; }
+.event-card h3, .card-body h3 { overflow-wrap: anywhere; }

@@ -6,6 +6,8 @@ Flask-Migrate==4.1.0
 alembic==1.20.0
 Flask-JWT-Extended==4.7.4
 flask-cors==6.0.5
+Flask-Compress==1.25
+brotli==1.2.0
 Flask-Admin==2.2.1
 WTForms==3.2.2
 Flask-Limiter==4.1.1

@@ -34,7 +34,7 @@ function FounderInstructorCard({ founder }) {
         <p className="role">{founder.role}</p>
         <h5 className="small" style={{ margin: "0.5rem 0" }}>{t("founder.credentialsTitle")}</h5>
         <CredentialsList items={founder.credentials} compact />
-        <Link to="/about/founder">{t("about.readMoreFounder")}</Link>
+        <Link className="more-link" to="/about/founder">{t("about.readMoreFounder")}</Link>
       </div>
     </article>
   );

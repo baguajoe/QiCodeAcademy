@@ -40,7 +40,7 @@
 .admin-table tbody tr:hover { background: #fcfbf8; }
 .admin-table .col-new { color: var(--donate); font-weight: 800; white-space: nowrap; }
 .thumb-cell .photo { width: 4.5rem; }
-.status-select { min-height: 40px; width: auto; font-weight: 700; }
+.status-select { min-height: var(--tap); width: auto; font-weight: 700; }
 .status-pending { border-color: #b7791f !important; }
 .status-confirmed { border-color: var(--success) !important; }
 .status-waitlist { border-color: var(--brand) !important; }

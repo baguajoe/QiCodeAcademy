@@ -16,7 +16,7 @@
   background: var(--ph-motif, none);
 }
 .placeholder .ph-icon { width: 2.4rem; height: 2.4rem; opacity: 0.85; position: relative; z-index: 1; }
-.placeholder .ph-caption { position: relative; z-index: 1; max-width: 34rem; font-size: 0.9rem; font-weight: 600; line-height: 1.4; background: rgb(255 255 255 / 0.78); padding: 0.35rem 0.7rem; border-radius: var(--radius-sm); }
+.placeholder .ph-caption { overflow-wrap: anywhere; position: relative; z-index: 1; max-width: 34rem; font-size: 0.9rem; font-weight: 600; line-height: 1.4; background: rgb(255 255 255 / 0.78); padding: 0.35rem 0.7rem; border-radius: var(--radius-sm); }
 .placeholder .ph-label { font-size: 0.72rem; letter-spacing: 0.12em; text-transform: uppercase; font-weight: 800; }
 .ph-youth {
   --ph-bg: linear-gradient(135deg, #c9d8ff 0%, #e8efff 55%, #bfeaff 100%);
@@ -107,14 +107,14 @@
 .photo-grid figcaption { font-size: 0.9rem; color: var(--ink-muted); margin-top: var(--space-1); }
 
 /* CTA band */
-.cta-band { border-radius: var(--radius); padding: var(--space-6); display: grid; gap: var(--space-5); background: var(--brand); color: #fff; }
+.cta-band { border-radius: var(--radius); padding: var(--space-6); display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--space-5); background: var(--brand); color: #fff; }
 .cta-band h2 { color: #fff; }
 .cta-band p { color: #eef3f5; }
 @media (min-width: 48rem) { .cta-band { grid-template-columns: 1fr 1fr; padding: var(--space-7); } }
 .cta-band .cta-item { display: flex; flex-direction: column; gap: var(--space-3); align-items: flex-start; }
 
 /* Founder card */
-.founder-card { display: grid; gap: var(--space-5); align-items: start; background: var(--surface); border-radius: var(--radius); border: 1px solid var(--line); padding: var(--space-5); box-shadow: var(--shadow); }
+.founder-card { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--space-5); align-items: start; background: var(--surface); border-radius: var(--radius); border: 1px solid var(--line); padding: var(--space-5); box-shadow: var(--shadow); }
 @media (min-width: 48rem) { .founder-card { grid-template-columns: minmax(12rem, 18rem) 1fr; padding: var(--space-6); } }
 .founder-card .photo { aspect-ratio: 4 / 5; }
 .founder-role { font-weight: 700; color: var(--senior); margin-bottom: var(--space-4); }
@@ -130,8 +130,8 @@
 
 /* Page nav tabs / filters */
 .filters { display: flex; flex-wrap: wrap; gap: var(--space-4); align-items: flex-end; background: var(--surface); padding: var(--space-4); border-radius: var(--radius); border: 1px solid var(--line); margin-bottom: var(--space-6); }
-.filters .field { margin: 0; min-width: 12rem; flex: 1; }
-.segmented { display: inline-flex; border: 2px solid var(--accent); border-radius: 999px; overflow: hidden; }
+.filters .field { margin: 0; min-width: min(12rem, 100%); flex: 1; }
+.segmented { display: inline-flex; flex-wrap: wrap; max-width: 100%; border: 2px solid var(--accent); border-radius: 999px; overflow: hidden; }
 .segmented button { min-height: var(--tap); padding: 0.4rem 1.1rem; font: inherit; font-weight: 700; background: var(--surface); color: var(--accent); border: 0; cursor: pointer; }
 .segmented button[aria-pressed="true"] { background: var(--accent); color: #fff; }
 .pagination { display: flex; gap: var(--space-3); justify-content: center; align-items: center; margin-top: var(--space-6); }
