@@ -240,6 +240,17 @@ def init_admin_panel(app):
                              column_list=("key", "value", "is_public"),
                              column_default_sort="key"))
 
+    admin.add_view(make_view(
+        m.CurriculumModule, "Curriculum", programs,
+        choices={"division": m.CURRICULUM_DIVISIONS, "status": m.CURRICULUM_STATUSES},
+        column_list=("title", "division", "status", "launch_label", "sort_order", "is_published"),
+        column_filters=("division", "status", "is_published"), column_searchable_list=("title",),
+        column_default_sort="sort_order",
+        column_descriptions={
+            "learning_goals": 'JSON list, e.g. ["First item", "Second item"]. Youth: what students learn. Seniors: what we practice.',
+            "projects": "JSON list. Youth: weekly projects. Seniors: progression steps.",
+            "format_notes": 'JSON list of short facts, e.g. ["Free for families"].'}))
+
     research = "Research"
     admin.add_view(make_view(m.ResearchReference, "References", research,
                              column_list=("title", "authors", "year", "is_verified"),

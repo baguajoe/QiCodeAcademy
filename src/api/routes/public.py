@@ -5,11 +5,11 @@ from flask import Blueprint, Response, current_app, jsonify, request
 from sqlalchemy import func, select
 
 from ..extensions import db, limiter
-from ..models import (REGISTRATION_TYPE_DIVISIONS, ContactMessage, Event, GalleryPhoto,
+from ..models import (CURRICULUM_DIVISIONS, REGISTRATION_TYPE_DIVISIONS, ContactMessage, CurriculumModule, Event, GalleryPhoto,
                       ImpactStat, NewsPost, Partner, Program, Registration, ResearchInterest,
                       ResearchPartnerInquiry, ResearchReference, SiteImage, SiteSetting,
                       TeamMember, Volunteer, utcnow)
-from ..schemas import (ContactCreateSchema, EventSchema, GalleryPhotoSchema, ImpactStatSchema,
+from ..schemas import (ContactCreateSchema, CurriculumModuleSchema, EventSchema, GalleryPhotoSchema, ImpactStatSchema,
                        NewsPostSchema, PartnerSchema, ProgramSchema, RegistrationCreateSchema,
                        ResearchInquiryCreateSchema, ResearchInterestCreateSchema,
                        ResearchReferenceSchema, TeamMemberSchema, VolunteerCreateSchema)
@@ -181,6 +181,18 @@ def create_contact():
     db.session.commit()
     notifications.contact_received(msg)
     return jsonify({"ok": True, "message": CONTACT_OK}), 201
+
+
+# ---------------------------------------------------------------------------
+# Curriculum
+# ---------------------------------------------------------------------------
+@bp.get("/curriculum")
+def list_curriculum():
+    q = select(CurriculumModule).where(CurriculumModule.is_published.is_(True))
+    q = _division_filter(q, CurriculumModule.division, CURRICULUM_DIVISIONS)
+    q = q.order_by(CurriculumModule.division, CurriculumModule.sort_order, CurriculumModule.id)
+    schema = CurriculumModuleSchema(exclude=("is_published",))
+    return jsonify({"items": schema.dump(db.session.scalars(q).all(), many=True)})
 
 
 # ---------------------------------------------------------------------------

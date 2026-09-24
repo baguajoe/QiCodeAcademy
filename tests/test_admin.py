@@ -93,7 +93,7 @@ def test_program_with_registrations_cannot_be_deleted(client, db, auth_headers, 
 
 
 def test_every_resource_lists(client, auth_headers):
-    for name in ("users", "programs", "events", "registrations", "volunteers", "contact-messages",
+    for name in ("users", "programs", "events", "registrations", "volunteers", "contact-messages", "curriculum",
                  "donations", "news", "team", "partners", "impact-stats", "settings",
                  "site-images", "gallery", "research-references", "research-inquiries",
                  "research-interest"):

@@ -5,11 +5,11 @@ from flask import Blueprint, g, jsonify, request
 from sqlalchemy import Boolean, Integer, func, or_, select
 
 from ..extensions import db
-from ..models import (REGISTRATION_STATUSES, ContactMessage, Donation, Event, GalleryPhoto,
+from ..models import (REGISTRATION_STATUSES, ContactMessage, CurriculumModule, Donation, Event, GalleryPhoto,
                       ImpactStat, NewsPost, Partner, Program, Registration, ResearchInterest,
                       ResearchPartnerInquiry, ResearchReference, SiteImage, SiteSetting,
                       TeamMember, User, Volunteer, utcnow)
-from ..schemas import (ContactMessageSchema, DonationSchema, EventSchema, GalleryPhotoSchema,
+from ..schemas import (ContactMessageSchema, CurriculumModuleSchema, DonationSchema, EventSchema, GalleryPhotoSchema,
                        ImpactStatSchema, NewsPostSchema, PartnerSchema, ProgramSchema,
                        RegistrationSchema, ResearchInterestSchema, ResearchPartnerInquirySchema,
                        ResearchReferenceSchema, SiteImageSchema, SiteSettingSchema,
@@ -206,6 +206,8 @@ for _r in [
              search=("name", "email", "subject", "organization"), filters=("type", "is_read")),
     Resource("donations", Donation, DonationSchema, search=("donor_name", "donor_email"),
              filters=("designation", "status", "recurring")),
+    Resource("curriculum", CurriculumModule, CurriculumModuleSchema, search=("title", "summary"),
+             filters=("division", "status", "is_published"), default_sort="sort_order"),
     Resource("news", NewsPost, NewsPostSchema, search=("title",),
              filters=("category", "is_published")),
     Resource("team", TeamMember, TeamMemberSchema, search=("name", "role_title"),

@@ -35,6 +35,8 @@ DONATION_STATUSES = ("pending", "completed", "failed", "expired", "refunded")
 NEWS_CATEGORIES = ("youth", "seniors", "research", "community")
 TEAM_GROUPS = ("board", "staff", "instructor", "advisor")
 PARTNER_TYPES = ("sponsor", "community", "research")
+CURRICULUM_DIVISIONS = ("youth", "senior", "research")
+CURRICULUM_STATUSES = ("available", "in_development")
 
 # Which program divisions accept which registration type.
 REGISTRATION_TYPE_DIVISIONS = {
@@ -344,6 +346,37 @@ class GalleryPhoto(TimestampMixin, db.Model):
     consent_confirmed = db.Column(db.Boolean, nullable=False, default=False)
     is_published = db.Column(db.Boolean, nullable=False, default=False, index=True)
     sort_order = db.Column(db.Integer, nullable=False, default=0)
+
+
+# ---------------------------------------------------------------------------
+# Curriculum
+# ---------------------------------------------------------------------------
+class CurriculumModule(TimestampMixin, db.Model):
+    """A course/level/practice description shown on the division pages.
+
+    Empty fields are simply not displayed. `in_development` modules show their
+    `launch_label` badge (e.g. "Launching 2027"). Research modules also drive the
+    Research page's "Our 12-week Baguazhang program" section, which stays hidden
+    until at least one research module is published.
+    """
+    __tablename__ = "curriculum_modules"
+    id = db.Column(db.Integer, primary_key=True)
+    division = db.Column(db.String(20), nullable=False, index=True)
+    sort_order = db.Column(db.Integer, nullable=False, default=0)
+    title = db.Column(db.String(200), nullable=False)
+    age_range = db.Column(db.String(100))
+    duration = db.Column(db.String(200))
+    summary = db.Column(db.Text)
+    format_notes = db.Column(db.JSON, nullable=False, default=list)    # e.g. "Free for families"
+    learning_goals = db.Column(db.JSON, nullable=False, default=list)  # youth: what students learn; senior: what we practice
+    projects = db.Column(db.JSON, nullable=False, default=list)        # youth: weekly projects; senior: progression
+    adaptations = db.Column(db.Text)
+    status = db.Column(db.String(20), nullable=False, default="in_development", index=True)
+    launch_label = db.Column(db.String(60))
+    is_published = db.Column(db.Boolean, nullable=False, default=False, index=True)
+
+    def __str__(self):
+        return self.title
 
 
 # ---------------------------------------------------------------------------

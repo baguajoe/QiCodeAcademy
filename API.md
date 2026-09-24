@@ -160,6 +160,24 @@ Required: `name`, `email`, `roles` (at least one). → `201 {"ok": true, "messag
 ```
 Required: `name`, `email`, `message`. `type` defaults to `general`; use `guest_instructor` or `partner` for those forms. → `201 {"ok": true, "message": "…"}`
 
+### Curriculum
+
+#### `GET /api/curriculum`
+Query: `division` (`youth`, `senior`, `research`; comma list OK). Returns **published** modules sorted by `sort_order`:
+```json
+{"items": [{
+  "id": 1, "division": "youth", "sort_order": 1,
+  "title": "Level 1 — Python & Game Development", "age_range": "Ages 14–18",
+  "duration": "12 weeks · 2 sessions a week · 90 minutes each",
+  "summary": "Students learn Python by building games…",
+  "format_notes": ["Free for families", "Up to 15 students", "No coding experience needed"],
+  "learning_goals": [], "projects": ["Guess the Number — variables, input and output, …", "…"],
+  "adaptations": null, "status": "in_development", "launch_label": "Launching 2027",
+  "created_at": "…Z", "updated_at": "…Z"
+}]}
+```
+`status` is `available` or `in_development`. Show `launch_label` as a badge on in-development modules, and **don't render empty fields**. Youth pages label `learning_goals` "What students learn" and `projects` "Weekly projects". Senior pages label them "What we practice" and "Progression". The Research page's "Our 12-week Baguazhang program" section only appears when at least one published `research` module exists.
+
 ### News
 
 #### `GET /api/news` (paginated, default `per_page=9`, max 50)
@@ -272,6 +290,7 @@ Responses use the same object shapes as the public API plus the admin-only field
 | `volunteers` | **`name`**, **`email`**, `phone`, **`roles`**, `availability`, `message` | name, email | none | `-created_at` |
 | `contact-messages` | `type`, **`name`**, **`email`**, `organization`, `subject`, **`message`**, `is_read` | name, email, subject, organization | `type`, `is_read` | `-created_at` |
 | `donations` | **`amount_cents`**, `currency`, `recurring`, `designation`, `donor_name`, `donor_email`, `status`, `subscription_status`, `stripe_*` ids. *(read-only: `receipt_sent_at`)* | donor_name, donor_email | `designation`, `status`, `recurring` | `-created_at` |
+| `curriculum` | **`division`** (`youth`/`senior`/`research`), **`title`**, `sort_order`, `age_range`, `duration`, `summary`, `format_notes`, `learning_goals`, `projects` (lists: send a JSON array **or** newline-separated text), `adaptations`, `status` (`available`/`in_development`), `launch_label`, `is_published` | title, summary | `division`, `status`, `is_published` | `sort_order` |
 | `news` | **`title`**, `slug`, `body` (HTML, sanitized on save), `cover_image_url`, `cover_image_alt` (required with an image), `category`, `is_published`, `published_at` (set automatically on first publish; a future date schedules the post) | title | `category`, `is_published` | `-created_at` |
 | `team` | **`name`**, `role_title`, `bio`, `photo_url`, `group`, `sort_order` | name, role_title | `group` | `sort_order` |
 | `partners` | **`name`**, `type`, `logo_url`, `website_url`, `sort_order` | name | `type` | `sort_order` |

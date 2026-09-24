@@ -68,6 +68,10 @@ function Field({ f, values, set, errors, programs, formId, isNew }) {
   let input;
   if (f.type === "readonly") {
     input = <p id={id} className="readonly">{value || "—"}</p>;
+  } else if (f.type === "lines") {
+    // Edited as one-item-per-line text; the API splits it into a list.
+    input = <textarea {...common} rows={Math.min(14, Math.max(4, (Array.isArray(value) ? value.length : 3) + 1))}
+      value={Array.isArray(value) ? value.join("\n") : value ?? ""} onChange={(e) => set(f.key, e.target.value)} />;
   } else if (f.type === "textarea") {
     input = <textarea {...common} rows={f.key === "bio" ? 8 : 5} value={value ?? ""} onChange={(e) => set(f.key, e.target.value)} />;
   } else if (f.type === "select" || f.type === "program") {

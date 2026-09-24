@@ -16,6 +16,8 @@ export const DESIGNATIONS = [["general", "Where needed most"], ["youth", "Youth"
 export const DONATION_STATUS = [["pending", "Pending"], ["completed", "Completed"], ["failed", "Failed"], ["expired", "Expired"], ["refunded", "Refunded"]];
 export const NEWS_CATEGORIES = [["community", "Community"], ["youth", "Youth"], ["seniors", "Seniors"], ["research", "Research"]];
 export const TEAM_GROUPS = [["staff", "Staff"], ["board", "Board of Directors"], ["instructor", "Instructor"], ["advisor", "Advisor"]];
+export const CURRICULUM_DIVISIONS = [["youth", "Youth"], ["senior", "Seniors"], ["research", "Research"]];
+export const CURRICULUM_STATUS = [["available", "Available now"], ["in_development", "In development"]];
 export const PARTNER_TYPES = [["community", "Community"], ["sponsor", "Sponsor"], ["research", "Research"]];
 
 const label = (opts) => (v) => (opts.find((o) => o[0] === v) || [v, v])[1];
@@ -229,6 +231,39 @@ export const RESOURCES = {
       { key: "slug", label: "Web address (slug)", hint: "Optional — created from the title if left blank." },
     ],
   },
+  curriculum: {
+    label: "Curriculum", singular: "curriculum module", group: "Programs & events",
+    help: "Course levels and class descriptions shown on the Youth, Seniors, and Research pages. Empty fields are simply not shown. Describe what happens in class — never promise health outcomes.",
+    columns: [
+      { key: "sort_order", label: "Order" },
+      { key: "title", label: "Title" },
+      { key: "division", label: "Division", format: label(CURRICULUM_DIVISIONS) },
+      { key: "status", label: "Status", format: label(CURRICULUM_STATUS) },
+      { key: "launch_label", label: "Badge" },
+      { key: "is_published", label: "Published?", format: yesNo },
+    ],
+    filters: [
+      { key: "division", label: "Division", options: CURRICULUM_DIVISIONS },
+      { key: "status", label: "Status", options: CURRICULUM_STATUS },
+      { key: "is_published", label: "Published?", options: [["true", "Published"], ["false", "Draft"]] },
+    ],
+    search: "Search titles",
+    fields: [
+      { key: "title", label: "Title", required: true, hint: "e.g. Level 1 — Python & Game Development" },
+      { key: "division", label: "Division", type: "select", options: CURRICULUM_DIVISIONS, required: true },
+      { key: "sort_order", label: "Order on the page", type: "number", hint: "Lower numbers show first." },
+      { key: "status", label: "Status", type: "select", options: CURRICULUM_STATUS },
+      { key: "launch_label", label: "Badge text", hint: "Short, e.g. \"Launching 2027\". Shown on modules that are in development." },
+      { key: "age_range", label: "Ages", hint: "e.g. Ages 14–18" },
+      { key: "duration", label: "Length / format", hint: "e.g. 12 weeks · 2 sessions a week · 90 minutes each" },
+      { key: "summary", label: "Summary", type: "textarea" },
+      { key: "format_notes", label: "Quick facts", type: "lines", hint: "One per line, e.g. Free for families" },
+      { key: "learning_goals", label: "What students learn / What we practice", type: "lines", hint: "One item per line." },
+      { key: "projects", label: "Weekly projects / Progression", type: "lines", hint: "One per line, in order. For weekly projects use \"Project name — what it teaches\"." },
+      { key: "adaptations", label: "Adaptations", type: "textarea", hint: "How the practice is adapted (e.g. for older adults)." },
+      { key: "is_published", label: "Published (visible on the website)", type: "bool" },
+    ],
+  },
   news: {
     label: "News", singular: "news post", group: "Content",
     columns: [
@@ -344,6 +379,7 @@ export function newRecordDefaults(key) {
     programs: { is_active: true, division: "youth" },
     events: { is_published: false, division: "community" },
     news: { category: "community", is_published: false, body: "" },
+    curriculum: { division: "youth", status: "in_development", is_published: false, sort_order: 0 },
     team: { group: "staff", sort_order: 0 },
     partners: { type: "community", sort_order: 0 },
     "impact-stats": { sort_order: 0 },

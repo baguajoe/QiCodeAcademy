@@ -49,7 +49,7 @@ def test_every_view_renders(client, admin_user):
     for ep in ("fa_registrations", "fa_volunteers", "fa_contact_messages", "fa_donations",
                "fa_programs", "fa_events", "fa_news_posts", "fa_gallery_photos", "fa_team_members",
                "fa_partners", "fa_impact_stats", "fa_site_images", "fa_site_settings",
-               "fa_research_references", "fa_research_partner_inquiries", "fa_research_interest",
+               "fa_research_references", "fa_research_partner_inquiries", "fa_research_interest", "fa_curriculum_modules",
                "fa_users"):
         assert client.get(f"/flask-admin/{ep}/").status_code == 200, ep
         assert client.get(f"/flask-admin/{ep}/new/").status_code == 200, ep

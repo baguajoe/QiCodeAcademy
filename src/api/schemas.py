@@ -525,3 +525,36 @@ class UserSchema(AdminSchema):
 class LoginSchema(PublicFormSchema):
     email = fields.String(required=True, validate=validate.Length(max=255))
     password = fields.String(required=True, validate=validate.Length(max=200))
+
+
+class _LineList(fields.List):
+    """A list of short strings; also accepts newline-separated text from simple forms."""
+
+    def _deserialize(self, value, attr, data, **kwargs):
+        if value is None:
+            return []
+        if isinstance(value, str):
+            value = value.splitlines()
+        items = super()._deserialize(value, attr, data, **kwargs)
+        return [i.strip() for i in items if i and i.strip()]
+
+
+def LineList(max_items=40):
+    return _LineList(fields.String(validate=validate.Length(max=500)), load_default=list,
+                     validate=validate.Length(max=max_items))
+
+
+class CurriculumModuleSchema(AdminSchema):
+    division = Choice(m.CURRICULUM_DIVISIONS, required=True)
+    sort_order = fields.Integer(load_default=0)
+    title = Req(200)
+    age_range = S(100)
+    duration = S(200)
+    summary = S(5000)
+    format_notes = LineList(12)
+    learning_goals = LineList()
+    projects = LineList()
+    adaptations = S(5000)
+    status = Choice(m.CURRICULUM_STATUSES, load_default="in_development")
+    launch_label = S(60)
+    is_published = fields.Boolean(load_default=False)

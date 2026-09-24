@@ -207,3 +207,13 @@ Decisions made while building the backend without stopping to ask. Each can be r
 - A new public setting, **`teaching_locations`**, holds one place per line with names only. It's seeded with Grove Hall Senior Center, Codman Square Library, and Boston City Parks, and staff can edit it under Site settings → "Where we teach".
 - The Contact page's locations section ("Where we teach") now shows exactly this list instead of deriving locations from programs.
 - No street addresses or phone numbers from any outside site are used. A test checks that no street address appears in the seed data or public copy.
+
+## Section 4: Curriculum system
+- **New model `CurriculumModule`**, with a migration, marshmallow schema, admin CRUD at `/api/admin/curriculum`, a screen in `/admin` (Programs & events → Curriculum), a Flask-Admin view, and tests.
+  - Fields: division, sort_order, title, age_range, duration, summary, learning_goals, projects, adaptations, status, launch_label, is_published.
+  - **One field was added beyond the brief: `format_notes`**, a short list of quick facts (e.g. "Free for families", "Up to 15 students"), so Level 1's format details stay editable by staff instead of being hard-coded.
+- List fields are JSON arrays. The API also accepts newline-separated text, which is how the admin form edits them (one item per line).
+- **Public endpoint:** `GET /api/curriculum?division=…` returns published modules only, sorted. Empty fields aren't rendered on the site.
+- **Field labels depend on the division:**
+  - youth: `learning_goals` is "What students learn", `projects` is "Weekly projects"
+  - senior: `learning_goals` is "What we practice", `projects` is "Progression"
