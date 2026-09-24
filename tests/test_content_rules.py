@@ -78,10 +78,17 @@ def test_research_roadmap_is_future_tense_and_notify_note():
     assert en["research"]["notifyNote"] == "Joining this list does not enroll you in any study."
 
 
-def test_research_references_seeded_hidden_and_no_gallery(client, db):
-    from api.commands import seed_research_references
+def test_research_references_seeded_hidden_and_gallery_founder_only(client, db):
+    from api.commands import GALLERY_SEED, seed_gallery, seed_research_references
     from api.models import ResearchReference
-    assert "GalleryPhoto(" not in (ROOT / "src/api/commands.py").read_text()
+    credits = json.loads((ROOT / "src/front/img/site/credits.json").read_text())
+    for g in GALLERY_SEED:  # gallery seeds must be our own photos, never stock
+        slot = g["image_url"].rsplit("/", 1)[1].rsplit(".", 1)[0]
+        assert credits[slot]["type"] == "founder-owned"
+    assert seed_gallery() == len(GALLERY_SEED) and seed_gallery() == 0
+    db.session.commit()
+    items = client.get("/api/gallery").get_json()["items"]
+    assert [i["image_url"] for i in items] == ["/img/site/gallery-prague-class.jpg"]
     assert seed_research_references() == 3
     assert seed_research_references() == 0
     db.session.commit()
@@ -133,9 +140,23 @@ def test_site_photo_credits_follow_photo_rules():
     stock_words = re.compile(r"\b(our|we|qi code|participants?|members?|students)\b", re.I)
     for slot, c in credits.items():
         assert c["type"] in ("stock", "founder-owned"), slot
-        assert c["alt"] and c["license"] and c["credit"] and c["page_url"].startswith("https://"), slot
+        assert c["alt"] and c["license"] and c["credit"], slot
+        if c["type"] == "stock":
+            assert c["page_url"].startswith("https://"), f"stock photo needs its source page: {slot}"
         if c["type"] == "stock":
             assert slot in STOCK_ALLOWED_SLOTS, f"stock photo not allowed in {slot}"
             assert not stock_words.search(c["alt"]), f"stock alt text claims the people are ours: {slot}"
     for forbidden in ("founder-portrait", "founder-teaching"):
         assert credits.get(forbidden, {}).get("type") != "stock"
+
+
+def test_no_loose_or_unblurred_photos_in_repo():
+    """Original uploads must never be committed — only processed files in src/front/img/site/."""
+    import subprocess
+    tracked = subprocess.run(["git", "ls-files"], cwd=ROOT, capture_output=True, text=True).stdout.splitlines()
+    images = [f for f in tracked if f.lower().endswith((".jpg", ".jpeg", ".png", ".webp", ".heic"))]
+    allowed = ("src/front/img/",)
+    assert all(f.startswith(allowed) for f in images), [f for f in images if not f.startswith(allowed)]
+    assert not [f for f in images if "youth" in f.lower() and "movement" not in f.lower() and "banner" not in f.lower()
+                and "card" not in f.lower()]
+    assert not [f for f in (ROOT).iterdir() if f.suffix.lower() in (".jpg", ".jpeg", ".png", ".webp")]

@@ -5,7 +5,7 @@ const path = require("path");
 const root = path.join(__dirname, "..");
 const credits = JSON.parse(fs.readFileSync(path.join(root, "src/front/img/site/credits.json"), "utf8"));
 const rows = Object.entries(credits).sort(([a], [b]) => a.localeCompare(b)).map(([slot, c]) =>
-  `| \`${slot}\` | \`src/front/img/site/${c.file}\` | ${c.type} | ${c.credit} | ${c.source_site} | ${c.photographer} | ${c.page_url} | ${c.license} |`);
+  `| \`${slot}\` | \`src/front/img/site/${c.file}\` | ${c.type} | ${c.credit} | ${c.source_site} | ${c.photographer} | ${c.page_url || "—"} | ${c.license} |`);
 const md = `# Image credits
 
 Generated from \`src/front/img/site/credits.json\` — edit that file, then run \`npm run credits\`.

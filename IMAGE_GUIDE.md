@@ -37,22 +37,30 @@ There are three kinds of photos:
 
 ## Site photo spots: current status
 
-| Page | File name | Size | Suggested subject | Stock OK? | Status |
-|---|---|---|---|---|---|
-| Home (hero) | `hero-home.jpg` | 1920×1080 | Warm, hopeful: Black youth learning and/or older adults together | Yes | ✅ Stock (Nappy): elder and child in a tree |
-| Home (Youth card) | `home-card-youth.jpg` | 1200×750 | Teens coding together | Yes | ✅ Stock (Nappy): two young women at a laptop |
-| Home (Seniors card) | `home-card-seniors.jpg` | 1200×750 | Older adults in a Tai Chi class | Yes | ✅ Stock (Nappy): older couple, black and white. Replace with real class photo |
-| Home (Research card) | `home-card-research.jpg` | 1200×750 | Calm movement / nature | Yes | ✅ Stock (Nappy): person at an overlook |
-| About (banner) | `about-banner.jpg` | 1920×800 | Youth and older adults at a Qi Code Academy gathering | **No** | ⬜ Placeholder (needs a real program photo) |
-| About + Founder page | `founder-portrait.jpg` | **800×1000 portrait** | Joseph Gallop | **No** | ✅ Founder-owned: AI-enhanced from Joseph's own real photo (approved exception), 800×1000 |
-| Founder page | `founder-teaching.jpg` | 1600×900 | Joseph Gallop teaching a class | **No** | ⬜ Placeholder. Joseph's teaching photos show other identifiable people (consent needed) |
-| Youth Programs (banner) | `youth-banner.jpg` | 1920×800 | Black teens coding or on laptops | Yes | ✅ Stock (Nappy): young man at a laptop and microphone |
-| Senior Programs (banner) | `seniors-banner.jpg` | 1920×800 | Older adults (ideally Black or brown) doing tai chi, yoga, or stretching, outdoors | Yes | ⬜ Placeholder. No suitable stock found; a founder-owned practice photo would be ideal |
-| Intergenerational (banner) | `intergenerational-banner.jpg` | 1920×800 | A young person helping an older adult with a phone or laptop | Yes | ⬜ Placeholder. No suitable stock found |
-| Research (banner) | `research-banner.jpg` | 1920×800 | Calm and clean: a park path, hands in motion, movement practice | Yes | ✅ Stock (Nappy): walker on a path at an overlook |
-| Events (banner) | `events-banner.jpg` | 1920×800 | Neighbors at a Qi Code Academy event | **No** | ⬜ Placeholder |
-| Get Involved (banner) | `volunteer-banner.jpg` | 1920×800 | Volunteers helping at a class or event | **No** | ⬜ Placeholder |
-| Donate (beside the form) | `donate.jpg` | **1200×1500 portrait** | Kids learning, or elders smiling together | Yes | ✅ Stock (Nappy): three teens reading in a park |
+| Page | File name | Size | Stock OK? | Status |
+|---|---|---|---|---|
+| Home (hero) | `hero-home.jpg` | 1920×1080 | Yes | Stock (Nappy): elder and child in a tree |
+| Home (Youth card) | `home-card-youth.jpg` | 1200×750 | Yes | Stock (Nappy): two young women at a laptop |
+| Home (Seniors card) | `home-card-seniors.jpg` | 1200×750 | Yes | **Stock (Nappy)**. Waiting for "me teaching seniors3" (not uploaded yet; blur the lanyard name badge) |
+| Home (Research card) | `home-card-research.jpg` | 1200×750 | Yes | ✅ Founder-owned: seniors circle walking |
+| About (banner) | `about-banner.jpg` | 1920×800 | **No** | Placeholder |
+| About + Founder page | `founder-portrait.jpg` | 800×1000 portrait | **No** | ✅ Founder-owned (AI-enhanced from his own photo, approved exception) |
+| Founder page (after "Lineage and training") | `founder-teaching.jpg` | 1600×900 | **No** | ✅ Founder-owned: leading the Prague workshop (1138×640 native) |
+| Youth Programs (banner) | `youth-banner.jpg` | 1920×800 | Yes | Stock (Nappy): young man at a laptop |
+| Youth Programs ("Movement built in") | `youth-movement.jpg` | 1200×900 | **No** | ✅ Founder-owned, **faces blurred** (unblurred original deleted) |
+| Senior Programs (banner) | `seniors-banner.jpg` | 1920×800 | Yes | ✅ Founder-owned: seated movement class |
+| Senior Programs (Tai Chi module) | `seniors-tai-chi.jpg` | 1200×900 | **No** | Not shown until "me teaching seniors3" is added (blur the lanyard name badge) |
+| Senior Programs (Baguazhang module) | `seniors-baguazhang.jpg` | 1200×900 | **No** | ✅ Founder-owned: guiding students (floor cropped) |
+| Senior Programs (Chair-Based Movement) | `seniors-chair-massage.jpg` | 900×1200 portrait | **No** | ✅ Founder-owned: chair massage (background people cropped out) |
+| Senior Programs (Join anytime) | `seniors-join.jpg` | 900×1200 portrait | **No** | ✅ Founder-owned: seniors practicing |
+| Intergenerational (banner) | `intergenerational-banner.jpg` | 1920×800 | Yes | Placeholder |
+| Research (banner) | `research-banner.jpg` | 1920×800 | Yes | ✅ Founder-owned: seniors circle walking |
+| Events (banner) | `events-banner.jpg` | 1920×800 | **No** | Placeholder. Waiting for "me teaching in prague with vincent" (not uploaded yet) |
+| Get Involved (banner) | `volunteer-banner.jpg` | 1920×800 | **No** | Placeholder |
+| Donate | `donate.jpg` | 1200×1500 portrait | Yes | Stock (Nappy): three teens reading in a park |
+| Gallery | `gallery-prague-class.jpg` | — | **No** | ✅ Founder-owned: Prague workshop class (seeded, published, consent confirmed) |
+
+In-page photos (module, feature, and Join anytime photos) appear only when a photo exists. They never show an empty placeholder box.
 
 Banner and hero photos sit under a dark overlay with white text on top, so the left and lower parts of the photo will be partly covered. Keep important faces toward the center or right.
 

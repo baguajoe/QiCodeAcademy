@@ -173,3 +173,11 @@ section[id], div[id] { scroll-margin-top: 7rem; }
   .credits-table tr { border-bottom: 2px solid var(--line); padding: var(--space-2) 0; }
   .credits-table th, .credits-table td { border: 0; padding: var(--space-1) var(--space-3); overflow-wrap: anywhere; }
 }
+.module-photo { margin: 0; }
+.module-photo .photo { border-radius: 0; }
+.feature-with-photo { grid-column: 1 / -1; display: grid; gap: var(--space-4); align-items: center; }
+@media (min-width: 48rem) { .feature-with-photo { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); } }
+.feature-photo { margin: 0; }
+.join-box { display: grid; gap: var(--space-4); align-items: center; }
+@media (min-width: 30rem) { .join-box { grid-template-columns: minmax(0, 2fr) minmax(0, 3fr); } }
+.join-photo { margin: 0; }

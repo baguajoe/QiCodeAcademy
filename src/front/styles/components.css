@@ -180,3 +180,6 @@
 .dg-study { fill: var(--research-strong); }
 :root[data-contrast="high"] .dg-node, :root[data-contrast="high"] .dg-node-final, :root[data-contrast="high"] .dg-node-alt { fill: #000; stroke: #fff; }
 :root[data-contrast="high"] .dg-num-final { fill: #fff; }
+.inline-photo { margin: var(--space-5) 0; }
+.inline-photo .photo { border-radius: var(--radius); }
+.inline-photo figcaption { color: var(--ink-muted); font-size: 0.92rem; margin-top: var(--space-2); }

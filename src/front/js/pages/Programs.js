@@ -6,6 +6,7 @@ import { PageBanner, SectionHeader, WellnessDisclaimer } from "../component/comm
 import { ProgramList, ProgramSection } from "../component/ProgramList";
 import { FeatureGrid, ModuleCard, ScheduleTable, StatusBadge, WeeklyProjects, useCurriculum } from "../component/Curriculum";
 import { SessionFlowDiagram, StepsDiagram } from "../component/Diagrams";
+import { OptionalSiteImage } from "../component/Photo";
 
 function FocusList({ items }) {
   return <ul className="tag-list">{items.map((i) => <li key={i}>{i}</li>)}</ul>;
@@ -62,7 +63,8 @@ function YouthCurriculum() {
       <section className="section" aria-labelledby="features-title">
         <div className="container">
           <SectionHeader title={t("youth.featuresTitle")} id="features-title" />
-          <FeatureGrid items={t("youth.features", { returnObjects: true })} />
+          {/* Index 1 = "Movement built in" — shown with the (face-blurred) youth movement photo. */}
+          <FeatureGrid items={t("youth.features", { returnObjects: true })} photos={{ 1: "youth-movement" }} />
         </div>
       </section>
 
@@ -113,6 +115,14 @@ export function YouthPrograms() {
   );
 }
 
+// Photo beside each senior module (matched on the module title; staff-editable in Admin → Site photos).
+function seniorModulePhoto(title = "") {
+  if (/tai chi/i.test(title)) return "seniors-tai-chi";
+  if (/baguazhang/i.test(title)) return "seniors-baguazhang";
+  if (/chair/i.test(title)) return "seniors-chair-massage";
+  return undefined;
+}
+
 export function SeniorPrograms() {
   const { t } = useTranslation();
   const { modules } = useCurriculum("senior");
@@ -137,8 +147,8 @@ export function SeniorPrograms() {
         <section className="section section-accent" aria-labelledby="classes-title">
           <div className="container">
             <SectionHeader title={t("seniors.modulesTitle")} lead={t("seniors.modulesLead")} id="classes-title" />
-            {detailed.length > 0 && <div className="grid grid-2">{detailed.map((m) => <ModuleCard key={m.id} module={m} />)}</div>}
-            {simple.length > 0 && <div className="grid grid-3" style={{ marginTop: "1.5rem" }}>{simple.map((m) => <ModuleCard key={m.id} module={m} />)}</div>}
+            {detailed.length > 0 && <div className="grid grid-2">{detailed.map((m) => <ModuleCard key={m.id} module={m} photoSlot={seniorModulePhoto(m.title)} />)}</div>}
+            {simple.length > 0 && <div className="grid grid-3" style={{ marginTop: "1.5rem" }}>{simple.map((m) => <ModuleCard key={m.id} module={m} photoSlot={seniorModulePhoto(m.title)} />)}</div>}
           </div>
         </section>
       )}
@@ -150,9 +160,12 @@ export function SeniorPrograms() {
             <ScheduleTable caption={t("seniors.sampleClassTitle")} rows={t("seniors.sampleClass", { returnObjects: true })} />
           </div>
           <div className="stack">
-            <section className="gain" aria-labelledby="join-title">
-              <h2 id="join-title" style={{ fontSize: "1.5rem" }}>{t("seniors.joinTitle")}</h2>
-              <p style={{ margin: 0 }}>{t("seniors.join")}</p>
+            <section className="gain join-box" aria-labelledby="join-title">
+              <OptionalSiteImage slot="seniors-join" className="join-photo" sizes="(min-width: 56rem) 16rem, 60vw" />
+              <div>
+                <h2 id="join-title" style={{ fontSize: "1.5rem" }}>{t("seniors.joinTitle")}</h2>
+                <p style={{ margin: 0 }}>{t("seniors.join")}</p>
+              </div>
             </section>
             <section className="gain" aria-labelledby="safety-title">
               <h2 id="safety-title" style={{ fontSize: "1.5rem" }}>{t("seniors.safetyTitle")}</h2>

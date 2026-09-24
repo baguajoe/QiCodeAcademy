@@ -8,7 +8,7 @@ from sqlalchemy import select
 from .extensions import db
 from .founder_content import (FOUNDER_CREDENTIALS, FOUNDER_FULL_BIO, FOUNDER_NAME, FOUNDER_ROLE,
                               FOUNDER_SHORT_BIO, LEGACY_FINGERPRINTS, fingerprint)
-from .models import CurriculumModule, Event, ResearchReference, ImpactStat, Program, SiteImage, SiteSetting, TeamMember, User
+from .models import CurriculumModule, Event, GalleryPhoto, ResearchReference, ImpactStat, Program, SiteImage, SiteSetting, TeamMember, User
 
 SAMPLE = "[SAMPLE]"
 
@@ -49,6 +49,8 @@ SITE_IMAGE_SLOTS = [
     "about-banner", "founder-portrait", "founder-teaching",
     "youth-banner", "seniors-banner", "intergenerational-banner", "research-banner",
     "events-banner", "volunteer-banner", "donate",
+    # In-page photos (shown only when a photo exists — never as an empty placeholder)
+    "seniors-tai-chi", "seniors-baguazhang", "seniors-chair-massage", "seniors-join", "youth-movement",
 ]
 
 
@@ -252,6 +254,24 @@ def seed_research_references():
     return added
 
 
+# Founder-owned gallery photos (consent obtained from the people shown). Served from the
+# build's unhashed copy of src/front/img/site/. Never stock photos.
+GALLERY_SEED = [
+    dict(image_url="/img/site/gallery-prague-class.jpg", division="senior",
+         alt_text="Tai Chi class practicing at the international workshop in Prague.",
+         caption="Tai Chi class at the international workshop in Prague."),
+]
+
+
+def seed_gallery():
+    added = 0
+    for photo in GALLERY_SEED:
+        if not db.session.scalar(select(GalleryPhoto).where(GalleryPhoto.image_url == photo["image_url"])):
+            db.session.add(GalleryPhoto(**photo, consent_confirmed=True, is_published=True, sort_order=0))
+            added += 1
+    return added
+
+
 def upgrade_founder_text():
     """Replace earlier seeded founder text with the current version — only where staff
     haven't edited it (matched by fingerprint). Returns the number of fields updated."""
@@ -315,6 +335,8 @@ def register_commands(app):
             click.echo("Added founder team member.")
         if (n := seed_curriculum()):
             click.echo(f"Added {n} curriculum module(s).")
+        if (n := seed_gallery()):
+            click.echo(f"Added {n} gallery photo(s).")
         if (n := seed_research_references()):
             click.echo(f"Added {n} research reference(s) — unverified and hidden until checked in the admin.")
         if (n := upgrade_founder_text()):

@@ -82,3 +82,17 @@ export function SiteImage({ slot, sizes, priority, ratio, className, alt }) {
 export function isSlotPlaceholder(slot, siteImages) {
   return resolveSlot(slot, siteImages).kind === "placeholder";
 }
+
+// In-page photo that renders ONLY when a real photo exists (uploaded or default file) —
+// never an empty placeholder box.
+export function OptionalSiteImage({ slot, className = "", sizes, ratio, caption }) {
+  const { store } = useStore();
+  const r = resolveSlot(slot, store.siteImages);
+  if (r.kind === "placeholder") return null;
+  return (
+    <figure className={`inline-photo ${className}`}>
+      <Photo src={r.src} alt={r.alt} sizes={sizes} ratio={ratio === undefined ? r.meta.ratio : ratio} />
+      {caption && <figcaption>{caption}</figcaption>}
+    </figure>
+  );
+}

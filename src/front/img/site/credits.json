@@ -1,4 +1,15 @@
 {
+  "donate": {
+    "file": "donate.jpg",
+    "type": "stock",
+    "source_site": "Nappy (nappy.co)",
+    "photographer": "childrennaturenetwork",
+    "page_url": "https://nappy.co/photo/children-and-nature%2B2NxvMju7HGHOsk_V1h0pa",
+    "license": "Nappy License (CC0) — free for commercial and personal use; credit appreciated, not required. https://nappy.co/license",
+    "credit": "Photo: childrennaturenetwork / Nappy (CC0)",
+    "alt": "Three teenagers sitting on the grass in a city park, reading books",
+    "notes": "Stock photo — replace when you have real program photos."
+  },
   "founder-portrait": {
     "file": "founder-portrait.jpg",
     "type": "founder-owned",
@@ -9,6 +20,28 @@
     "credit": "Joseph Gallop — owned by founder (AI-enhanced from original photo)",
     "alt": "Portrait of Joseph Gallop, founder of Qi Code Academy.",
     "notes": "AI-enhanced version of the founder's own real photo — an approved exception to the no-AI-photos rule. Cropped to 4:5 and resized to 800×1000 (downscaled from 1086×1358)."
+  },
+  "founder-teaching": {
+    "file": "founder-teaching.jpg",
+    "type": "founder-owned",
+    "source_site": "Joseph Gallop (own photo)",
+    "photographer": "Joseph Gallop",
+    "page_url": "",
+    "license": "Owned by the founder; used with his permission. Permission obtained from the people shown.",
+    "credit": "Joseph Gallop — owned by founder",
+    "alt": "Joseph Gallop leading a Tai Chi class at the international workshop in Prague.",
+    "notes": "Cropped 16:9 from the left so Joseph leads the frame; 1138×640 at native resolution (not upscaled)."
+  },
+  "gallery-prague-class": {
+    "file": "gallery-prague-class.jpg",
+    "type": "founder-owned",
+    "source_site": "Joseph Gallop (own photo)",
+    "photographer": "Joseph Gallop",
+    "page_url": "",
+    "license": "Owned by the founder; used with his permission. Permission obtained from the people shown.",
+    "credit": "Joseph Gallop — owned by founder",
+    "alt": "Tai Chi class practicing at the international workshop in Prague.",
+    "notes": "Seeded as a published Gallery photo (division: senior, consent confirmed)."
   },
   "hero-home": {
     "file": "hero-home.jpg",
@@ -21,15 +54,26 @@
     "alt": "An older man and a young child sitting together in the branches of a tree",
     "notes": "Stock photo — replace when you have real program photos."
   },
-  "youth-banner": {
-    "file": "youth-banner.jpg",
+  "home-card-research": {
+    "file": "home-card-research.jpg",
+    "type": "founder-owned",
+    "source_site": "Joseph Gallop (own photo)",
+    "photographer": "Joseph Gallop",
+    "page_url": "",
+    "license": "Owned by the founder; used with his permission. Permission obtained from the people shown.",
+    "credit": "Joseph Gallop — owned by founder",
+    "alt": "Older adults practicing Baguazhang circle walking.",
+    "notes": "Replaced a stock photo."
+  },
+  "home-card-seniors": {
+    "file": "home-card-seniors.jpg",
     "type": "stock",
     "source_site": "Nappy (nappy.co)",
-    "photographer": "NappyStock",
-    "page_url": "https://nappy.co/photo/man-vlogging%2BncsKgINpb8mcL5pNxEmTG",
+    "photographer": "streetphonicz",
+    "page_url": "https://nappy.co/photo/older-couple%2BevDvF2cNvoVqO_OUxsCSD",
     "license": "Nappy License (CC0) — free for commercial and personal use; credit appreciated, not required. https://nappy.co/license",
-    "credit": "Photo: NappyStock / Nappy (CC0)",
-    "alt": "A young man with locs speaking into a microphone beside a laptop",
+    "credit": "Photo: streetphonicz / Nappy (CC0)",
+    "alt": "An older couple smiling together, in black and white",
     "notes": "Stock photo — replace when you have real program photos."
   },
   "home-card-youth": {
@@ -43,48 +87,81 @@
     "alt": "Two young women smiling at a laptop screen",
     "notes": "Stock photo — replace when you have real program photos."
   },
-  "home-card-seniors": {
-    "file": "home-card-seniors.jpg",
-    "type": "stock",
-    "source_site": "Nappy (nappy.co)",
-    "photographer": "streetphonicz",
-    "page_url": "https://nappy.co/photo/older-couple%2BevDvF2cNvoVqO_OUxsCSD",
-    "license": "Nappy License (CC0) — free for commercial and personal use; credit appreciated, not required. https://nappy.co/license",
-    "credit": "Photo: streetphonicz / Nappy (CC0)",
-    "alt": "An older couple smiling together, in black and white",
-    "notes": "Stock photo — replace when you have real program photos."
-  },
   "research-banner": {
     "file": "research-banner.jpg",
+    "type": "founder-owned",
+    "source_site": "Joseph Gallop (own photo)",
+    "photographer": "Joseph Gallop",
+    "page_url": "",
+    "license": "Owned by the founder; used with his permission. Permission obtained from the people shown.",
+    "credit": "Joseph Gallop — owned by founder",
+    "alt": "Older adults practicing Baguazhang circle walking.",
+    "notes": "Replaced a stock photo."
+  },
+  "seniors-baguazhang": {
+    "file": "seniors-baguazhang.jpg",
+    "type": "founder-owned",
+    "source_site": "Joseph Gallop (own photo)",
+    "photographer": "Joseph Gallop",
+    "page_url": "",
+    "license": "Owned by the founder; used with his permission. Permission obtained from the people shown.",
+    "credit": "Joseph Gallop — owned by founder",
+    "alt": "Joseph Gallop guiding students during class.",
+    "notes": "Cropped to remove most of the empty floor."
+  },
+  "seniors-banner": {
+    "file": "seniors-banner.jpg",
+    "type": "founder-owned",
+    "source_site": "Joseph Gallop (own photo)",
+    "photographer": "Joseph Gallop",
+    "page_url": "",
+    "license": "Owned by the founder; used with his permission. Permission obtained from the people shown.",
+    "credit": "Joseph Gallop — owned by founder",
+    "alt": "Joseph Gallop leading a seated movement class for older adults.",
+    "notes": "Replaced a placeholder."
+  },
+  "seniors-chair-massage": {
+    "file": "seniors-chair-massage.jpg",
+    "type": "founder-owned",
+    "source_site": "Joseph Gallop (own photo)",
+    "photographer": "Joseph Gallop",
+    "page_url": "",
+    "license": "Owned by the founder; used with his permission. Permission obtained from the people shown.",
+    "credit": "Joseph Gallop — owned by founder",
+    "alt": "Joseph Gallop giving a chair massage at a community senior program.",
+    "notes": "Cropped to remove the people in the background."
+  },
+  "seniors-join": {
+    "file": "seniors-join.jpg",
+    "type": "founder-owned",
+    "source_site": "Joseph Gallop (own photo)",
+    "photographer": "Joseph Gallop",
+    "page_url": "",
+    "license": "Owned by the founder; used with his permission. Permission obtained from the people shown.",
+    "credit": "Joseph Gallop — owned by founder",
+    "alt": "Older adults practicing movement exercises in a Tai Chi class.",
+    "notes": ""
+  },
+  "youth-banner": {
+    "file": "youth-banner.jpg",
     "type": "stock",
     "source_site": "Nappy (nappy.co)",
     "photographer": "NappyStock",
-    "page_url": "https://nappy.co/photo/man-exploring-mountain%2BntPhGdhSJLOZioOI461dB",
+    "page_url": "https://nappy.co/photo/man-vlogging%2BncsKgINpb8mcL5pNxEmTG",
     "license": "Nappy License (CC0) — free for commercial and personal use; credit appreciated, not required. https://nappy.co/license",
     "credit": "Photo: NappyStock / Nappy (CC0)",
-    "alt": "A person with a backpack walking a dog along a fenced path at a scenic overlook",
+    "alt": "A young man with locs speaking into a microphone beside a laptop",
     "notes": "Stock photo — replace when you have real program photos."
   },
-  "home-card-research": {
-    "file": "home-card-research.jpg",
-    "type": "stock",
-    "source_site": "Nappy (nappy.co)",
-    "photographer": "NappyStock",
-    "page_url": "https://nappy.co/photo/woman-in-nature%2BMmy97jZ9idrL5JmegIDmT",
-    "license": "Nappy License (CC0) — free for commercial and personal use; credit appreciated, not required. https://nappy.co/license",
-    "credit": "Photo: NappyStock / Nappy (CC0)",
-    "alt": "A person seen from behind looking out over a wide green valley",
-    "notes": "Stock photo — replace when you have real program photos."
-  },
-  "donate": {
-    "file": "donate.jpg",
-    "type": "stock",
-    "source_site": "Nappy (nappy.co)",
-    "photographer": "childrennaturenetwork",
-    "page_url": "https://nappy.co/photo/children-and-nature%2B2NxvMju7HGHOsk_V1h0pa",
-    "license": "Nappy License (CC0) — free for commercial and personal use; credit appreciated, not required. https://nappy.co/license",
-    "credit": "Photo: childrennaturenetwork / Nappy (CC0)",
-    "alt": "Three teenagers sitting on the grass in a city park, reading books",
-    "notes": "Stock photo — replace when you have real program photos."
+  "youth-movement": {
+    "file": "youth-movement.jpg",
+    "type": "founder-owned",
+    "source_site": "Joseph Gallop (own photo)",
+    "photographer": "Joseph Gallop",
+    "page_url": "",
+    "license": "Owned by the founder; used with his permission. Permission obtained from the people shown.",
+    "credit": "Joseph Gallop — owned by founder (faces blurred to protect minors)",
+    "alt": "Joseph Gallop leading young people in a movement exercise.",
+    "notes": "Face-blurred version only; the unblurred original was deleted and never committed."
   }
 }

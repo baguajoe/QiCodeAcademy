@@ -311,3 +311,10 @@ I downloaded only the four approved original files and reviewed each one.
 - **Where it shows:** the About card, the founder page, and the Person JSON-LD all read the updated TeamMember bio and settings. The frontend fallback matches, and a test checks it.
 - **Teaching locations** are now Grove Hall Senior Center, Parkway Community YMCA (West Roxbury), Codman Square Library, and Boston City Parks.
 - **Deployed sites** pick all of this up on the next deploy: `flask seed` replaces the previous version by fingerprint, but only where staff haven't edited it.
+
+## Founder's own teaching photos (September 2026)
+- All photos are founder-owned (`is_stock` false), with permission from the people shown. They're resized to at most 1920px (never enlarged), saved as compressed JPEGs in `src/front/img/site/`, and credited in `credits.json` and `IMAGE_CREDITS.md`.
+- **Originals were deleted from the project root,** including the **unblurred "me teaching youth.jpg", which was never processed or committed.** Two originals ("chair massage.jpg" and "teaching class.jpg") had been committed by accident and are now removed from git. A test fails if any image outside `src/front/img/` is committed.
+- **New in-page photo slots:** seniors-tai-chi, seniors-baguazhang, seniors-chair-massage, seniors-join, and youth-movement. They only render when a photo exists (`OptionalSiteImage`), and staff can replace them in Admin → Site photos.
+- **Gallery:** `flask seed` adds the Prague class photo (published, consent confirmed). It's served from the build's unhashed `/img/site/` copy.
+- **Two requested photos weren't uploaded:** "me teaching seniors3" and "me teaching in prague with vincent". So home-card-seniors stays stock, the Tai Chi module has no photo, and events-banner stays a placeholder.

@@ -48,9 +48,9 @@ export const SLOTS = {
     alt: "Portrait of Joseph Gallop, founder of Qi Code Academy.",
   },
   "founder-teaching": {
-    page: "Founder page", size: "1600×900", ratio: "16 / 9", division: "senior",
-    subject: "Joseph Gallop teaching a class",
-    alt: "Joseph Gallop teaching a movement class",
+    page: "Founder page (lineage section)", size: "1600×900", ratio: "16 / 9", division: "senior",
+    subject: "Joseph Gallop leading a class",
+    alt: "Joseph Gallop leading a Tai Chi class at the international workshop in Prague.",
   },
   "youth-banner": {
     page: "Youth Programs (banner)", size: "1920×800", ratio: "12 / 5", division: "youth",
@@ -66,6 +66,31 @@ export const SLOTS = {
     page: "Intergenerational (banner)", size: "1920×800", ratio: "12 / 5", division: "intergenerational",
     subject: "Intergenerational banner: a teen helping an older adult with a smartphone",
     alt: "A teenager helping an older adult use a smartphone",
+  },
+  "seniors-tai-chi": {
+    page: "Senior Programs (beside Traditional Yang-Style Tai Chi)", size: "1200×900", ratio: "4 / 3", division: "senior",
+    subject: "Joseph Gallop leading older adults in Tai Chi", optional: true,
+    alt: "Joseph Gallop leading older adults in Tai Chi.",
+  },
+  "seniors-baguazhang": {
+    page: "Senior Programs (beside Traditional Baguazhang)", size: "1200×900", ratio: "4 / 3", division: "senior",
+    subject: "Joseph Gallop guiding students during class", optional: true,
+    alt: "Joseph Gallop guiding students during class.",
+  },
+  "seniors-chair-massage": {
+    page: "Senior Programs (beside Chair-Based Movement)", size: "900×1200 (portrait)", ratio: "3 / 4", division: "senior",
+    subject: "Joseph Gallop giving a chair massage at a community senior program", optional: true,
+    alt: "Joseph Gallop giving a chair massage at a community senior program.",
+  },
+  "seniors-join": {
+    page: "Senior Programs (Join anytime)", size: "900×1200 (portrait)", ratio: "3 / 4", division: "senior",
+    subject: "Older adults practicing in a Tai Chi class", optional: true,
+    alt: "Older adults practicing movement exercises in a Tai Chi class.",
+  },
+  "youth-movement": {
+    page: "Youth Programs (beside \"Movement built in\")", size: "1200×900", ratio: "4 / 3", division: "youth",
+    subject: "Joseph Gallop leading young people in movement (faces blurred)", optional: true,
+    alt: "Joseph Gallop leading young people in a movement exercise.",
   },
   "research-banner": {
     page: "Research (banner)", size: "1920×800", ratio: "12 / 5", division: "research",

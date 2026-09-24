@@ -2,6 +2,7 @@
 import { useTranslation } from "react-i18next";
 import { api } from "../api";
 import { useApi } from "../hooks/useApi";
+import { OptionalSiteImage } from "./Photo";
 
 export function useCurriculum(division) {
   const { data, loading } = useApi(() => api.get("/curriculum", { params: { division } }), [division]);
@@ -27,7 +28,7 @@ function List({ title, items, ordered, className = "" }) {
   );
 }
 
-export function ModuleCard({ module, headingLevel = 3, showProjects = true }) {
+export function ModuleCard({ module, headingLevel = 3, showProjects = true, photoSlot }) {
   const { t } = useTranslation();
   const H = `h${headingLevel}`;
   // Labels for learning_goals / projects depend on the division.
@@ -35,6 +36,7 @@ export function ModuleCard({ module, headingLevel = 3, showProjects = true }) {
   const facts = [module.age_range, module.duration, ...(module.format_notes || [])].filter(Boolean);
   return (
     <article className={`card card-accent module-card theme-${module.division}`}>
+      {photoSlot && <OptionalSiteImage slot={photoSlot} className="module-photo" sizes="(min-width: 40rem) 50vw, 100vw" />}
       <div className="card-body">
         <div className="cluster" style={{ gap: "0.5rem" }}><StatusBadge module={module} /></div>
         <H>{module.title}</H>
@@ -92,13 +94,18 @@ export function ScheduleTable({ caption, rows }) {
   );
 }
 
-export function FeatureGrid({ items }) {
+// `photos` maps an item index to a photo slot shown inside that feature card.
+// `photos` maps an item index to a photo slot shown inside that feature card.
+export function FeatureGrid({ items, photos = {} }) {
   return (
     <ul className="feature-grid">
-      {items.map((f) => (
-        <li key={f.title} className="feature">
-          <h3>{f.title}</h3>
-          <p>{f.body}</p>
+      {items.map((f, i) => (
+        <li key={f.title} className={`feature ${photos[i] ? "feature-with-photo" : ""}`}>
+          {photos[i] && <OptionalSiteImage slot={photos[i]} className="feature-photo" sizes="(min-width: 64rem) 40vw, 100vw" />}
+          <div>
+            <h3>{f.title}</h3>
+            <p>{f.body}</p>
+          </div>
         </li>
       ))}
     </ul>
