@@ -347,3 +347,11 @@ I downloaded only the four approved original files and reviewed each one.
 - "Yoga, massage, and bodywork" now has a two-photo row (the same `PhotoRow` as the lineage section): the 33 Degree Yoga teacher training photo, then the NEST graduation photo, both captioned. Yoga comes first to match the section's text order (yoga 2020, massage 2021).
 - **Yoga photo:** the bottom edge is cropped to remove the hand holding a phone, with everyone kept in frame. It's at its original width (1024px), not enlarged.
 - **"5 animal frolic qigong workshop in prague" wasn't uploaded,** so the Gallery is unchanged.
+
+## Signature program: Baguazhang for Healthy Aging
+- **Research curriculum module** "Baguazhang for Healthy Aging" is seeded by `flask seed` (published, `in_development`, "In development", "12 weeks (planned)"), which un-hides the Research page section. The section heading is now "Baguazhang for Healthy Aging" and has the anchor `#healthy-aging`. The research "learning goals" label now reads "What we practice". Copy describes the class and the planned study only; no outcomes are promised.
+- **Home feature band** sits directly after the three division cards (the intergenerational strip moved into its own section below it). It uses the research colors, the `research-banner` circle-walking photo, and a new decorative `BaguaMotif` SVG (the walking circle with eight stations) in `component/Logo.js`. Buttons: "Learn more" → `/research#healthy-aging`, "Join a class" → `/programs/seniors`.
+- **Editable in Admin → Site settings → "Home page: featured program"** (`featured_program_title`, `featured_program_text`, public). While a setting still equals the English default (or is blank), the translated locale copy is shown, so Spanish/Kreyòl work once translated.
+- **Seniors:** the Traditional Baguazhang card gets a "Signature program" badge (research colors) and a footer link to `/research#healthy-aging`. `ModuleCard` gained optional `badge`/`footer` props.
+- When the Research page has exactly one research module, the card sits beside the Bagua motif instead of a half-empty two-column grid.
+- **Checks:** Home, Seniors, and Research at 390px and 1280px: 0 axe violations, no horizontal overflow, and the `#healthy-aging` link scrolls to the section.

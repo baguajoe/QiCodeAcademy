@@ -146,6 +146,11 @@
     "interTitle": "Generations learning together",
     "interBody": "In our intergenerational programs, youth help older adults learn technology. Young people gain leadership experience, and seniors gain digital skills.",
     "interCta": "About intergenerational programs",
+    "featuredEyebrow": "Signature program",
+    "featuredTitle": "Baguazhang for Healthy Aging",
+    "featuredText": "Tai Chi programs for older adults are common. Baguazhang, an art built on walking the circle, is rarely offered and has barely been studied, and we're building a program to change that.",
+    "featuredLearnMore": "Learn more",
+    "featuredJoin": "Join a class",
     "eventsTitle": "Upcoming events",
     "noEvents": "No upcoming events are posted yet. Check back soon!",
     "allEvents": "See all events",
@@ -377,7 +382,9 @@
     ],
     "researchTitle": "About the research",
     "researchNote": "Tai Chi has been widely studied for balance in older adults, though results vary by person and program. Research on Baguazhang specifically is more limited — which is part of why we hope to study it.",
-    "researchLink": "Learn about our research plans"
+    "researchLink": "Learn about our research plans",
+    "signatureBadge": "Signature program",
+    "signatureLink": "Part of our Baguazhang for Healthy Aging program"
   },
   "inter": {
     "title": "Intergenerational Programs",
@@ -444,7 +451,7 @@
       "emailOrPhoneHint": "We'll only use this to tell you about future research opportunities.",
       "notifyMe": "Notify me"
     },
-    "programTitle": "Our 12-week Baguazhang program",
+    "programTitle": "Baguazhang for Healthy Aging",
     "programLead": "The standardized curriculum we are developing for future research partnerships."
   },
   "events": {
@@ -667,7 +674,7 @@
       "adaptations": "For older adults"
     },
     "research": {
-      "goals": "What the program covers",
+      "goals": "What we practice",
       "projects": "Program phases",
       "adaptations": "Adaptations"
     },

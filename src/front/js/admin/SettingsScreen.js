@@ -19,6 +19,15 @@ const GROUPS = [
     ],
   },
   {
+    title: "Home page: featured program",
+    note: "The band below the three division cards. Describe what happens in class and what we plan to study. Never promise health outcomes.",
+    items: [
+      { key: "featured_program_title", label: "Featured program title", hint: "e.g. \"Baguazhang for Healthy Aging\"" },
+      { key: "featured_program_text", label: "Featured program description", type: "textarea", rows: 3,
+        hint: "One or two sentences. Leave blank to use the default text." },
+    ],
+  },
+  {
     title: "Research",
     items: [{ key: "research_status", label: "Current research status", hint: "Shown on the Research page, e.g. \"In development — no active studies.\"" }],
   },

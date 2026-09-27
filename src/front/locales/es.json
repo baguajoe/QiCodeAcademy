@@ -146,6 +146,11 @@
     "interTitle": "TODO: Generations learning together",
     "interBody": "TODO: In our intergenerational programs, youth help older adults learn technology. Young people gain leadership experience, and seniors gain digital skills.",
     "interCta": "TODO: About intergenerational programs",
+    "featuredEyebrow": "TODO: Signature program",
+    "featuredTitle": "TODO: Baguazhang for Healthy Aging",
+    "featuredText": "TODO: Tai Chi programs for older adults are common. Baguazhang, an art built on walking the circle, is rarely offered and has barely been studied, and we're building a program to change that.",
+    "featuredLearnMore": "TODO: Learn more",
+    "featuredJoin": "TODO: Join a class",
     "eventsTitle": "TODO: Upcoming events",
     "noEvents": "TODO: No upcoming events are posted yet. Check back soon!",
     "allEvents": "TODO: See all events",
@@ -377,7 +382,9 @@
     ],
     "researchTitle": "TODO: About the research",
     "researchNote": "TODO: Tai Chi has been widely studied for balance in older adults, though results vary by person and program. Research on Baguazhang specifically is more limited — which is part of why we hope to study it.",
-    "researchLink": "TODO: Learn about our research plans"
+    "researchLink": "TODO: Learn about our research plans",
+    "signatureBadge": "TODO: Signature program",
+    "signatureLink": "TODO: Part of our Baguazhang for Healthy Aging program"
   },
   "inter": {
     "title": "TODO: Intergenerational Programs",
@@ -444,7 +451,7 @@
       "emailOrPhoneHint": "TODO: We'll only use this to tell you about future research opportunities.",
       "notifyMe": "TODO: Notify me"
     },
-    "programTitle": "TODO: Our 12-week Baguazhang program",
+    "programTitle": "TODO: Baguazhang for Healthy Aging",
     "programLead": "TODO: The standardized curriculum we are developing for future research partnerships."
   },
   "events": {
@@ -667,7 +674,7 @@
       "adaptations": "TODO: For older adults"
     },
     "research": {
-      "goals": "TODO: What the program covers",
+      "goals": "TODO: What we practice",
       "projects": "TODO: Program phases",
       "adaptations": "TODO: Adaptations"
     },

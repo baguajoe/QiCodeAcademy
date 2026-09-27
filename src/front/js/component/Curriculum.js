@@ -28,7 +28,8 @@ function List({ title, items, ordered, className = "" }) {
   );
 }
 
-export function ModuleCard({ module, headingLevel = 3, showProjects = true, photoSlot }) {
+// `badge` and `footer` are optional extras (e.g. the signature-program marker on Seniors).
+export function ModuleCard({ module, headingLevel = 3, showProjects = true, photoSlot, badge, footer }) {
   const { t } = useTranslation();
   const H = `h${headingLevel}`;
   // Labels for learning_goals / projects depend on the division.
@@ -38,7 +39,7 @@ export function ModuleCard({ module, headingLevel = 3, showProjects = true, phot
     <article className={`card card-accent module-card theme-${module.division}`}>
       {photoSlot && <OptionalSiteImage slot={photoSlot} className="module-photo" sizes="(min-width: 40rem) 50vw, 100vw" />}
       <div className="card-body">
-        <div className="cluster" style={{ gap: "0.5rem" }}><StatusBadge module={module} /></div>
+        <div className="cluster" style={{ gap: "0.5rem" }}>{badge}<StatusBadge module={module} /></div>
         <H>{module.title}</H>
         {facts.length > 0 && <ul className="fact-chips">{facts.map((f) => <li key={f}>{f}</li>)}</ul>}
         {module.summary && <p>{module.summary}</p>}
@@ -50,6 +51,7 @@ export function ModuleCard({ module, headingLevel = 3, showProjects = true, phot
             <p>{module.adaptations}</p>
           </>
         )}
+        {footer}
       </div>
     </article>
   );
@@ -94,7 +96,6 @@ export function ScheduleTable({ caption, rows }) {
   );
 }
 
-// `photos` maps an item index to a photo slot shown inside that feature card.
 // `photos` maps an item index to a photo slot shown inside that feature card.
 export function FeatureGrid({ items, photos = {} }) {
   return (

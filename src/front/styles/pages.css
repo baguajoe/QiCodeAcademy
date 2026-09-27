@@ -11,6 +11,26 @@
 .division-cards h3 { font-size: 1.35rem; }
 .inter-band { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--space-5); align-items: center; border-radius: var(--radius); background: var(--inter-soft); padding: var(--space-6); border-left: 8px solid var(--inter); }
 @media (min-width: 48rem) { .inter-band { grid-template-columns: 2fr 1fr; } }
+.inter-band h2 { font-size: 1.3rem; }
+
+/* Home: signature program band (research colors + Bagua circle motif) */
+.featured-program { position: relative; overflow: hidden; background: var(--research-strong); }
+.featured-motif { position: absolute; width: 34rem; height: 34rem; right: -9rem; top: -8rem; color: var(--research-line); opacity: 0.55; pointer-events: none; }
+.featured-inner { position: relative; display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--space-6); align-items: center; }
+@media (min-width: 56rem) { .featured-inner { grid-template-columns: 1fr 1fr; gap: var(--space-7); } }
+.featured-media { border-radius: var(--radius); overflow: hidden; outline: 3px solid rgb(255 255 255 / 0.2); outline-offset: 6px; }
+.featured-body h2 { font-size: clamp(1.8rem, 1.2rem + 2vw, 2.6rem); margin: var(--space-2) 0 var(--space-4); }
+.featured-body p { font-size: 1.15rem; max-width: 34rem; margin-bottom: var(--space-5); }
+:root[data-contrast="high"] .featured-program { background: #000; }
+:root[data-contrast="high"] .featured-motif { color: #fff; opacity: 0.35; }
+
+/* Research: a single program card sits beside the Bagua motif */
+.program-motif { display: none; width: 100%; max-width: 22rem; justify-self: center; color: var(--research-line); }
+@media (min-width: 56rem) { .program-motif { display: block; } }
+:root[data-contrast="high"] .program-motif { color: #000; }
+
+/* Seniors: signature program marker on a curriculum card */
+.module-card .signature-link { margin: var(--space-4) 0 0; padding-top: var(--space-4); border-top: 1px solid var(--line); font-weight: 700; }
 .two-gains { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--space-5); }
 @media (min-width: 48rem) { .two-gains { grid-template-columns: 1fr 1fr; } }
 .gain { background: var(--surface); border-radius: var(--radius); padding: var(--space-5); border-top: 6px solid var(--accent); box-shadow: var(--shadow); }

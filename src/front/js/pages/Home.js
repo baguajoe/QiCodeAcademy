@@ -7,6 +7,7 @@ import { useStore } from "../store/appContext";
 import { Photo, SiteImage, isSlotPlaceholder } from "../component/Photo";
 import { EventCard, NewsCard } from "../component/Cards";
 import { SectionHeader } from "../component/common";
+import { BaguaMotif } from "../component/Logo";
 
 function Hero() {
   const { t } = useTranslation();
@@ -59,10 +60,20 @@ function Divisions() {
             </article>
           ))}
         </div>
-        <div className="inter-band theme-intergenerational" style={{ marginTop: "2rem" }}>
+      </div>
+    </section>
+  );
+}
+
+function Intergenerational() {
+  const { t } = useTranslation();
+  return (
+    <section className="section" aria-labelledby="inter-title">
+      <div className="container">
+        <div className="inter-band theme-intergenerational">
           <div>
             <span className="eyebrow">{t("divisions.intergenerational.motto")}</span>
-            <h3>{t("home.interTitle")}</h3>
+            <h2 id="inter-title">{t("home.interTitle")}</h2>
             <p style={{ margin: 0 }}>{t("home.interBody")}</p>
           </div>
           <div><Link className="btn" to="/programs/intergenerational">{t("home.interCta")}</Link></div>
@@ -81,6 +92,39 @@ export function Neighborhoods({ alt = true }) {
         <ul className="hoods">
           {t("neighborhoods.list", { returnObjects: true }).map((n) => <li key={n}>{n}</li>)}
         </ul>
+      </div>
+    </section>
+  );
+}
+
+// Signature program band. Title/text are editable in Admin → Site settings; while they
+// still match the English default, the translated copy is shown instead.
+function FeaturedProgram() {
+  const { t, i18n } = useTranslation();
+  const { actions } = useStore();
+  const fromSetting = (key, tKey) => {
+    const v = actions.setting(key).trim();
+    return v && v !== i18n.getFixedT("en")(tKey) ? v : t(tKey);
+  };
+  const title = fromSetting("featured_program_title", "home.featuredTitle");
+  return (
+    <section className="section section-dark theme-research featured-program" aria-labelledby="featured-title">
+      <BaguaMotif className="featured-motif" />
+      <div className="container featured-inner">
+        <div className="featured-media">
+          <SiteImage slot="research-banner" ratio="4 / 3" sizes="(min-width: 56rem) 45vw, 100vw" />
+        </div>
+        <div className="featured-body">
+          <span className="eyebrow">{t("home.featuredEyebrow")}</span>
+          <h2 id="featured-title">{title}</h2>
+          <p>{fromSetting("featured_program_text", "home.featuredText")}</p>
+          <div className="cluster">
+            <Link className="btn btn-lg btn-light" to="/research#healthy-aging">
+              {t("home.featuredLearnMore")}<span className="sr-only">: {title}</span>
+            </Link>
+            <Link className="btn btn-lg btn-ghost-light" to="/programs/seniors">{t("home.featuredJoin")}</Link>
+          </div>
+        </div>
       </div>
     </section>
   );
@@ -199,6 +243,8 @@ export default function Home() {
     <>
       <Hero />
       <Divisions />
+      <FeaturedProgram />
+      <Intergenerational />
       <Neighborhoods />
       <UpcomingEvents />
       <ImpactStats />

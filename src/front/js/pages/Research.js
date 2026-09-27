@@ -8,6 +8,7 @@ import { NewsCard } from "../component/Cards";
 import { PartnershipDiagram, StepsDiagram } from "../component/Diagrams";
 import { FormShell, TextArea, TextField, useForm } from "../component/Form";
 import { ModuleCard, useCurriculum } from "../component/Curriculum";
+import { BaguaMotif } from "../component/Logo";
 
 function References() {
   const { t } = useTranslation();
@@ -32,16 +33,24 @@ function References() {
   );
 }
 
+// "Baguazhang for Healthy Aging" (linked from Home and Seniors as #healthy-aging).
 // Hidden until at least one research curriculum module is published in the admin.
 function ResearchProgram() {
   const { t } = useTranslation();
   const { modules } = useCurriculum("research");
   if (!modules.length) return null;
   return (
-    <section className="section section-alt" aria-labelledby="rprogram-title">
+    <section className="section section-alt" id="healthy-aging" aria-labelledby="rprogram-title">
       <div className="container">
         <SectionHeader title={t("research.programTitle")} lead={t("research.programLead")} id="rprogram-title" />
-        <div className="grid grid-2">{modules.map((m) => <ModuleCard key={m.id} module={m} />)}</div>
+        {modules.length === 1 ? (
+          <div className="split program-single">
+            <ModuleCard module={modules[0]} />
+            <BaguaMotif className="program-motif" />
+          </div>
+        ) : (
+          <div className="grid grid-2">{modules.map((m) => <ModuleCard key={m.id} module={m} />)}</div>
+        )}
       </div>
     </section>
   );

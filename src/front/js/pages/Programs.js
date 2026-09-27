@@ -129,6 +129,17 @@ export function SeniorPrograms() {
   useSeo({ title: t("seniors.title"), description: t("seniors.intro"), imageSlot: "seniors-banner" });
   const detailed = modules.filter((m) => (m.learning_goals || []).length || (m.projects || []).length || m.adaptations);
   const simple = modules.filter((m) => !detailed.includes(m));
+  // Traditional Baguazhang is the class side of our "Baguazhang for Healthy Aging" signature program.
+  const card = (m) => {
+    const signature = /baguazhang/i.test(m.title);
+    return (
+      <ModuleCard key={m.id} module={m} photoSlot={seniorModulePhoto(m.title)}
+        badge={signature && <span className="badge badge-solid theme-research">{t("seniors.signatureBadge")}</span>}
+        footer={signature && (
+          <p className="signature-link"><Link to="/research#healthy-aging">{t("seniors.signatureLink")}</Link></p>
+        )} />
+    );
+  };
   return (
     <div className="theme-senior">
       <PageBanner slot="seniors-banner" motto={t("divisions.senior.motto")} title={t("seniors.title")} lead={t("seniors.lead")} />
@@ -147,8 +158,8 @@ export function SeniorPrograms() {
         <section className="section section-accent" aria-labelledby="classes-title">
           <div className="container">
             <SectionHeader title={t("seniors.modulesTitle")} lead={t("seniors.modulesLead")} id="classes-title" />
-            {detailed.length > 0 && <div className="grid grid-2">{detailed.map((m) => <ModuleCard key={m.id} module={m} photoSlot={seniorModulePhoto(m.title)} />)}</div>}
-            {simple.length > 0 && <div className="grid grid-3" style={{ marginTop: "1.5rem" }}>{simple.map((m) => <ModuleCard key={m.id} module={m} photoSlot={seniorModulePhoto(m.title)} />)}</div>}
+            {detailed.length > 0 && <div className="grid grid-2">{detailed.map(card)}</div>}
+            {simple.length > 0 && <div className="grid grid-3" style={{ marginTop: "1.5rem" }}>{simple.map(card)}</div>}
           </div>
         </section>
       )}

@@ -362,7 +362,7 @@ class CurriculumModule(TimestampMixin, db.Model):
 
     Empty fields are simply not displayed. `in_development` modules show their
     `launch_label` badge (e.g. "Launching 2027"). Research modules also drive the
-    Research page's "Our 12-week Baguazhang program" section, which stays hidden
+    Research page's "Baguazhang for Healthy Aging" section, which stays hidden
     until at least one research module is published.
     """
     __tablename__ = "curriculum_modules"

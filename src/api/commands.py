@@ -22,6 +22,11 @@ TEACHING_LOCATIONS = "\n".join([
 # Earlier seeded defaults, replaced by `flask seed` only if staff haven't edited them.
 LEGACY_TEACHING_LOCATIONS = {"Grove Hall Senior Center\nCodman Square Library\nBoston City Parks"}
 
+FEATURED_PROGRAM_TITLE = "Baguazhang for Healthy Aging"
+FEATURED_PROGRAM_TEXT = ("Tai Chi programs for older adults are common. Baguazhang, an art built on walking the "
+                         "circle, is rarely offered and has barely been studied, and we're building a program "
+                         "to change that.")
+
 DEFAULT_SETTINGS = [
     # key, value, is_public
     ("tax_status", "Qi Code Academy, Inc. has applied for 501(c)(3) tax-exempt status. "
@@ -41,6 +46,9 @@ DEFAULT_SETTINGS = [
     # Organization contact info shown on Contact page/footer (blank = hidden)
     ("org_contact_email", "", True),
     ("org_contact_phone", "", True),
+    # Home page feature band for the signature program (describe the program, never promise outcomes)
+    ("featured_program_title", FEATURED_PROGRAM_TITLE, True),
+    ("featured_program_text", FEATURED_PROGRAM_TEXT, True),
 ]
 
 # Keep in sync with SLOTS in src/front/js/siteImages.js and IMAGE_GUIDE.md.
@@ -203,6 +211,16 @@ CURRICULUM_SEED = [
          projects=["Standing and stepping", "Circle walking and palm positions", "Directional changes",
                    "Additional palm changes"],
          status="available"),
+    # Signature program — drives the Research page's "Baguazhang for Healthy Aging" section.
+    # Describes what happens in class and what we plan to study; no promised outcomes.
+    dict(division="research", sort_order=1, title="Baguazhang for Healthy Aging",
+         duration="12 weeks (planned)",
+         summary="Our signature program: traditional Baguazhang circle walking, adapted for older adults. We are "
+                 "developing it as a standardized 12-week program that we hope to study with university and "
+                 "medical research partners.",
+         learning_goals=["Standing and stepping", "Circle walking in large, slow circles", "Palm positions",
+                         "Controlled changes of direction", "Support and chair options as needed"],
+         status="in_development", launch_label="In development"),
     # One-sentence plain descriptions (drafted; see DECISIONS.md).
     dict(division="senior", sort_order=3, title="Yoga & Gentle Stretching",
          summary="Gentle yoga poses and stretches, done standing or seated, at a pace that feels comfortable.",

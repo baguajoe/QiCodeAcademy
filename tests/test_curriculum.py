@@ -93,3 +93,38 @@ def test_seeded_senior_modules(client, db):
     assert tai_chi["projects"] == ["Foundations", "Sections of the form", "The complete form", "Ongoing refinement"]
     assert bagua["adaptations"].startswith("Large circles, slow steps")
     assert all(m["summary"].count(".") <= 1 for m in items[2:])
+
+
+def test_seeded_research_signature_program(client, db):
+    from api.commands import seed_curriculum
+    seed_curriculum()
+    db.session.commit()
+    items = client.get("/api/curriculum?division=research").get_json()["items"]
+    assert len(items) == 1
+    m = items[0]
+    assert m["title"] == "Baguazhang for Healthy Aging"
+    assert (m["status"], m["launch_label"], m["duration"]) == ("in_development", "In development", "12 weeks (planned)")
+    assert m["summary"].startswith("Our signature program: traditional Baguazhang circle walking, adapted for older adults.")
+    assert m["learning_goals"] == ["Standing and stepping", "Circle walking in large, slow circles", "Palm positions",
+                                   "Controlled changes of direction", "Support and chair options as needed"]
+
+
+def test_featured_program_settings_public_and_editable(client, db, auth_headers):
+    import json
+    from pathlib import Path
+    from api.commands import FEATURED_PROGRAM_TEXT, FEATURED_PROGRAM_TITLE, seed_settings
+    seed_settings()
+    db.session.commit()
+    s = client.get("/api/settings").get_json()
+    assert s["featured_program_title"] == FEATURED_PROGRAM_TITLE == "Baguazhang for Healthy Aging"
+    assert s["featured_program_text"] == FEATURED_PROGRAM_TEXT
+    # The frontend fallback copy matches the seeded default.
+    en = json.loads((Path(__file__).resolve().parents[1] / "src/front/locales/en.json").read_text())
+    assert (en["home"]["featuredTitle"], en["home"]["featuredText"]) == (FEATURED_PROGRAM_TITLE, FEATURED_PROGRAM_TEXT)
+    assert en["research"]["programTitle"] == "Baguazhang for Healthy Aging"
+    admin_js = (Path(__file__).resolve().parents[1] / "src/front/js/admin/SettingsScreen.js").read_text()
+    assert '"featured_program_title"' in admin_js and '"featured_program_text"' in admin_js
+    rows = client.get("/api/admin/settings?q=featured_program_title", headers=auth_headers).get_json()["items"]
+    res = client.patch(f"/api/admin/settings/{rows[0]['id']}", headers=auth_headers, json={"value": "Walking the Circle"})
+    assert res.status_code == 200, res.get_json()
+    assert client.get("/api/settings").get_json()["featured_program_title"] == "Walking the Circle"
