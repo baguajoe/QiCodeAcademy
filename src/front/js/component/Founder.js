@@ -22,9 +22,22 @@ export function useFounder(team) {
   };
 }
 
+// Plain text with optional inline links written as [text](https://...); links open in a new tab.
+function InlineText({ text }) {
+  const { t } = useTranslation();
+  return text.split(/(\[[^\]]+\]\(https?:\/\/[^\s)]+\))/).map((part, i) => {
+    const m = part.match(/^\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)$/);
+    return m ? (
+      <a key={i} href={m[2]} target="_blank" rel="noopener">
+        {m[1]}<span className="sr-only"> ({t("common.opensNewTab")})</span>
+      </a>
+    ) : part;
+  });
+}
+
 export function Paragraphs({ text, headingLevel = 2 }) {
   const H = `h${headingLevel}`;
-  return textBlocks(text).map((b, i) => (b.type === "h" ? <H key={i}>{b.text}</H> : <p key={i}>{b.text}</p>));
+  return textBlocks(text).map((b, i) => (b.type === "h" ? <H key={i}>{b.text}</H> : <p key={i}><InlineText text={b.text} /></p>));
 }
 
 // "As featured in" — outlet names as plain text; they become links once staff add the URLs.

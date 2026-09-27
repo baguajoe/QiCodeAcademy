@@ -144,3 +144,25 @@ def test_previous_version_upgrades_when_unedited(db):
     db.session.commit()
     assert upgrade_founder_text() == 1
     assert loc.value == TEACHING_LOCATIONS
+
+
+EXPECTED_TIAN_YI = ("Joseph also serves as Boston Regional Representative for the "
+                    "[Tian Yi Foundation](https://tianyiglobal.net), a multi-region organization of instructors and "
+                    "practitioners dedicated to making traditional movement practices accessible to their communities.")
+
+
+def test_tian_yi_sentence_ends_lineage_section():
+    lineage = FOUNDER_FULL_BIO.split("\n\n## ")[0]
+    assert lineage.endswith(EXPECTED_BAGUA + " " + EXPECTED_TIAN_YI)
+    assert FOUNDER_FULL_BIO.count("Tian Yi") == 1
+
+
+def test_previously_deployed_full_bio_upgrades_to_tian_yi_version(db):
+    """The version live before the Tian Yi sentence (no link, same text otherwise) upgrades on `flask seed`."""
+    seed_settings()
+    db.session.commit()
+    row = db.session.query(SiteSetting).filter_by(key="founder_full_bio").one()
+    row.value = FOUNDER_FULL_BIO.replace(" " + EXPECTED_TIAN_YI, "")
+    db.session.commit()
+    assert upgrade_founder_text() == 1
+    assert row.value == FOUNDER_FULL_BIO

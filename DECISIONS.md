@@ -355,3 +355,8 @@ I downloaded only the four approved original files and reviewed each one.
 - **Seniors:** the Traditional Baguazhang card gets a "Signature program" badge (research colors) and a footer link to `/research#healthy-aging`. `ModuleCard` gained optional `badge`/`footer` props.
 - When the Research page has exactly one research module, the card sits beside the Bagua motif instead of a half-empty two-column grid.
 - **Checks:** Home, Seniors, and Research at 390px and 1280px: 0 axe violations, no horizontal overflow, and the `#healthy-aging` link scrolls to the section.
+
+## Tian Yi Foundation in the founder bio (September 2026)
+- **One sentence added, verbatim,** at the end of "Lineage and training" (after the Baguazhang and Prague sentences): Joseph is Boston Regional Representative for the Tian Yi Foundation. Nothing else in the bio changed. Tian Yi is not listed under Partners, and its logo is not used.
+- **Link:** "Tian Yi Foundation" links to https://tianyiglobal.net and opens in a new tab (`rel="noopener"`). The bio stores it as `[Tian Yi Foundation](https://tianyiglobal.net)`. The bio renderer (`Paragraphs`) now turns `[text](https://...)` into a link built as a React element, not raw HTML. Only http and https links work. The admin hint for the full bio explains the syntax.
+- **Deployed sites:** the version that was live before this change is now a legacy fingerprint, so `flask seed` (Railway pre-deploy, Render build) replaces it on the next deploy. If staff have edited the full bio in the admin, it is left alone.

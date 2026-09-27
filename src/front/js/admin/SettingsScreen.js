@@ -52,7 +52,7 @@ const GROUPS = [
     note: "The founder's SHORT bio (About page card) is edited under Team → Joseph Gallop.",
     items: [
       { key: "founder_full_bio", label: "Full bio", type: "textarea", rows: 18,
-        hint: "Separate paragraphs with a blank line. Start a line with \"## \" to make it a section heading (e.g. \"## Lineage and training\"). Please double-check lineage names and dates." },
+        hint: "Separate paragraphs with a blank line. Start a line with \"## \" to make it a section heading (e.g. \"## Lineage and training\"). Write a link as [link text](https://example.org). Please double-check lineage names and dates." },
       { key: "founder_credentials", label: "Credentials", type: "textarea", rows: 7, hint: "One credential per line." },
     ],
   },
