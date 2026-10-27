@@ -11,11 +11,25 @@ const GROUPS = [
     title: "Organization",
     items: [
       { key: "tax_status", label: "Tax-exempt status statement", type: "textarea", rows: 3,
-        hint: "Shown in the footer and on the Donate pages. Update this when the IRS grants 501(c)(3) status. Don't promise deductibility unless it's confirmed." },
+        hint: "Shown on the About page (Nonprofit status) and the Donate pages, and in donation receipts. Keep it matching the IRS determination letter." },
+      { key: "ein", label: "EIN (federal tax ID)", hint: "Shown in the footer on every page, e.g. 42-5318171." },
+      { key: "org_history", label: "Our history", type: "textarea", rows: 5,
+        hint: "Shown near the top of the About page. The organization was incorporated in 2026; \"18 years\" refers to Joseph's teaching, never the organization's age. Leave blank to use the default text." },
       { key: "org_contact_email", label: "Organization email", type: "email", hint: "Shown on the Contact page and footer. Leave blank to hide. Never use a personal address." },
       { key: "org_contact_phone", label: "Organization phone", type: "tel", hint: "Shown on the Contact page and footer. Leave blank to hide. Never use a personal number." },
       { key: "teaching_locations", label: "Where we teach", type: "textarea", rows: 4,
         hint: "Shown on the Contact page. One place per line, names only (e.g. \"Codman Square Library\"). Do not add street addresses." },
+    ],
+  },
+  {
+    title: "Donations",
+    note: "Keep online donations off until the Massachusetts Attorney General charity registration is complete.",
+    items: [
+      { key: "donations_enabled", label: "Online donations", type: "select",
+        options: [["false", "Off: Donate page shows the notice below"], ["true", "On: Donate page shows the Stripe donation form"]],
+        hint: "Turning this on also needs the Stripe keys set on the server." },
+      { key: "donations_notice", label: "Donate page notice (while donations are off)", type: "textarea", rows: 3,
+        hint: "Leave blank to use the default text." },
     ],
   },
   {
@@ -114,7 +128,12 @@ export function SettingsScreen() {
               <div className="field" key={i.key}>
                 <label htmlFor={`set-${i.key}`}>{i.label}</label>
                 {i.hint && <span className="hint" id={`set-${i.key}-hint`}>{i.hint}</span>}
-                {i.type === "textarea" ? (
+                {i.type === "select" ? (
+                  <select id={`set-${i.key}`} aria-describedby={i.hint ? `set-${i.key}-hint` : undefined}
+                    value={values[i.key] ?? i.options[0][0]} onChange={(e) => setValues((v) => ({ ...v, [i.key]: e.target.value }))}>
+                    {i.options.map(([value, label]) => <option key={value} value={value}>{label}</option>)}
+                  </select>
+                ) : i.type === "textarea" ? (
                   <textarea id={`set-${i.key}`} rows={i.rows || 4} aria-describedby={i.hint ? `set-${i.key}-hint` : undefined}
                     value={values[i.key] ?? ""} onChange={(e) => setValues((v) => ({ ...v, [i.key]: e.target.value }))} />
                 ) : (

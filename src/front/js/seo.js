@@ -7,6 +7,7 @@ export const ORG = {
   name: "Qi Code Academy",
   legalName: "Qi Code Academy, Inc.",
   neighborhoods: ["Dorchester", "Roxbury", "Mattapan", "Hyde Park", "South End"],
+  ein: "42-5318171",
 };
 
 export function orgJsonLd(settings = {}) {
@@ -25,6 +26,9 @@ export function orgJsonLd(settings = {}) {
       "Qi Code Academy empowers youth and older adults in Boston's inner-city communities through technology education, workforce development, wellness, community engagement, and research.",
     areaServed: ORG.neighborhoods.map((n) => ({ "@type": "Place", name: `${n}, Boston, MA` })),
     address: { "@type": "PostalAddress", addressLocality: "Boston", addressRegion: "MA", addressCountry: "US" },
+    taxID: settings.ein || ORG.ein,
+    nonprofitStatus: "Nonprofit501c3",
+    foundingDate: "2026-09-26", // IRS effective date of exemption
   };
   if (sameAs.length) data.sameAs = sameAs;
   if (settings.org_contact_email) data.email = settings.org_contact_email;

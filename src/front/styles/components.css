@@ -47,6 +47,8 @@
 .hero h1 { color: #fff; font-size: clamp(2.2rem, 1.4rem + 4vw, 4rem); max-width: 18ch; margin-bottom: var(--space-3); text-shadow: 0 2px 16px rgb(0 0 0 / 0.35); }
 .hero .tagline { font-size: clamp(1.2rem, 1rem + 1vw, 1.6rem); font-weight: 700; color: var(--gold); margin-bottom: var(--space-4); }
 .hero .mission { font-size: 1.15rem; max-width: 42rem; color: #f3f6f7; }
+.hero .mission-history { max-width: 42rem; margin-top: calc(-1 * var(--space-2)); }
+.hero .mission-history a { color: #fff; font-weight: 600; text-underline-offset: 0.2em; }
 :root[data-contrast="high"] .hero .tagline { color: #fff; }
 
 /* Division banner (inner pages) */

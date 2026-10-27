@@ -6,7 +6,7 @@ import { useSeo } from "../seo";
 import { useStore } from "../store/appContext";
 import { Photo, SiteImage, isSlotPlaceholder } from "../component/Photo";
 import { EventCard, NewsCard } from "../component/Cards";
-import { SectionHeader } from "../component/common";
+import { SectionHeader, useSettingText } from "../component/common";
 import { BaguaMotif } from "../component/Logo";
 
 function Hero() {
@@ -22,6 +22,7 @@ function Hero() {
         <h1 id="hero-title">Qi Code Academy</h1>
         <p className="tagline">{t("common.tagline")}</p>
         <p className="mission">{t("home.missionShort")}</p>
+        <p className="mission-history"><Link to="/about#history">{t("home.historyLine")}</Link></p>
         <div className="cluster">
           <a className="btn btn-lg btn-light" href="#divisions">{t("home.ctaPrograms")}</a>
           <Link className="btn btn-lg btn-donate" to="/donate">{t("home.ctaDonate")}</Link>
@@ -100,12 +101,8 @@ export function Neighborhoods({ alt = true }) {
 // Signature program band. Title/text are editable in Admin → Site settings; while they
 // still match the English default, the translated copy is shown instead.
 function FeaturedProgram() {
-  const { t, i18n } = useTranslation();
-  const { actions } = useStore();
-  const fromSetting = (key, tKey) => {
-    const v = actions.setting(key).trim();
-    return v && v !== i18n.getFixedT("en")(tKey) ? v : t(tKey);
-  };
+  const { t } = useTranslation();
+  const fromSetting = useSettingText();
   const title = fromSetting("featured_program_title", "home.featuredTitle");
   return (
     <section className="section section-dark theme-research featured-program" aria-labelledby="featured-title">

@@ -3,7 +3,8 @@ import { useTranslation } from "react-i18next";
 import { api } from "../api";
 import { useApi } from "../hooks/useApi";
 import { useSeo } from "../seo";
-import { PageBanner, SectionHeader } from "../component/common";
+import { PageBanner, SectionHeader, useSettingText } from "../component/common";
+import { useStore } from "../store/appContext";
 import { Photo, SiteImage } from "../component/Photo";
 import { CredentialsList, FounderCard, PressStrip, useFounder } from "../component/Founder";
 import { Neighborhoods } from "./Home";
@@ -57,6 +58,31 @@ function TeamGroup({ title, members, extra, emptyText, id }) {
   );
 }
 
+// IRS determination letter: src/front/docs/, copied unhashed into the build at /docs/.
+export const IRS_LETTER_URL = "/docs/irs-determination-letter.pdf";
+
+function NonprofitStatus() {
+  const { t } = useTranslation();
+  const { actions } = useStore();
+  const taxStatus = actions.setting("tax_status");
+  return (
+    <section className="section" id="nonprofit-status" aria-labelledby="status-title">
+      <div className="container prose">
+        <h2 id="status-title">{t("about.statusTitle")}</h2>
+        {taxStatus && <p>{taxStatus}</p>}
+        <ul>
+          <li>
+            <a href="https://apps.irs.gov/app/eos/" target="_blank" rel="noopener">
+              {t("about.statusVerify")}<span className="sr-only"> ({t("common.opensNewTab")})</span>
+            </a>
+          </li>
+          <li><a href={IRS_LETTER_URL}>{t("about.statusLetter")}</a></li>
+        </ul>
+      </div>
+    </section>
+  );
+}
+
 export default function About() {
   const { t } = useTranslation();
   const { data } = useApi(() => api.get("/team"), []);
@@ -64,6 +90,7 @@ export default function About() {
   const founder = useFounder(team);
   const others = team.filter((m) => m !== founder.member);
   const byGroup = (g) => others.filter((m) => m.group === g);
+  const fromSetting = useSettingText();
   const mission = t("about.mission", { returnObjects: true });
   useSeo({ title: t("nav.about"), description: mission[0], imageSlot: "about-banner" });
 
@@ -84,7 +111,14 @@ export default function About() {
         </div>
       </section>
 
-      <section className="section section-alt" aria-labelledby="founder-title">
+      <section className="section section-alt" id="history" aria-labelledby="history-title">
+        <div className="container prose">
+          <h2 id="history-title">{t("about.historyTitle")}</h2>
+          <p>{fromSetting("org_history", "about.history")}</p>
+        </div>
+      </section>
+
+      <section className="section" aria-labelledby="founder-title">
         <div className="container">
           <SectionHeader title={t("about.founderTitle")} id="founder-title" />
           <FounderCard founder={founder} />
@@ -92,7 +126,7 @@ export default function About() {
         </div>
       </section>
 
-      <section className="section" aria-labelledby="team-title">
+      <section className="section section-alt" aria-labelledby="team-title">
         <div className="container">
           <SectionHeader title={t("about.teamTitle")} id="team-title" />
           <TeamGroup id="board-title" title={t("about.boardTitle")} members={byGroup("board")} emptyText={t("about.boardEmpty")} />
@@ -102,6 +136,8 @@ export default function About() {
           <TeamGroup id="advisors-title" title={t("about.advisorsTitle")} members={byGroup("advisor")} />
         </div>
       </section>
+
+      <NonprofitStatus />
 
       <Neighborhoods />
     </div>

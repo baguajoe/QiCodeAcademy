@@ -18,6 +18,7 @@ from zoneinfo import ZoneInfo
 from flask import Response, current_app
 from sqlalchemy import select
 
+from .commands import EIN
 from .extensions import db
 from .models import Event, NewsPost, Program, SiteImage, SiteSetting, TeamMember, utcnow
 from .founder_content import FOUNDER_NAME, FOUNDER_ROLE, FOUNDER_SHORT_BIO
@@ -104,6 +105,9 @@ def org_jsonld(settings):
         "description": MISSION,
         "areaServed": [{"@type": "Place", "name": f"{n}, Boston, MA"} for n in NEIGHBORHOODS],
         "address": {"@type": "PostalAddress", "addressLocality": "Boston", "addressRegion": "MA", "addressCountry": "US"},
+        "taxID": settings.get("ein") or EIN,
+        "nonprofitStatus": "Nonprofit501c3",
+        "foundingDate": "2026-09-26",  # IRS effective date of exemption
     }
     same_as = [settings.get(k) for k in ("social_facebook", "social_instagram", "social_youtube") if settings.get(k)]
     if same_as:

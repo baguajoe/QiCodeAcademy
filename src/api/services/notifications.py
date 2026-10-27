@@ -7,6 +7,7 @@ from flask import current_app
 from markupsafe import escape
 from sqlalchemy import select
 
+from ..commands import TAX_STATUS
 from ..extensions import db
 from .email import send_email
 
@@ -196,9 +197,7 @@ def donation_thank_you(donation):
         return False
     amount = f"${donation.amount_cents / 100:,.2f}"
     legal = current_app.config.get("ORG_LEGAL_NAME", "Qi Code Academy, Inc.")
-    tax_status = _setting("tax_status",
-                          f"{legal} has applied for 501(c)(3) tax-exempt status. "
-                          "Please consult your tax advisor regarding deductibility.")
+    tax_status = _setting("tax_status", TAX_STATUS)
     kind = "monthly gift" if donation.recurring else "gift"
     paragraphs = [f"Thank you for your {kind} of {amount} to {_org()}. Your support helps us "
                   "serve youth and seniors across Boston."]

@@ -251,10 +251,10 @@ def test_team_partners_stats(client, db):
 
 
 def test_settings_public_only(client, db):
-    db.session.add_all([SiteSetting(key="tax_status", value="Applied", is_public=True),
+    db.session.add_all([SiteSetting(key="tax_status", value="501(c)(3) tax-exempt", is_public=True),
                         SiteSetting(key="internal_note", value="secret", is_public=False)])
     db.session.commit()
-    assert client.get("/api/settings").get_json() == {"tax_status": "Applied"}
+    assert client.get("/api/settings").get_json() == {"tax_status": "501(c)(3) tax-exempt"}
 
 
 def test_site_images(client, db):

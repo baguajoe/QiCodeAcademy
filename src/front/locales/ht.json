@@ -82,7 +82,7 @@
     "socialSoon": "TODO: Social media links coming soon.",
     "contactUs": "TODO: Contact us",
     "wellnessTitle": "TODO: Wellness note:",
-    "rights": "TODO: All rights reserved."
+    "nonprofit": "TODO: A 501(c)(3) tax-exempt nonprofit organization · EIN {{ein}}"
   },
   "errors": {
     "network": "TODO: We couldn't reach the server. Please check your connection and try again.",
@@ -164,7 +164,8 @@
     "donateBody": "TODO: Your support helps bring technology education and wellness programs to Boston neighborhoods.",
     "donateCta": "TODO: Donate",
     "newsTitle": "TODO: Latest news",
-    "allNews": "TODO: All news"
+    "allNews": "TODO: All news",
+    "historyLine": "TODO: Building on more than 18 years of community teaching in Boston."
   },
   "about": {
     "title": "TODO: About Qi Code Academy",
@@ -189,7 +190,12 @@
     "advisorsTitle": "TODO: Advisors",
     "boardEmpty": "TODO: Board members will be listed here soon.",
     "credentialsToggle": "TODO: Show credentials",
-    "credentialsHide": "TODO: Hide credentials"
+    "credentialsHide": "TODO: Hide credentials",
+    "historyTitle": "TODO: Our history",
+    "history": "TODO: Qi Code Academy, Inc. was incorporated in 2026 to formalize and expand community programming that its founder, Joseph Gallop, has led in Boston for more than 18 years. Joseph has taught Tai Chi and Baguazhang in Boston City Parks since 2014 and currently teaches at Grove Hall Senior Center, Codman Square Library, and the Parkway Community YMCA. Qi Code Academy brings that long-standing work together under one organization and adds new programs in youth technology and community health research.",
+    "statusTitle": "TODO: Nonprofit status",
+    "statusVerify": "TODO: Verify our status with the IRS",
+    "statusLetter": "TODO: View our IRS determination letter (PDF)"
   },
   "founder": {
     "credentialsTitle": "TODO: Credentials",
@@ -655,7 +661,13 @@
     "thanksBack": "TODO: Back to home",
     "cancelledTitle": "TODO: Your donation was cancelled",
     "cancelledBody": "TODO: No payment was made. If something went wrong, you can try again anytime.",
-    "tryAgain": "TODO: Try again"
+    "tryAgain": "TODO: Try again",
+    "comingSoonTitle": "TODO: Online donations are coming soon",
+    "notice": "TODO: Qi Code Academy, Inc. is a 501(c)(3) tax-exempt nonprofit. Online donations are coming soon while we complete our Massachusetts charity registration. In the meantime, there are other ways to get involved.",
+    "otherWaysTitle": "TODO: Other ways to get involved",
+    "otherVolunteer": "TODO: Volunteer with us",
+    "otherEvents": "TODO: Come to an event",
+    "otherContact": "TODO: Contact us"
   },
   "legal": {
     "draft": "TODO: DRAFT — REVIEW BEFORE LAUNCH",

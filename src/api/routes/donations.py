@@ -7,7 +7,7 @@ from flask import Blueprint, current_app, jsonify, request
 from sqlalchemy import select
 
 from ..extensions import db, limiter
-from ..models import Donation, utcnow
+from ..models import Donation, SiteSetting, utcnow
 from ..schemas import DonationCheckoutSchema
 from ..services import notifications
 from ..utils import APIError, get_json, honeypot, load
@@ -29,7 +29,10 @@ def _with_session_placeholder(url):
 @honeypot({"url": None, "id": None}, status=200)
 def create_checkout_session():
     cfg = current_app.config
-    if not (cfg["STRIPE_SECRET_KEY"] and cfg["STRIPE_SUCCESS_URL"] and cfg["STRIPE_CANCEL_URL"]):
+    # Off unless an admin sets donations_enabled to "true" (after state charity registration).
+    enabled = db.session.scalar(select(SiteSetting.value).where(SiteSetting.key == "donations_enabled"))
+    if (enabled or "").strip().lower() != "true" or not (
+            cfg["STRIPE_SECRET_KEY"] and cfg["STRIPE_SUCCESS_URL"] and cfg["STRIPE_CANCEL_URL"]):
         raise APIError("Online donations aren't available yet. Please check back soon.", 503,
                        "donations_unavailable")
 

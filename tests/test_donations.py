@@ -8,9 +8,18 @@ from unittest import mock
 import pytest
 import stripe
 
-from api.models import Donation
+from api.models import Donation, SiteSetting
 
 SECRET = "whsec_test_dummy"
+
+
+@pytest.fixture(autouse=True)
+def donations_on(db):
+    # Checkout is off unless the donations_enabled setting is "true"; most tests need it on.
+    row = SiteSetting(key="donations_enabled", value="true", is_public=True)
+    db.session.add(row)
+    db.session.commit()
+    return row
 
 
 @pytest.fixture
@@ -82,6 +91,16 @@ def test_checkout_honeypot(client, db, fake_stripe):
 def test_checkout_not_configured(app, client):
     app.config["STRIPE_SECRET_KEY"] = ""
     assert client.post("/api/donations/create-checkout-session", json={"amount": "20"}).status_code == 503
+
+
+@pytest.mark.parametrize("value", ["false", "", "no"])
+def test_checkout_off_unless_donations_enabled(client, db, donations_on, fake_stripe, value):
+    donations_on.value = value
+    db.session.commit()
+    res = client.post("/api/donations/create-checkout-session", json={"amount": "20"})
+    assert res.status_code == 503 and res.get_json()["error"] == "donations_unavailable"
+    fake_stripe.assert_not_called()
+    assert db.session.query(Donation).count() == 0
 
 
 def test_checkout_stripe_error(client, db):

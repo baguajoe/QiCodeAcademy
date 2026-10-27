@@ -34,7 +34,8 @@ Go to **`https://<your-site>/admin`** and log in with your staff email and passw
 | Replace a **site photo** (home hero, banners, founder portrait, donate photo…) | Site photos | Upload, describe the photo, and click *Save photo*. *Use default instead* undoes it. |
 | Edit **team / board** members | Team | Groups: Board of Directors, Staff, Instructor, Advisor. Lower *Sort order* shows first. |
 | Change the **founder bio** | Short bio: Team → Joseph Gallop. Full bio and credentials: *Site settings & text* → Founder page | In the full bio, start a line with `## ` to make a section heading. Please double-check lineage names and dates. |
-| Update the **tax-exempt status** text | Site settings & text → Organization | Shown in the footer and on the Donate page. Update it when the IRS grants 501(c)(3) status. |
+| Update the **tax-exempt status** text or **EIN** | Site settings & text → Organization | The statement shows on the About page (Nonprofit status), the Donate pages, and donation receipts; the EIN shows in the footer. Keep both matching the IRS determination letter (`src/front/docs/irs-determination-letter.pdf`). |
+| Turn **online donations** on or off | Site settings & text → Donations | Off by default. Leave it off until the Massachusetts Attorney General charity registration is complete. Turning it on also needs the Stripe keys. |
 | Add **social media** or **press links** | Site settings & text | Blank links stay hidden. The "As featured in" outlet names become clickable once a link is added. |
 | Add the organization's **email / phone** | Site settings & text → Organization | Shown on the Contact page and in the footer. Use organization contact info only, never personal numbers or addresses. |
 | Add a **research reference** | Research references | Only check **Verified** after someone has read the source and confirmed the summary. Never add a citation you haven't checked. |
@@ -50,7 +51,7 @@ Go to **`https://<your-site>/admin`** and log in with your staff email and passw
 See **[IMAGE_GUIDE.md](IMAGE_GUIDE.md)** for every photo spot and its ideal size. A developer can also drop photo files into `src/front/img/site/` using the names in that guide.
 
 ### Words to avoid (health and research)
-Never say Tai Chi, Baguazhang, yoga, or bodywork **prevents falls, treats, or cures** anything. Use phrases like "may support," "potential relationship," or "being studied." Don't publish research results or statistics we haven't verified, and never call donations "tax-deductible" (the tax-status setting covers that).
+Never say Tai Chi, Baguazhang, yoga, or bodywork **prevents falls, treats, or cures** anything. Use phrases like "may support," "potential relationship," or "being studied." Don't publish research results or statistics we haven't verified, and never call donations "tax-deductible" except in the approved wording "tax-deductible to the extent allowed by law" (the tax-status setting covers that).
 
 ### Translations
 The language menu offers Español and Kreyòl ayisyen. Anything not yet translated shows in English. Translators edit `src/front/locales/es.json` and `ht.json` (see `src/front/locales/README.md`). Content typed in the admin (programs, events, news) is shown as entered.

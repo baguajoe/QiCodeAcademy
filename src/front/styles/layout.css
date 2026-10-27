@@ -116,6 +116,7 @@ main:focus { outline: none; }
 .site-footer li a { display: inline-flex; align-items: center; min-height: var(--tap); }
 .footer-legal { border-top: 1px solid rgb(255 255 255 / 0.18); padding: var(--space-5) 0 var(--space-6); font-size: 0.92rem; color: #cfd8dc; }
 .footer-legal p { max-width: 60rem; }
+.footer-org { line-height: 1.6; }
 .footer-note { background: rgb(255 255 255 / 0.06); border-radius: var(--radius-sm); padding: var(--space-3) var(--space-4); }
 :root[data-contrast="high"] .site-footer { background: #000; }
 .footer-logo { width: 3rem; height: 3rem; flex: none; }

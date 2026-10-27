@@ -42,14 +42,21 @@ function useRouteFocus() {
   useEffect(() => {
     if (first.current) {
       first.current = false;
-      return;
+      if (!location.hash) return; // a deep link like /about#history still scrolls
     }
     if (location.hash) {
-      const el = document.getElementById(location.hash.slice(1));
-      if (el) {
-        el.scrollIntoView();
-        return;
-      }
+      // Lazy-loaded pages may not have rendered the target yet: retry briefly.
+      const id = location.hash.slice(1);
+      let tries = 0;
+      let timer;
+      const scroll = () => {
+        const el = document.getElementById(id);
+        if (el) el.scrollIntoView();
+        else if (++tries < 30) timer = setTimeout(scroll, 50);
+      };
+      window.scrollTo(0, 0);
+      scroll();
+      return () => clearTimeout(timer);
     }
     window.scrollTo(0, 0);
     // Move focus to the new page's heading so screen readers announce it.

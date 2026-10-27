@@ -28,7 +28,8 @@ FORBIDDEN = [
     r"\b(clinically\s+)?proven\b",
     r"\bstudies\s+show\b",
     r"\bresearch\s+(shows|proves)\b",
-    r"\btax[- ]deductible\b",
+    # Only the IRS-approved wording may mention deductibility.
+    r"\btax[- ]deductible\b(?!\s+to\s+the\s+extent\s+allowed\s+by\s+law)",
     r"\bfully\s+deductible\b",
 ]
 # Lines explicitly stating what we DON'T claim are allowed.

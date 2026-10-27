@@ -82,7 +82,7 @@
     "socialSoon": "Social media links coming soon.",
     "contactUs": "Contact us",
     "wellnessTitle": "Wellness note:",
-    "rights": "All rights reserved."
+    "nonprofit": "A 501(c)(3) tax-exempt nonprofit organization · EIN {{ein}}"
   },
   "errors": {
     "network": "We couldn't reach the server. Please check your connection and try again.",
@@ -164,7 +164,8 @@
     "donateBody": "Your support helps bring technology education and wellness programs to Boston neighborhoods.",
     "donateCta": "Donate",
     "newsTitle": "Latest news",
-    "allNews": "All news"
+    "allNews": "All news",
+    "historyLine": "Building on more than 18 years of community teaching in Boston."
   },
   "about": {
     "title": "About Qi Code Academy",
@@ -189,7 +190,12 @@
     "advisorsTitle": "Advisors",
     "boardEmpty": "Board members will be listed here soon.",
     "credentialsToggle": "Show credentials",
-    "credentialsHide": "Hide credentials"
+    "credentialsHide": "Hide credentials",
+    "historyTitle": "Our history",
+    "history": "Qi Code Academy, Inc. was incorporated in 2026 to formalize and expand community programming that its founder, Joseph Gallop, has led in Boston for more than 18 years. Joseph has taught Tai Chi and Baguazhang in Boston City Parks since 2014 and currently teaches at Grove Hall Senior Center, Codman Square Library, and the Parkway Community YMCA. Qi Code Academy brings that long-standing work together under one organization and adds new programs in youth technology and community health research.",
+    "statusTitle": "Nonprofit status",
+    "statusVerify": "Verify our status with the IRS",
+    "statusLetter": "View our IRS determination letter (PDF)"
   },
   "founder": {
     "credentialsTitle": "Credentials",
@@ -655,7 +661,13 @@
     "thanksBack": "Back to home",
     "cancelledTitle": "Your donation was cancelled",
     "cancelledBody": "No payment was made. If something went wrong, you can try again anytime.",
-    "tryAgain": "Try again"
+    "tryAgain": "Try again",
+    "comingSoonTitle": "Online donations are coming soon",
+    "notice": "Qi Code Academy, Inc. is a 501(c)(3) tax-exempt nonprofit. Online donations are coming soon while we complete our Massachusetts charity registration. In the meantime, there are other ways to get involved.",
+    "otherWaysTitle": "Other ways to get involved",
+    "otherVolunteer": "Volunteer with us",
+    "otherEvents": "Come to an event",
+    "otherContact": "Contact us"
   },
   "legal": {
     "draft": "DRAFT — REVIEW BEFORE LAUNCH",

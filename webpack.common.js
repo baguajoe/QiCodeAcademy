@@ -54,6 +54,8 @@ module.exports = {
         // Unhashed copies so Flask can use them as Open Graph share images.
         { from: "src/front/img/site", to: "img/site", globOptions: { ignore: ["**/*.md", "**/.gitkeep"] }, noErrorOnMissing: true },
         { from: "src/front/img/og-default.png", to: "img/og-default.png" },
+        // Public documents (IRS determination letter), served unhashed at /docs/...
+        { from: "src/front/docs", to: "docs" },
       ],
     }),
   ],

@@ -73,13 +73,13 @@ def test_admin_confirming_registration_emails_family(client, db, outbox, auth_he
 
 
 def test_donation_thank_you_uses_tax_status(app, db, outbox):
-    db.session.add(SiteSetting(key="tax_status", value="Applied for 501(c)(3) status."))
+    db.session.add(SiteSetting(key="tax_status", value="Qi Code Academy, Inc. is a 501(c)(3) tax-exempt organization."))
     d = Donation(amount_cents=2500, designation="youth", donor_name="Kim",
                  donor_email="kim@example.org", status="completed", recurring=True)
     db.session.add(d)
     db.session.commit()
     notifications.donation_thank_you(d)
-    assert "$25.00" in outbox[0].text and "Applied for 501(c)(3) status." in outbox[0].text
+    assert "$25.00" in outbox[0].text and "Qi Code Academy, Inc. is a 501(c)(3) tax-exempt organization." in outbox[0].text
     assert "Monthly" in outbox[0].text
 
 

@@ -34,3 +34,7 @@ public/bundle.js
 /*.JPG
 /*.JPEG
 /*.PNG
+
+# Documents dropped in the project root (e.g. IRS letters) are originals — public copies
+# live in src/front/docs/ under a clean name.
+/*.pdf

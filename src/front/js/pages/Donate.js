@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next";
 import { api } from "../api";
 import { useSeo } from "../seo";
 import { useStore } from "../store/appContext";
-import { Honeypot, PageBanner } from "../component/common";
+import { Honeypot, PageBanner, useSettingText } from "../component/common";
 import { SiteImage } from "../component/Photo";
 
 const PRESETS = [25, 50, 100, 250];
@@ -16,9 +16,48 @@ function TaxStatus() {
   return text ? <p className="small muted tax-status">{text}</p> : null;
 }
 
+// Shown while online donations are off (donations_enabled isn't "true"): no amount picker,
+// no Stripe, just the notice and other ways to help.
+function DonationsComingSoon() {
+  const { t } = useTranslation();
+  const fromSetting = useSettingText();
+  return (
+    <section className="panel donate-form" aria-labelledby="donate-soon-title">
+      <h2 id="donate-soon-title">{t("donate.comingSoonTitle")}</h2>
+      <p>{fromSetting("donations_notice", "donate.notice")}</p>
+      <h3>{t("donate.otherWaysTitle")}</h3>
+      <ul>
+        <li><Link to="/get-involved">{t("donate.otherVolunteer")}</Link></li>
+        <li><Link to="/events">{t("donate.otherEvents")}</Link></li>
+        <li><Link to="/contact">{t("donate.otherContact")}</Link></li>
+      </ul>
+      <TaxStatus />
+    </section>
+  );
+}
+
 export default function Donate() {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
+  const { actions } = useStore();
   useSeo({ title: t("donate.title"), description: t("donate.lead"), imageSlot: "donate" });
+  const enabled = actions.setting("donations_enabled").trim().toLowerCase() === "true";
+  return (
+    <div className="theme-community">
+      <PageBanner title={t("donate.title")} lead={t("donate.lead")} />
+      <section className="section">
+        <div className="container donate-layout">
+          <div className="donate-photo">
+            <SiteImage slot="donate" sizes="(min-width: 56rem) 40vw, 100vw" priority />
+          </div>
+          {enabled ? <DonateForm /> : <DonationsComingSoon />}
+        </div>
+      </section>
+    </div>
+  );
+}
+
+function DonateForm() {
+  const { t, i18n } = useTranslation();
   const [recurring, setRecurring] = useState(false);
   const [preset, setPreset] = useState("50");
   const [custom, setCustom] = useState("");
@@ -61,96 +100,86 @@ export default function Donate() {
 
   const sending = status.state === "sending";
   return (
-    <div className="theme-community">
-      <PageBanner title={t("donate.title")} lead={t("donate.lead")} />
-      <section className="section">
-        <div className="container donate-layout">
-          <div className="donate-photo">
-            <SiteImage slot="donate" sizes="(min-width: 56rem) 40vw, 100vw" priority />
-          </div>
-          <form className="panel donate-form" onSubmit={submit} noValidate aria-busy={sending} aria-labelledby="donate-form-title">
-            <h2 id="donate-form-title">{t("donate.formTitle")}</h2>
-            {status.state === "error" && (
-              <div className="alert alert-error" role="alert" tabIndex={-1} ref={alertRef}><p>{status.message}</p></div>
-            )}
-            {sending && <div className="alert alert-info" role="status"><p>{status.message}</p></div>}
-            <Honeypot idPrefix="donate" value={website} onChange={(e) => setWebsite(e.target.value)} />
+    <form className="panel donate-form" onSubmit={submit} noValidate aria-busy={sending} aria-labelledby="donate-form-title">
+      <h2 id="donate-form-title">{t("donate.formTitle")}</h2>
+      {status.state === "error" && (
+        <div className="alert alert-error" role="alert" tabIndex={-1} ref={alertRef}><p>{status.message}</p></div>
+      )}
+      {sending && <div className="alert alert-info" role="status"><p>{status.message}</p></div>}
+      <Honeypot idPrefix="donate" value={website} onChange={(e) => setWebsite(e.target.value)} />
 
-            <fieldset className="field">
-              <legend>{t("donate.frequency")}</legend>
-              <div className="toggle-radios">
-                {[false, true].map((r) => (
-                  <label key={String(r)} className={`toggle-option ${recurring === r ? "is-on" : ""}`}>
-                    <input type="radio" name="frequency" checked={recurring === r} onChange={() => setRecurring(r)} />
-                    <span>{r ? t("donate.monthly") : t("donate.oneTime")}</span>
-                  </label>
-                ))}
-              </div>
-            </fieldset>
-
-            <fieldset className="field">
-              <legend>{t("donate.amount")}{recurring ? ` (${t("donate.perMonth").trim()})` : ""}</legend>
-              <div className="amount-grid">
-                {PRESETS.map((p) => (
-                  <label key={p} className={`toggle-option ${preset === String(p) ? "is-on" : ""}`}>
-                    <input type="radio" name="amount" value={p} checked={preset === String(p)} onChange={() => setPreset(String(p))} />
-                    <span>${p}</span>
-                  </label>
-                ))}
-                <label className={`toggle-option ${preset === "custom" ? "is-on" : ""}`}>
-                  <input type="radio" name="amount" value="custom" checked={preset === "custom"} onChange={() => setPreset("custom")} />
-                  <span>{t("donate.custom")}</span>
-                </label>
-              </div>
-              {preset === "custom" && (
-                <div className="field" style={{ marginTop: "1rem" }}>
-                  <label htmlFor="donate-custom">{t("donate.customLabel")}</label>
-                  <div className="money-input">
-                    <span aria-hidden="true">$</span>
-                    <input id="donate-custom" type="number" inputMode="decimal" min="1" max="25000" step="1" value={custom}
-                      aria-invalid={custom && !valid ? "true" : undefined} onChange={(e) => setCustom(e.target.value)} autoFocus />
-                  </div>
-                </div>
-              )}
-            </fieldset>
-
-            <fieldset className="field">
-              <legend>{t("donate.designation")}</legend>
-              <div className="choice-grid">
-                {DESIGNATIONS.map((d) => (
-                  <label key={d} className="check choice-card">
-                    <input type="radio" name="designation" checked={designation === d} onChange={() => setDesignation(d)} />
-                    <span>{t(`donate.designations.${d}`)}</span>
-                  </label>
-                ))}
-              </div>
-            </fieldset>
-
-            <div className="grid grid-2" style={{ gap: "0 1rem" }}>
-              <div className="field">
-                <label htmlFor="donate-name">{t("donate.nameLabel")} <span className="muted small">({t("common.optional")})</span></label>
-                <input id="donate-name" type="text" autoComplete="name" value={name} onChange={(e) => setName(e.target.value)} />
-              </div>
-              <div className="field">
-                <label htmlFor="donate-email">{t("donate.emailLabel")} <span className="muted small">({t("common.optional")})</span></label>
-                <input id="donate-email" type="email" autoComplete="email" value={email} onChange={(e) => setEmail(e.target.value)} />
-              </div>
-            </div>
-
-            {valid && (
-              <p className="donate-summary" aria-live="polite">
-                {t("donate.summary", { amount: money(amount), period: recurring ? t("donate.perMonth") : "", designation: t(`donate.designations.${designation}`) })}
-              </p>
-            )}
-            <button type="submit" className="btn btn-donate btn-lg btn-block" disabled={sending}>
-              {sending ? t("donate.redirecting") : recurring ? t("donate.submitMonthly") : t("donate.submit")}
-            </button>
-            <p className="small muted" style={{ marginTop: "1rem" }}><span aria-hidden="true">🔒 </span>{t("donate.stripeNote")}</p>
-            <TaxStatus />
-          </form>
+      <fieldset className="field">
+        <legend>{t("donate.frequency")}</legend>
+        <div className="toggle-radios">
+          {[false, true].map((r) => (
+            <label key={String(r)} className={`toggle-option ${recurring === r ? "is-on" : ""}`}>
+              <input type="radio" name="frequency" checked={recurring === r} onChange={() => setRecurring(r)} />
+              <span>{r ? t("donate.monthly") : t("donate.oneTime")}</span>
+            </label>
+          ))}
         </div>
-      </section>
-    </div>
+      </fieldset>
+
+      <fieldset className="field">
+        <legend>{t("donate.amount")}{recurring ? ` (${t("donate.perMonth").trim()})` : ""}</legend>
+        <div className="amount-grid">
+          {PRESETS.map((p) => (
+            <label key={p} className={`toggle-option ${preset === String(p) ? "is-on" : ""}`}>
+              <input type="radio" name="amount" value={p} checked={preset === String(p)} onChange={() => setPreset(String(p))} />
+              <span>${p}</span>
+            </label>
+          ))}
+          <label className={`toggle-option ${preset === "custom" ? "is-on" : ""}`}>
+            <input type="radio" name="amount" value="custom" checked={preset === "custom"} onChange={() => setPreset("custom")} />
+            <span>{t("donate.custom")}</span>
+          </label>
+        </div>
+        {preset === "custom" && (
+          <div className="field" style={{ marginTop: "1rem" }}>
+            <label htmlFor="donate-custom">{t("donate.customLabel")}</label>
+            <div className="money-input">
+              <span aria-hidden="true">$</span>
+              <input id="donate-custom" type="number" inputMode="decimal" min="1" max="25000" step="1" value={custom}
+                aria-invalid={custom && !valid ? "true" : undefined} onChange={(e) => setCustom(e.target.value)} autoFocus />
+            </div>
+          </div>
+        )}
+      </fieldset>
+
+      <fieldset className="field">
+        <legend>{t("donate.designation")}</legend>
+        <div className="choice-grid">
+          {DESIGNATIONS.map((d) => (
+            <label key={d} className="check choice-card">
+              <input type="radio" name="designation" checked={designation === d} onChange={() => setDesignation(d)} />
+              <span>{t(`donate.designations.${d}`)}</span>
+            </label>
+          ))}
+        </div>
+      </fieldset>
+
+      <div className="grid grid-2" style={{ gap: "0 1rem" }}>
+        <div className="field">
+          <label htmlFor="donate-name">{t("donate.nameLabel")} <span className="muted small">({t("common.optional")})</span></label>
+          <input id="donate-name" type="text" autoComplete="name" value={name} onChange={(e) => setName(e.target.value)} />
+        </div>
+        <div className="field">
+          <label htmlFor="donate-email">{t("donate.emailLabel")} <span className="muted small">({t("common.optional")})</span></label>
+          <input id="donate-email" type="email" autoComplete="email" value={email} onChange={(e) => setEmail(e.target.value)} />
+        </div>
+      </div>
+
+      {valid && (
+        <p className="donate-summary" aria-live="polite">
+          {t("donate.summary", { amount: money(amount), period: recurring ? t("donate.perMonth") : "", designation: t(`donate.designations.${designation}`) })}
+        </p>
+      )}
+      <button type="submit" className="btn btn-donate btn-lg btn-block" disabled={sending}>
+        {sending ? t("donate.redirecting") : recurring ? t("donate.submitMonthly") : t("donate.submit")}
+      </button>
+      <p className="small muted" style={{ marginTop: "1rem" }}><span aria-hidden="true">🔒 </span>{t("donate.stripeNote")}</p>
+      <TaxStatus />
+    </form>
   );
 }
 

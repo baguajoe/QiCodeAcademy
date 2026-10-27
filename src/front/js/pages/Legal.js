@@ -68,7 +68,7 @@ export function Terms() {
         <h2>Research</h2>
         <p>Qi Code Academy does not currently conduct research studies. Any future study would be run with qualified research partners under their own ethics review and informed-consent process.</p>
         <h2>Donations</h2>
-        <p>Donations are processed securely by Stripe. Monthly gifts continue until you ask us to cancel them. Information about our tax-exempt status is shown on the donation page; please consult your tax advisor regarding deductibility.</p>
+        <p>Qi Code Academy, Inc. is a 501(c)(3) tax-exempt nonprofit organization (EIN 42-5318171). Contributions are tax-deductible to the extent allowed by law. Online donations are coming soon; when they open, they will be processed securely by Stripe, and monthly gifts will continue until you ask us to cancel them.</p>
         <h2>Content</h2>
         <p>Text, photos, and graphics on this site belong to Qi Code Academy, Inc. or are used with permission, and may not be reused without permission.</p>
         <h2>Links</h2>

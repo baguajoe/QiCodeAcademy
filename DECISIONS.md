@@ -52,7 +52,7 @@ Decisions made while building the backend without stopping to ask. Each can be r
   - Admin changes a registration to `confirmed` → "You're confirmed" email (once).
   - Volunteer, contact (all three types), research inquiry → acknowledgment to the sender + admin notification with `Reply-To` set to the sender.
   - Research interest → acknowledgment only if they gave an email; admin notification contains name + neighborhood only (no contact details in email).
-  - Completed donation → thank-you/receipt including the `tax_status` SiteSetting text verbatim (no deductibility claims).
+  - Completed donation → thank-you/receipt including the `tax_status` SiteSetting text verbatim (now the IRS-approved 501(c)(3) wording; see "501(c)(3) approval" below).
 - `ADMIN_NOTIFY_EMAIL` accepts a comma-separated list; if blank, no admin notifications are sent.
 - All user-supplied values are HTML-escaped in HTML emails; subjects are stripped of newlines (header-injection safe).
 
@@ -136,7 +136,7 @@ Decisions made while building the backend without stopping to ask. Each can be r
   - A live summary line shows the gift before submitting.
   - Submitting sends the donor to Stripe Checkout.
   - A 503 shows "Online donations aren't available yet."
-  - The `tax_status` setting is displayed under the form; no deductibility wording is hard-coded.
+  - The `tax_status` setting is displayed under the form; no deductibility wording is hard-coded. (Superseded while donations are off: see "501(c)(3) approval" below.)
 
   The thank-you (`/donate/thank-you`) and cancelled (`/donate/cancelled`) pages are `noindex`. **The default `STRIPE_CANCEL_URL` is now `/donate/cancelled`.**
 - **Privacy/Terms** are English placeholder drafts under a "DRAFT — REVIEW BEFORE LAUNCH" banner. They aren't put into the translation files, because the final text should come from legal review first.
@@ -168,7 +168,7 @@ Decisions made while building the backend without stopping to ask. Each can be r
   - Keyboard check: the skip link works, the Programs dropdown opens with Enter, Esc closes it and returns focus, the mobile Menu button works, and focus moves to the new page's `<h1>` after navigation.
   - **Text over photos:** the overlay gradient is at least 62% black where headings sit and at least 80% behind body text, so white text passes AA even on an all-white photo. High-contrast mode uses an 82% black overlay.
 - **Health and research language review:** I searched all copy (locales, page and component files, email templates, seed data, SEO text) for claim words. There were no violations. The only matches are the founder's credential names, the disclaimers themselves, and the organization's own research-question wording ("potential relationship to … fall-risk factors").
-  - `tests/test_content_rules.py` now fails the build if claim language ("prevents falls", "cures", "reduces risk", "improves balance", "clinically proven", "studies show", "tax-deductible", …) appears anywhere in public copy.
+  - `tests/test_content_rules.py` now fails the build if claim language ("prevents falls", "cures", "reduces risk", "improves balance", "clinically proven", "studies show", "tax-deductible" except in the approved "to the extent allowed by law" wording, …) appears anywhere in public copy.
   - It also checks the wellness disclaimer wording, that the roadmap is in future tense, the "does not enroll you in any study" note, that no research references or gallery photos are seeded, and that every sample record is labeled `[SAMPLE]`.
 - **Founder text check:** I compared the text line by line against the brief. `tests/test_founder.py` checks that the frontend fallback and the backend seed are identical, confirms key lineage names and dates, and checks the three headings and six credentials. The founder page shows the short bio as its introduction, followed by the full bio's three headed sections. Both texts are the organization's own words; nothing was added.
 - **SEO:**
@@ -360,3 +360,23 @@ I downloaded only the four approved original files and reviewed each one.
 - **One sentence added, verbatim,** at the end of "Lineage and training" (after the Baguazhang and Prague sentences): Joseph is Boston Regional Representative for the Tian Yi Foundation. Nothing else in the bio changed. Tian Yi is not listed under Partners, and its logo is not used.
 - **Link:** "Tian Yi Foundation" links to https://tianyiglobal.net and opens in a new tab (`rel="noopener"`). The bio stores it as `[Tian Yi Foundation](https://tianyiglobal.net)`. The bio renderer (`Paragraphs`) now turns `[text](https://...)` into a link built as a React element, not raw HTML. Only http and https links work. The admin hint for the full bio explains the syntax.
 - **Deployed sites:** the version that was live before this change is now a legacy fingerprint, so `flask seed` (Railway pre-deploy, Render build) replaces it on the next deploy. If staff have edited the full bio in the admin, it is left alone.
+
+## 501(c)(3) approval (October 2026)
+- **Facts used**, checked against the IRS determination letter: Qi Code Academy, Inc., EIN 42-5318171, letter dated October 8, 2026, exemption effective September 26, 2026, public charity under 170(b)(1)(A)(vi), contributions deductible.
+- **`tax_status`** now holds the approved statement (Massachusetts nonprofit corporation, 501(c)(3), EIN, "tax-deductible to the extent allowed by law"). The donation receipt email falls back to the same text. The content-rules test still bans "tax-deductible" anywhere except in that exact phrase.
+- **Live databases:** `flask seed` (Render build, Railway pre-deploy) replaces `tax_status` only if it still holds the old "has applied for 501(c)(3)" default, recognized by SHA-256 fingerprint (`LEGACY_SETTING_FINGERPRINTS` in `commands.py`). If staff edited it, it is left alone. New keys (`ein`, `donations_enabled`, `donations_notice`, `org_history`) are added by the normal seed step.
+- **Donations stay off** until the Massachusetts Attorney General charity registration is done. There was no on/off switch before (the form showed whenever the page loaded, and only the missing Stripe keys stopped checkout). Now there's a public `donations_enabled` setting (default `"false"`, Admin → Site settings → Donations):
+  - Off: the Donate page shows the photo plus a "coming soon" panel with `donations_notice`, links to Get involved/Events/Contact, and the tax status. There's no amount picker, no Stripe, and no "donate now" wording.
+  - The checkout API also returns 503 `donations_unavailable` unless the setting is `"true"` *and* Stripe is configured, so it can't be reached directly either.
+  - The Terms page says online donations are coming soon.
+- **Footer (every page):** "Qi Code Academy, Inc." / "A 501(c)(3) tax-exempt nonprofit organization · EIN {ein}" / "© {year} Qi Code Academy, Inc.". The EIN comes from the new `ein` setting, with a fallback of 42-5318171. The full tax-status paragraph moved out of the footer, to About and Donate. "All rights reserved." was dropped to match the brief.
+- **About page:**
+  - "Our history" (`#history`) sits directly after the mission, before the founder card. Its text is the `org_history` setting; while that setting is blank or still the English default, the locale copy is shown (same `useSettingText` helper the home feature band now uses).
+  - "Nonprofit status" (`#nonprofit-status`) sits before Neighborhoods. It shows `tax_status`, "Verify our status with the IRS" (https://apps.irs.gov/app/eos/, new tab, `rel="noopener"`), and "View our IRS determination letter (PDF)".
+  - The 18 years always describe Joseph's teaching, never the organization (incorporated 2026). A test guards against "18 years old" / "founded 18 years ago" wording.
+- **Home:** under the hero mission, "Building on more than 18 years of community teaching in Boston." links to `/about#history`. Hash links now also work on lazy-loaded pages and on a first page load (the router retries briefly until the target exists).
+- **Letter PDF:** moved from the project root to `src/front/docs/irs-determination-letter.pdf`. webpack copies `src/front/docs/` to `/docs/` (unhashed), and Flask serves it from the build. `/*.pdf` in the project root is now git-ignored. Note: the letter shows the organization's mailing address and the IRS contact's name, as IRS letters do.
+- **JSON-LD** (server and client): `taxID` (from the `ein` setting), `"nonprofitStatus": "Nonprofit501c3"`, `"foundingDate": "2026-09-26"` (the exemption's effective date, as requested).
+- **No Transparency page exists**, so there was nowhere to list the letter as a document. It is linked from About instead.
+- Spanish and Kreyòl strings were added as `TODO:` placeholders, so they fall back to English until translated.
+- **Checks:** Home, About, and Donate (with the footer) at 390px and 1280px: no horizontal overflow, the Donate page has no amount picker, and `/about#history` scrolls to the section. axe reports one existing issue on every page, `label-content-name-mismatch` on the header's "A+"/"A++" text-size buttons (their aria-labels "Larger text"/"Largest text" don't contain the visible text); this change didn't touch them.

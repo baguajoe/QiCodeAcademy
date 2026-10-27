@@ -74,3 +74,14 @@ export function Honeypot({ value, onChange, idPrefix = "form" }) {
     </div>
   );
 }
+
+// Text from an admin-editable site setting. While the setting is blank or still equals
+// the English default, the translated locale copy is shown instead.
+export function useSettingText() {
+  const { t, i18n } = useTranslation();
+  const { actions } = useStore();
+  return (key, tKey) => {
+    const v = actions.setting(key).trim();
+    return v && v !== i18n.getFixedT("en")(tKey) ? v : t(tKey);
+  };
+}

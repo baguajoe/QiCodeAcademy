@@ -27,10 +27,35 @@ FEATURED_PROGRAM_TEXT = ("Tai Chi programs for older adults are common. Baguazha
                          "circle, is rarely offered and has barely been studied, and we're building a program "
                          "to change that.")
 
+# IRS determination letter dated October 8, 2026; exemption effective September 26, 2026.
+EIN = "42-5318171"
+TAX_STATUS = ("Qi Code Academy, Inc. is a Massachusetts nonprofit corporation and a 501(c)(3) tax-exempt "
+              f"organization (EIN {EIN}). Contributions are tax-deductible to the extent allowed by law.")
+DONATIONS_NOTICE = ("Qi Code Academy, Inc. is a 501(c)(3) tax-exempt nonprofit. Online donations are coming soon "
+                    "while we complete our Massachusetts charity registration. In the meantime, there are other "
+                    "ways to get involved.")
+# The 18 years are Joseph's teaching, never the organization's age (incorporated 2026).
+ORG_HISTORY = ("Qi Code Academy, Inc. was incorporated in 2026 to formalize and expand community programming that "
+               "its founder, Joseph Gallop, has led in Boston for more than 18 years. Joseph has taught Tai Chi and "
+               "Baguazhang in Boston City Parks since 2014 and currently teaches at Grove Hall Senior Center, "
+               "Codman Square Library, and the Parkway Community YMCA. Qi Code Academy brings that long-standing "
+               "work together under one organization and adds new programs in youth technology and community "
+               "health research.")
+# Earlier seeded wording, replaced by `flask seed` only while the live value still matches it
+# exactly (i.e. staff haven't edited it). Recognized by fingerprint so the retired
+# "applied for" wording doesn't stay in the code.
+LEGACY_SETTING_FINGERPRINTS = {
+    "tax_status": {"f5f7f0f76fe63a4d1bf144e7349f52dcd3fd948f08147ad5a0fb80e3422ab114"},  # "... has applied for 501(c)(3) ..." (pre-approval)
+}
+
 DEFAULT_SETTINGS = [
     # key, value, is_public
-    ("tax_status", "Qi Code Academy, Inc. has applied for 501(c)(3) tax-exempt status. "
-                   "Please consult your tax advisor regarding deductibility.", True),
+    ("tax_status", TAX_STATUS, True),
+    ("ein", EIN, True),
+    # Online donations stay off ("false") until the Massachusetts charity registration is done.
+    ("donations_enabled", "false", True),
+    ("donations_notice", DONATIONS_NOTICE, True),
+    ("org_history", ORG_HISTORY, True),
     ("research_status", "In development — no active studies.", True),
     ("social_facebook", "", True),
     ("social_instagram", "", True),
@@ -298,8 +323,8 @@ def seed_gallery():
 
 
 def upgrade_founder_text():
-    """Replace earlier seeded founder text with the current version — only where staff
-    haven't edited it (matched by fingerprint). Returns the number of fields updated."""
+    """Replace earlier seeded founder text and setting defaults (e.g. the pre-approval
+    tax_status) with the current version — only where staff haven't edited it (matched by fingerprint). Returns the number of fields updated."""
     n = 0
     member = db.session.scalar(select(TeamMember).where(TeamMember.name == FOUNDER_NAME))
     if member and fingerprint(member.bio) in LEGACY_FINGERPRINTS["short_bio"]:
@@ -314,6 +339,12 @@ def upgrade_founder_text():
         row = db.session.scalar(select(SiteSetting).where(SiteSetting.key == key))
         if row and fingerprint(row.value) in LEGACY_FINGERPRINTS[kind]:
             row.value = current
+            n += 1
+    current_defaults = {key: value for key, value, _ in DEFAULT_SETTINGS}
+    for key, legacy in LEGACY_SETTING_FINGERPRINTS.items():
+        row = db.session.scalar(select(SiteSetting).where(SiteSetting.key == key))
+        if row and fingerprint(row.value) in legacy:
+            row.value = current_defaults[key]
             n += 1
     return n
 
@@ -365,7 +396,7 @@ def register_commands(app):
         if (n := seed_research_references()):
             click.echo(f"Added {n} research reference(s) — unverified and hidden until checked in the admin.")
         if (n := upgrade_founder_text()):
-            click.echo(f"Updated {n} founder/location field(s) to the current version.")
+            click.echo(f"Updated {n} founder/location/setting field(s) to the current version.")
 
         if with_samples and not no_samples:
             today = date.today()

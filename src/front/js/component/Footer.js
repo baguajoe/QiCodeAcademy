@@ -13,7 +13,7 @@ export function Footer() {
   ].filter((s) => actions.setting(s.key));
   const email = actions.setting("org_contact_email");
   const phone = actions.setting("org_contact_phone");
-  const taxStatus = actions.setting("tax_status");
+  const ein = actions.setting("ein") || "42-5318171";
 
   return (
     <footer className="site-footer">
@@ -69,8 +69,13 @@ export function Footer() {
         </div>
         <div className="footer-legal">
           <p className="footer-note"><strong>{t("footer.wellnessTitle")}</strong> {t("common.wellnessDisclaimer")}</p>
-          {taxStatus && <p>{taxStatus}</p>}
-          <p>© {new Date().getFullYear()} Qi Code Academy, Inc. {t("footer.rights")}</p>
+          <p className="footer-org">
+            Qi Code Academy, Inc.
+            <br />
+            {t("footer.nonprofit", { ein })}
+            <br />
+            © {new Date().getFullYear()} Qi Code Academy, Inc.
+          </p>
         </div>
       </div>
     </footer>
