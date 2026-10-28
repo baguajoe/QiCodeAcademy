@@ -194,13 +194,18 @@ def research_interest_received(ri):
 # ---------------------------------------------------------------------------
 WELLNESS_ACTIVITY_LABELS = {
     "tai_chi_baguazhang": "Tai Chi and Baguazhang", "chair_yoga_meditation": "Chair yoga and meditation",
-    "massage_acupressure": "Chair massage and acupressure", "strength_balance": "Strength and balance",
-    "painting_sewing": "Painting and sewing", "wellness_education": "Wellness education",
-    "food_social": "Food and social time"}
+    "chair_massage": "Chair massage", "acupuncture": "Acupuncture", "acupressure": "Acupressure",
+    "strength_balance": "Strength and balance", "painting_sewing": "Painting and sewing",
+    "wellness_education": "Wellness education", "marketplace": "Marketplace", "food_social": "Food and social time"}
 WELLNESS_PARTICIPATION_LABELS = {
-    "practitioner": "Practitioner", "instructor": "Instructor", "arts_crafts": "Arts and crafts",
-    "resource_table": "Community resource table", "food": "Food or refreshments", "volunteer": "Volunteer",
-    "sponsor": "Sponsor"}
+    "practitioner_massage": "Practitioner (massage)", "practitioner_acupuncture": "Practitioner (acupuncture)",
+    "practitioner_bodywork": "Practitioner (acupressure or other bodywork)", "instructor": "Instructor",
+    "arts_crafts": "Arts and crafts", "vendor": "Vendor (sell products)", "food_vendor": "Food vendor",
+    "resource_table": "Community resource table", "volunteer": "Volunteer", "sponsor": "Sponsor"}
+WELLNESS_VENDOR_CATEGORY_LABELS = {
+    "crafts": "Crafts", "art": "Art", "clothing": "Clothing and accessories", "jewelry": "Jewelry",
+    "wellness_products": "Wellness products", "food": "Food and drinks", "books_media": "Books and media",
+    "other": "Other"}
 CONTACT_METHOD_LABELS = {"email": "Email", "phone": "Phone call", "text": "Text message"}
 
 
@@ -217,7 +222,8 @@ def wellness_interest_received(row):
              "creativity, and community for older adults in Boston.",
              "We're planning it for spring 2027. We'll be in touch when the date and location are set.",
              "You can ask us to remove your information at any time by replying to this email."],
-            [("Activities you're interested in", activities)])
+            [("Activities you're interested in", activities),
+         ("Senior Makers Market", f"You'd like to sell: {row.sell_items}" if row.wants_to_sell else None)])
         send_email(row.email, f"You're on the Senior Wellness Day interest list — {_org()}", text, html,
                    reply_to=current_app.config.get("MAIL_REPLY_TO"))
     # Like research interest: no contact details in email; they're in the admin panel.
@@ -225,7 +231,9 @@ def wellness_interest_received(row):
         ("Name", row.name), ("Neighborhood", row.neighborhood), ("Activities", activities),
         ("Signing up for", "A family member or friend" if row.signing_up_for == "someone_else" else
          "Themselves" if row.signing_up_for == "myself" else None),
-        ("Preferred contact", CONTACT_METHOD_LABELS.get(row.contact_method))])
+        ("Preferred contact", CONTACT_METHOD_LABELS.get(row.contact_method)),
+        ("Senior maker (wants to sell)", f"{row.sell_items} (table: {row.needs_table or 'not given'})"
+         if row.wants_to_sell else None)])
 
 
 def wellness_partner_received(row):
@@ -243,7 +251,10 @@ def wellness_partner_received(row):
         ("Name", row.name), ("Organization", row.organization), ("Email", row.email), ("Phone", row.phone),
         ("Website / social", row.website_or_social), ("Participating as", types), ("Offer", row.offer_description),
         ("License", license_info), ("Liability insurance", row.has_insurance), ("Volunteer or fee", row.compensation),
-        ("Typical rate", row.typical_rate)], reply_to=row.email)
+        ("Typical rate", row.typical_rate),
+        ("Vendor category", WELLNESS_VENDOR_CATEGORY_LABELS.get(row.vendor_category)),
+        ("Sells", row.vendor_products), ("Price range", row.vendor_price_range),
+        ("Setup needs", ", ".join(row.setup_needs or []) or None)], reply_to=row.email)
 
 
 # ---------------------------------------------------------------------------

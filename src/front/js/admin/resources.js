@@ -21,16 +21,24 @@ export const CURRICULUM_STATUS = [["available", "Available now"], ["in_developme
 // Senior Wellness Day
 export const WD_NEIGHBORHOODS = [...NEIGHBORHOODS, "Other"].map((n) => [n, n]);
 export const WD_ACTIVITIES = [["tai_chi_baguazhang", "Tai Chi and Baguazhang"], ["chair_yoga_meditation", "Chair yoga and meditation"],
-  ["massage_acupressure", "Chair massage and acupressure"], ["strength_balance", "Strength and balance"],
-  ["painting_sewing", "Painting and sewing"], ["wellness_education", "Wellness education"], ["food_social", "Food and social time"]];
+  ["chair_massage", "Chair massage"], ["acupuncture", "Acupuncture"], ["acupressure", "Acupressure"],
+  ["strength_balance", "Strength and balance"], ["painting_sewing", "Painting and sewing"], ["wellness_education", "Wellness education"],
+  ["marketplace", "Marketplace"], ["food_social", "Food and social time"]];
 export const WD_CONTACT = [["email", "Email"], ["phone", "Phone call"], ["text", "Text message"]];
 export const WD_FOR = [["myself", "Themselves"], ["someone_else", "A family member or friend"]];
-export const WD_TYPES = [["practitioner", "Practitioner"], ["instructor", "Instructor"], ["arts_crafts", "Arts and crafts"],
-  ["resource_table", "Community resource table"], ["food", "Food or refreshments"], ["volunteer", "Volunteer"], ["sponsor", "Sponsor"]];
+export const WD_TYPES = [["practitioner_massage", "Practitioner (massage)"], ["practitioner_acupuncture", "Practitioner (acupuncture)"],
+  ["practitioner_bodywork", "Practitioner (acupressure or other bodywork)"], ["instructor", "Instructor"], ["arts_crafts", "Arts and crafts"],
+  ["vendor", "Vendor (sell products)"], ["food_vendor", "Food vendor"], ["resource_table", "Community resource table"],
+  ["volunteer", "Volunteer"], ["sponsor", "Sponsor"]];
+export const WD_PRACTITIONER_TYPES = ["practitioner_massage", "practitioner_acupuncture", "practitioner_bodywork"];
+export const WD_VENDOR_TYPES = ["vendor", "food_vendor"];
+export const WD_VENDOR_CATEGORIES = [["crafts", "Crafts"], ["art", "Art"], ["clothing", "Clothing and accessories"], ["jewelry", "Jewelry"],
+  ["wellness_products", "Wellness products"], ["food", "Food and drinks"], ["books_media", "Books and media"], ["other", "Other"]];
+export const WD_YES_NO = [["yes", "Yes"], ["no", "No"]];
 export const WD_STATUS = [["new", "New"], ["contacted", "Contacted"], ["confirmed", "Confirmed"], ["declined", "Declined"]];
 export const WD_INSURANCE = [["yes", "Yes"], ["no", "No"], ["not_applicable", "Not applicable"]];
 export const WD_COMPENSATION = [["volunteer", "Volunteer"], ["paid", "Paid"], ["open", "Open to discussion"]];
-export const WD_SETUP = [["table", "Table"], ["chairs", "Chairs"], ["electricity", "Electricity"], ["quiet_space", "Private or quiet space"], ["none", "None"]];
+export const WD_SETUP = [["table", "Table"], ["chairs", "Chairs"], ["electricity", "Electricity"], ["tent", "Tent"], ["quiet_space", "Private or quiet space"], ["none", "None"]];
 export const WD_AVAILABILITY = [["weekdays", "Weekdays"], ["saturdays", "Saturdays"], ["sundays", "Sundays"]];
 export const PARTNER_TYPES = [["community", "Community"], ["sponsor", "Sponsor"], ["research", "Research"]];
 
@@ -41,6 +49,8 @@ const money = (c) => `$${((c || 0) / 100).toLocaleString(undefined, { minimumFra
 
 const labels = (opts) => (list) => (list || []).map(label(opts)).join(", ");
 const isYouth = (v) => v.type === "youth";
+const isPractitioner = (v) => (v.participation_types || []).some((t) => WD_PRACTITIONER_TYPES.includes(t));
+const isVendor = (v) => (v.participation_types || []).some((t) => WD_VENDOR_TYPES.includes(t));
 const isSenior = (v) => v.type === "senior";
 
 export const RESOURCES = {
@@ -175,13 +185,15 @@ export const RESOURCES = {
       { key: "neighborhood", label: "Neighborhood" },
       { key: "activities", label: "Activities", format: labels(WD_ACTIVITIES) },
       { key: "contact_method", label: "Contact by", format: (v) => (v ? label(WD_CONTACT)(v) : "") },
+      { key: "wants_to_sell", label: "Senior maker?", format: yesNo },
     ],
     filters: [
       { key: "neighborhood", label: "Neighborhood", options: WD_NEIGHBORHOODS },
       { key: "activity", label: "Activity", options: WD_ACTIVITIES },
+      { key: "wants_to_sell", label: "Senior makers", options: [["true", "Senior makers only"], ["false", "Not selling"]] },
     ],
-    search: "Search name, email, phone",
-    exportCsv: { path: "/admin/wellness-day-interest/export.csv", filename: "wellness-day-interest.csv", params: ["neighborhood", "activity"] },
+    search: "Search name, email, phone, items",
+    exportCsv: { path: "/admin/wellness-day-interest/export.csv", filename: "wellness-day-interest.csv", params: ["neighborhood", "activity", "wants_to_sell"] },
     fields: [
       { key: "name", label: "Name", required: true },
       { key: "email", label: "Email", type: "email", hint: "Email or phone (at least one)." },
@@ -191,6 +203,9 @@ export const RESOURCES = {
       { key: "contact_method", label: "Preferred contact", type: "select", options: WD_CONTACT },
       { key: "signing_up_for", label: "Signed up for", type: "select", options: WD_FOR },
       { key: "consent_to_contact", label: "Agreed to be contacted about Senior Wellness Day", type: "bool", required: true },
+      { key: "wants_to_sell", label: "Senior maker: would like to sell at the Senior Makers Market", type: "bool" },
+      { key: "sell_items", label: "What they would sell", showIf: (v) => !!v.wants_to_sell, required: true },
+      { key: "needs_table", label: "Needs a table?", type: "select", options: WD_YES_NO, showIf: (v) => !!v.wants_to_sell },
     ],
   },
   "wellness-day-partners": {
@@ -200,16 +215,18 @@ export const RESOURCES = {
       { key: "created_at", label: "Received", format: dateOnly },
       { key: "display_name", label: "Organization / name" },
       { key: "participation_types", label: "Participating as", format: labels(WD_TYPES) },
+      { key: "vendor_category", label: "Vendor category", format: (v) => (v ? label(WD_VENDOR_CATEGORIES)(v) : "") },
       { key: "status", label: "Status", format: label(WD_STATUS) },
       { key: "show_publicly", label: "Public?", format: yesNo },
     ],
     filters: [
       { key: "participation_type", label: "Participating as", options: WD_TYPES },
+      { key: "vendor_category", label: "Vendor category", options: WD_VENDOR_CATEGORIES },
       { key: "status", label: "Status", options: WD_STATUS },
       { key: "show_publicly", label: "Public?", options: [["true", "Yes"], ["false", "No"]] },
     ],
-    search: "Search name, organization, email",
-    exportCsv: { path: "/admin/wellness-day-partners/export.csv", filename: "wellness-day-partners.csv", params: ["participation_type", "status"] },
+    search: "Search name, organization, email, products",
+    exportCsv: { path: "/admin/wellness-day-partners/export.csv", filename: "wellness-day-partners.csv", params: ["participation_type", "status", "vendor_category"] },
     fields: [
       { key: "status", label: "Status", type: "select", options: WD_STATUS },
       { key: "show_publicly", label: "Show publicly in \"Who's joining us\" (only when Confirmed)", type: "bool" },
@@ -221,17 +238,23 @@ export const RESOURCES = {
       { key: "website_or_social", label: "Website or social link" },
       { key: "participation_types", label: "Participating as", type: "multi", options: WD_TYPES, required: true },
       { key: "offer_description", label: "What they would offer", type: "textarea", required: true, hint: "Up to 600 characters." },
-      { key: "license_type", label: "License type", showIf: (v) => (v.participation_types || []).includes("practitioner"), required: true },
-      { key: "license_number", label: "License number", showIf: (v) => (v.participation_types || []).includes("practitioner"), required: true,
-        hint: "Massage and bodywork must be provided by Massachusetts-licensed practitioners." },
+      { key: "license_type", label: "License type", showIf: isPractitioner, required: true },
+      { key: "license_number", label: "License number", showIf: isPractitioner, required: true,
+        hint: "Massage and acupuncture must be provided by Massachusetts-licensed practitioners." },
+      { key: "vendor_category", label: "Vendor category", type: "select", options: WD_VENDOR_CATEGORIES, showIf: isVendor },
+      { key: "vendor_products", label: "What they sell", showIf: isVendor, required: true },
+      { key: "vendor_price_range", label: "Price range", showIf: isVendor },
       { key: "has_insurance", label: "Liability insurance", type: "select", options: WD_INSURANCE },
       { key: "compensation", label: "Volunteer or fee", type: "select", options: WD_COMPENSATION },
       { key: "typical_rate", label: "Typical rate", showIf: (v) => v.compensation === "paid" },
       { key: "setup_needs", label: "Setup needs", type: "multi", options: WD_SETUP },
       { key: "availability", label: "Availability in spring 2027", type: "multi", options: WD_AVAILABILITY },
       { key: "referral_source", label: "How they heard about us" },
-      { key: "agrees_no_sales", label: "Agreed: no product sales or sales pitches without approval", type: "bool" },
       { key: "agrees_not_confirmed", label: "Agreed: submitting doesn't confirm participation", type: "bool" },
+      { key: "agrees_respectful", label: "Agreed: treat participants with respect, no high-pressure sales", type: "bool" },
+      { key: "agrees_permits", label: "Agreed: responsible for own permits, licenses, and sales tax", type: "bool" },
+      { key: "agrees_restricted_products", label: "Agreed: insurance, Medicare plans, and financial products need advance approval", type: "bool" },
+      { key: "agrees_no_sales", label: "Agreed (old form): no product sales without approval", type: "bool" },
     ],
   },
   donations: {
@@ -475,9 +498,9 @@ export function newRecordDefaults(key) {
     users: { is_active: true },
     "contact-messages": { type: "general" },
     "research-interest": { consent_to_contact: true },
-    "wellness-day-interest": { consent_to_contact: true, activities: [] },
+    "wellness-day-interest": { consent_to_contact: true, activities: [], wants_to_sell: false },
     "wellness-day-partners": { status: "new", show_publicly: false, participation_types: [], setup_needs: [], availability: [],
-      agrees_no_sales: true, agrees_not_confirmed: true },
+      agrees_not_confirmed: true, agrees_respectful: true, agrees_permits: true, agrees_restricted_products: true },
   };
   return defaults[key] || {};
 }

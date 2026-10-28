@@ -231,29 +231,39 @@ Required: `name`, `email_or_phone` (a valid email or phone), `consent_to_contact
 ```json
 {"name": "Rose Brown", "email": "rose@example.org", "phone": "617-555-0100", "neighborhood": "Dorchester",
  "activities": ["tai_chi_baguazhang", "painting_sewing"], "contact_method": "email",
- "signing_up_for": "myself", "consent_to_contact": true, "website": ""}
+ "signing_up_for": "myself", "wants_to_sell": true, "sell_items": "Quilts and knitted hats",
+ "needs_table": "yes", "consent_to_contact": true, "website": ""}
 ```
 - Required: `name`, at least one of `email`/`phone`, `consent_to_contact: true`. If `contact_method` is `email` the email is required; if `phone` or `text`, the phone is required.
-- `neighborhood`: `Dorchester | Roxbury | Mattapan | Hyde Park | South End | Other`. `activities` (list): `tai_chi_baguazhang, chair_yoga_meditation, massage_acupressure, strength_balance, painting_sewing, wellness_education, food_social`. `contact_method`: `email | phone | text`. `signing_up_for`: `myself | someone_else`.
+- `neighborhood`: `Dorchester | Roxbury | Mattapan | Hyde Park | South End | Other`. `activities` (list): `tai_chi_baguazhang, chair_yoga_meditation, chair_massage, acupuncture, acupressure, strength_balance, painting_sewing, wellness_education, marketplace, food_social`. `contact_method`: `email | phone | text`. `signing_up_for`: `myself | someone_else`.
+- **Senior Makers Market (optional):** `wants_to_sell` (bool, default `false`). When `true`, `sell_items` ("What would you sell?", max 300) is required and `needs_table` is `yes | no` (optional). When `false`, `sell_items` and `needs_table` are discarded.
 - **No age, date of birth, health, medication, or medical information is collected**; unknown keys are ignored.
 - → `201 {"ok": true, "message": "Thank you! We'll be in touch when the date is set."}`. Sends a confirmation email when an email was given, and notifies `ADMIN_NOTIFY_EMAIL` (name, neighborhood, activities only).
 
 #### `POST /api/wellness-day/partners` (partners, vendors, volunteers)
 ```json
 {"name": "Ana Silva", "organization": "Silva Bodywork", "email": "ana@example.org", "phone": "",
- "website_or_social": "instagram.com/silvabodywork", "participation_types": ["practitioner"],
+ "website_or_social": "instagram.com/silvabodywork", "participation_types": ["practitioner_massage", "vendor"],
  "offer_description": "Seated chair massage…", "license_type": "MA massage therapist", "license_number": "MT-12345",
- "has_insurance": "yes", "compensation": "paid", "typical_rate": "…", "setup_needs": ["chairs", "quiet_space"],
- "availability": ["saturdays"], "referral_source": "", "agrees_no_sales": true, "agrees_not_confirmed": true,
- "website": ""}
+ "vendor_products": "Massage oils and balms", "vendor_category": "wellness_products", "vendor_price_range": "…",
+ "has_insurance": "yes", "compensation": "paid", "typical_rate": "…", "setup_needs": ["table", "tent"],
+ "availability": ["saturdays"], "referral_source": "", "agrees_not_confirmed": true, "agrees_respectful": true,
+ "agrees_permits": true, "agrees_restricted_products": true, "website": ""}
 ```
-- Required: `name`, `email`, `participation_types` (1+ of `practitioner, instructor, arts_crafts, resource_table, food, volunteer, sponsor`), `offer_description` (max 600 chars), `agrees_no_sales: true`, `agrees_not_confirmed: true`. `license_type` + `license_number` are required when `practitioner` is chosen.
+- Required: `name`, `email`, `offer_description` (max 600 chars), `participation_types` (1+ of `practitioner_massage, practitioner_acupuncture, practitioner_bodywork, instructor, arts_crafts, vendor, food_vendor, resource_table, volunteer, sponsor`), and all four agreements `true`:
+  - `agrees_not_confirmed`: submitting doesn't confirm participation
+  - `agrees_respectful`: treat participants with respect, no high-pressure sales
+  - `agrees_permits`: responsible for permits, licenses, and sales tax (food vendors need a City of Boston food permit)
+  - `agrees_restricted_products`: insurance, Medicare plans, and financial products need advance approval
+- **Any practitioner type** (`practitioner_massage`, `practitioner_acupuncture`, `practitioner_bodywork`) requires `license_type` + `license_number` ("Massage and acupuncture must be provided by Massachusetts-licensed practitioners").
+- **Vendors** (`vendor` or `food_vendor`): `vendor_products` ("What do you sell?", max 300) is required; `vendor_category` (`crafts, art, clothing, jewelry, wellness_products, food, books_media, other`) and `vendor_price_range` (max 100) are optional. All three are discarded for non-vendors.
+- The old `agrees_no_sales` key (pre-marketplace form) is ignored if sent. Existing rows keep their value.
 - The real link field is **`website_or_social`**; `website` is the honeypot, as on every form.
-- `has_insurance`: `yes | no | not_applicable`. `compensation`: `volunteer | paid | open`; `typical_rate` is kept only when `paid`. `setup_needs`: `table, chairs, electricity, quiet_space, none` (`none` is dropped if combined with others). `availability`: `weekdays, saturdays, sundays`.
+- `has_insurance`: `yes | no | not_applicable`. `compensation`: `volunteer | paid | open`; `typical_rate` is kept only when `paid`. `setup_needs`: `table, chairs, electricity, tent, quiet_space, none` (`none` is dropped if combined with others). `availability`: `weekdays, saturdays, sundays`.
 - New rows get `status: "new"`, `show_publicly: false`. → `201 {"ok": true, "message": "Thank you! We'll review your submission and be in touch as plans come together."}`. Sends an acknowledgment to the submitter and notifies `ADMIN_NOTIFY_EMAIL` (`Reply-To` = submitter).
 
 #### `GET /api/wellness-day/lineup`
-→ `{"items": [{"name": "Silva Bodywork", "participation_types": ["practitioner"]}]}`. ONLY partners with `status == "confirmed"` AND `show_publicly == true`; `name` is the organization, or the person's name if there is none. No other field is ever exposed. Empty list → the page hides "Who's joining us".
+→ `{"items": [{"name": "Silva Bodywork", "participation_types": ["practitioner_massage"]}]}`. ONLY partners with `status == "confirmed"` AND `show_publicly == true`; `name` is the organization, or the person's name if there is none. No other field is ever exposed. Empty list → the page hides "Who's joining us".
 
 Settings (public, `GET /api/settings`): `wellness_day_status` (badge, default "Coming spring 2027"), `wellness_day_date`, `wellness_day_location` (shown only when filled).
 
@@ -373,8 +383,8 @@ Special behavior:
 Donation totals include `completed` donations only.
 
 ### Senior Wellness Day (admin)
-- CRUD resources: `/api/admin/wellness-day-interest` (filters: `neighborhood`, `contact_method`, `signing_up_for`, `activity` = list contains) and `/api/admin/wellness-day-partners` (filters: `status`, `show_publicly`, `compensation`, `participation_type` = list contains). Partner records also have `status` (`new | contacted | confirmed | declined`), `show_publicly`, `admin_notes`, and dump-only `display_name`.
-- `GET /api/admin/wellness-day/summary` → `{"interest_total", "interest_by_activity": {activity: n}, "interest_by_neighborhood": {hood: n, "not_given": n}, "partners_total", "partners_by_status", "partners_by_type", "confirmed_lineup": [partner…]}`. `confirmed_lineup` = every confirmed partner (public or not), sorted by display name.
+- CRUD resources: `/api/admin/wellness-day-interest` (filters: `neighborhood`, `contact_method`, `signing_up_for`, `wants_to_sell` = senior makers, `activity` = list contains; search also covers `sell_items`) and `/api/admin/wellness-day-partners` (filters: `status`, `show_publicly`, `compensation`, `vendor_category`, `participation_type` = list contains; search also covers `vendor_products`). Partner records also have `status` (`new | contacted | confirmed | declined`), `show_publicly`, `admin_notes`, and dump-only `display_name`.
+- `GET /api/admin/wellness-day/summary` → `{"interest_total", "senior_makers_total", "interest_by_activity": {activity: n}, "interest_by_neighborhood": {hood: n, "not_given": n}, "partners_total", "partners_by_status", "partners_by_type", "vendors_by_category": {category: n}, "confirmed_lineup": [partner…]}`. `confirmed_lineup` = every confirmed partner (public or not), sorted by display name.
 - The dashboard also returns `wellness_interest_total` and `wellness_partners_new`.
 
 ### CSV exports
@@ -385,8 +395,8 @@ Each returns `text/csv` (UTF-8 with BOM, opens cleanly in Excel) as an attachmen
 | `GET /api/admin/registrations/export.csv` | `program_id`, `status` (comma list) |
 | `GET /api/admin/volunteers/export.csv` | none |
 | `GET /api/admin/research-interest/export.csv` | none |
-| `GET /api/admin/wellness-day-interest/export.csv` | `neighborhood` (comma list), `activity` |
-| `GET /api/admin/wellness-day-partners/export.csv` | `status` (comma list), `participation_type` |
+| `GET /api/admin/wellness-day-interest/export.csv` | `neighborhood` (comma list), `activity`, `wants_to_sell` (adds columns `wants_to_sell`, `sell_items`, `needs_table`) |
+| `GET /api/admin/wellness-day-partners/export.csv` | `status` (comma list), `participation_type`, `vendor_category` (comma list) (adds columns `vendor_category`, `vendor_products`, `vendor_price_range`, the four agreements, and `agrees_no_sales_old_form`) |
 
 The endpoints need the Bearer header, so download with fetch and a Blob:
 ```js

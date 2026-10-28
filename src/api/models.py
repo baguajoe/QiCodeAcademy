@@ -37,20 +37,31 @@ TEAM_GROUPS = ("board", "staff", "instructor", "advisor")
 PARTNER_TYPES = ("sponsor", "community", "research")
 # Photo rules: stock photos may ONLY fill these slots (never founder, gallery, team, or program news).
 STOCK_ALLOWED_SLOTS = ("hero-home", "youth-banner", "seniors-banner", "intergenerational-banner", "research-banner",
-                       "donate", "home-card-youth", "home-card-seniors", "home-card-research")
+                       "donate", "home-card-youth", "home-card-seniors", "home-card-research",
+                       # Senior Wellness Day activity/marketplace photos (no event photos of ours exist yet)
+                       "wellness-day-yoga", "wellness-day-acupuncture", "wellness-day-acupressure", "wellness-day-strength",
+                       "wellness-day-crafts", "wellness-day-education", "wellness-day-marketplace", "wellness-day-market-baskets",
+                       "wellness-day-market-painting", "wellness-day-market-sewing", "wellness-day-social")
+WELLNESS_DAY_STOCK_SLOTS = STOCK_ALLOWED_SLOTS[9:]
 CURRICULUM_DIVISIONS = ("youth", "senior", "research")
 CURRICULUM_STATUSES = ("available", "in_development")
 # Senior Wellness Day (interest list + partners/vendors/volunteers)
 WELLNESS_NEIGHBORHOODS = ("Dorchester", "Roxbury", "Mattapan", "Hyde Park", "South End", "Other")
-WELLNESS_ACTIVITIES = ("tai_chi_baguazhang", "chair_yoga_meditation", "massage_acupressure", "strength_balance",
-                       "painting_sewing", "wellness_education", "food_social")
+WELLNESS_ACTIVITIES = ("tai_chi_baguazhang", "chair_yoga_meditation", "chair_massage", "acupuncture", "acupressure",
+                       "strength_balance", "painting_sewing", "wellness_education", "marketplace", "food_social")
 WELLNESS_CONTACT_METHODS = ("email", "phone", "text")
 WELLNESS_SIGNUP_FOR = ("myself", "someone_else")
-WELLNESS_PARTICIPATION = ("practitioner", "instructor", "arts_crafts", "resource_table", "food", "volunteer",
-                          "sponsor")
+WELLNESS_PARTICIPATION = ("practitioner_massage", "practitioner_acupuncture", "practitioner_bodywork", "instructor",
+                          "arts_crafts", "vendor", "food_vendor", "resource_table", "volunteer", "sponsor")
+# Any of these needs a license type + number (Massachusetts license for massage and acupuncture).
+WELLNESS_PRACTITIONER_TYPES = ("practitioner_massage", "practitioner_acupuncture", "practitioner_bodywork")
+# Any of these sells at the marketplace: "what do you sell?" is required.
+WELLNESS_VENDOR_TYPES = ("vendor", "food_vendor")
+WELLNESS_VENDOR_CATEGORIES = ("crafts", "art", "clothing", "jewelry", "wellness_products", "food", "books_media", "other")
+WELLNESS_YES_NO = ("yes", "no")
 WELLNESS_INSURANCE = ("yes", "no", "not_applicable")
 WELLNESS_COMPENSATION = ("volunteer", "paid", "open")
-WELLNESS_SETUP_NEEDS = ("table", "chairs", "electricity", "quiet_space", "none")
+WELLNESS_SETUP_NEEDS = ("table", "chairs", "electricity", "tent", "quiet_space", "none")
 WELLNESS_AVAILABILITY = ("weekdays", "saturdays", "sundays")
 WELLNESS_PARTNER_STATUSES = ("new", "contacted", "confirmed", "declined")
 
@@ -452,6 +463,10 @@ class WellnessDayInterest(TimestampMixin, db.Model):
     contact_method = db.Column(db.String(10))     # email | phone | text
     signing_up_for = db.Column(db.String(20))     # myself | someone_else
     consent_to_contact = db.Column(db.Boolean, nullable=False, default=False)
+    # Senior Makers Market: seniors who'd like to sell their own crafts or goods.
+    wants_to_sell = db.Column(db.Boolean, nullable=False, default=False, index=True)
+    sell_items = db.Column(db.String(300))         # "What would you sell?" (required when wants_to_sell)
+    needs_table = db.Column(db.String(3))          # yes | no (only when wants_to_sell)
 
 
 class WellnessDayPartner(TimestampMixin, db.Model):
@@ -467,16 +482,25 @@ class WellnessDayPartner(TimestampMixin, db.Model):
     website_or_social = db.Column(db.String(500))  # not "website": that name is the forms' honeypot
     participation_types = db.Column(db.JSON, nullable=False, default=list)
     offer_description = db.Column(db.String(600), nullable=False)
-    license_type = db.Column(db.String(120))      # required for practitioners
-    license_number = db.Column(db.String(80))     # required for practitioners
+    license_type = db.Column(db.String(120))      # required for any practitioner type
+    license_number = db.Column(db.String(80))     # required for any practitioner type
     has_insurance = db.Column(db.String(20))      # yes | no | not_applicable
     compensation = db.Column(db.String(20))       # volunteer | paid | open
     typical_rate = db.Column(db.String(100))      # only when paid
     setup_needs = db.Column(db.JSON, nullable=False, default=list)
     availability = db.Column(db.JSON, nullable=False, default=list)
     referral_source = db.Column(db.String(300))
-    agrees_no_sales = db.Column(db.Boolean, nullable=False, default=False)
+    # Marketplace vendors (participation type vendor or food_vendor)
+    vendor_category = db.Column(db.String(30), index=True)  # WELLNESS_VENDOR_CATEGORIES
+    vendor_products = db.Column(db.String(300))   # "What do you sell?" (required for vendors)
+    vendor_price_range = db.Column(db.String(100))
+    # Agreements (all required on the public form)
     agrees_not_confirmed = db.Column(db.Boolean, nullable=False, default=False)
+    agrees_respectful = db.Column(db.Boolean, nullable=False, default=False)      # no high-pressure sales
+    agrees_permits = db.Column(db.Boolean, nullable=False, default=False)         # own permits, licenses, sales tax
+    agrees_restricted_products = db.Column(db.Boolean, nullable=False, default=False)  # insurance/Medicare/financial need approval
+    # Old form's "no product sales" agreement (before the marketplace opened); kept for existing rows.
+    agrees_no_sales = db.Column(db.Boolean, nullable=False, default=False)
     status = db.Column(db.String(20), nullable=False, default="new", index=True)
     show_publicly = db.Column(db.Boolean, nullable=False, default=False, index=True)
     admin_notes = db.Column(db.Text)

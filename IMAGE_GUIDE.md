@@ -29,7 +29,7 @@ There are three kinds of photos:
 2. **Stock:** free-license photos from Unsplash (not "Unsplash+"), Pexels, or Nappy. Confirm the license allows free commercial use before downloading.
 3. **Placeholders:** anything we don't have a good photo for yet. A placeholder is better than a photo that doesn't fit.
 
-- **Stock is allowed ONLY for:** `hero-home`, `youth-banner`, `seniors-banner`, `intergenerational-banner`, `research-banner`, `donate`, and the three home division cards (`home-card-youth`, `home-card-seniors`, `home-card-research`). The admin and API enforce this.
+- **Stock is allowed ONLY for:** `hero-home`, `youth-banner`, `seniors-banner`, `intergenerational-banner`, `research-banner`, `donate`, the three home division cards (`home-card-youth`, `home-card-seniors`, `home-card-research`), and the Senior Wellness Day activity and marketplace photos (`wellness-day-*`; we have no event photos yet). The admin and API enforce this.
 - **Stock is NOT allowed for:** `founder-portrait`, `founder-teaching`, the Gallery, team photos, or news posts about our programs.
 - **Alt text describes the scene accurately.** Never caption or describe a stock photo as "our students," "our class," or Qi Code Academy participants.
 - Our community is mostly Black and brown, and photos should reflect that. Reject images with visible logos, readable text, celebrities, or medical settings, and avoid stiff, posed-looking shots.
@@ -58,6 +58,21 @@ There are three kinds of photos:
 | Senior Programs (Baguazhang module) | `seniors-baguazhang.jpg` | 1200×900 | **No** | ✅ Founder-owned: guiding students (floor cropped) |
 | Senior Programs (Chair-Based Movement) | `seniors-chair-massage.jpg` | 900×1200 portrait | **No** | ✅ Founder-owned: chair massage (background people cropped out) |
 | Senior Programs (Join anytime) | `seniors-join.jpg` | 900×1200 portrait | **No** | ✅ Founder-owned: seniors practicing |
+| Senior Wellness Day (hero) | `seniors-banner.jpg` (shared) | 1920×1080 | Yes | ✅ Founder-owned: seated movement class. **Only 960×720, so it looks soft on large screens.** A larger original would help |
+| Senior Wellness Day (Tai Chi and Baguazhang card + class photo row) | `research-banner.jpg` (shared) | — | — | ✅ Founder-owned: circle walking |
+| Senior Wellness Day (Chair massage card, timeline step 2, class photo row) | `seniors-chair-massage.jpg` (shared) | — | — | ✅ Founder-owned |
+| Senior Wellness Day (timeline step 1, class photo row) | `seniors-join.jpg` (shared) | — | — | ✅ Founder-owned: Tai Chi class |
+| Senior Wellness Day (Chair yoga and meditation card) | `wellness-day-yoga.jpg` | 1200×900 | Yes | Stock (Unsplash, Khanh Do): seniors stretching in a park |
+| Senior Wellness Day (Strength and balance card) | `wellness-day-strength.jpg` | 1200×900 | Yes | Stock (Unsplash, Centre for Ageing Better): seated resistance-band class |
+| Senior Wellness Day (Acupuncture card + timeline) | `wellness-day-acupuncture.jpg` | 1200×900 | Yes | Stock (Unsplash, Christine Galligan): needle in a hand, close-up |
+| Senior Wellness Day (Acupressure card) | `wellness-day-acupressure.jpg` | 1200×900 | Yes | Stock (Unsplash, Stephen Olmo): hands on a forearm (cropped from portrait) |
+| Senior Wellness Day (Painting and sewing card + timeline) | `wellness-day-crafts.jpg` | 1200×900 | Yes | Stock (Unsplash, Centre for Ageing Better): woman with an embroidery hoop |
+| Senior Wellness Day (Wellness education card) | `wellness-day-education.jpg` | 1200×900 | Yes | **Placeholder**: no fitting free photo found (wanted: a short community talk or resource table with older adults) |
+| Senior Wellness Day (Marketplace card + timeline step 3) | `wellness-day-marketplace.jpg` | 1200×900 | Yes | Stock (Nappy): older man at a craft and bead stall |
+| Senior Wellness Day (Marketplace band, large) | `wellness-day-market-baskets.jpg` | 1200×900 | Yes | Stock (Nappy): basket weaver at a market |
+| Senior Wellness Day (Marketplace band, top right) | `wellness-day-market-painting.jpg` | 1200×900 | Yes | Stock (Nappy): hand painting on canvas |
+| Senior Wellness Day (Marketplace band, bottom right) | `wellness-day-market-sewing.jpg` | 1200×900 | Yes | Stock (Nappy): hands at a sewing machine |
+| Senior Wellness Day (Food and social time card + timeline step 4) | `wellness-day-social.jpg` | 1200×900 | Yes | Stock (Unsplash, Centre for Ageing Better): seniors talking at a cafe table |
 | Intergenerational (banner) | `intergenerational-banner.jpg` | 1920×800 | Yes | Placeholder |
 | Research (banner) | `research-banner.jpg` | 1920×800 | Yes | ✅ Founder-owned: seniors circle walking |
 | Events (banner) | `events-banner.jpg` | 1920×800 | **No** | ✅ Founder-owned: Joseph performing at the August Moon Festival, Chinatown |
@@ -91,7 +106,8 @@ Banner and hero photos sit under a dark overlay with white text on top, so the l
 ## Before launch checklist
 
 - [ ] `intergenerational-banner.jpg`, `about-banner.jpg`, `volunteer-banner.jpg`, and "me teaching seniors3" (for home-card-seniors + the Tai Chi module; blur the lanyard name badge)
-- [ ] Stock photos replaced with real program photos as they become available
+- [ ] Stock photos replaced with real program photos as they become available (after Senior Wellness Day, replace every `wellness-day-*` stock photo with real event photos)
+- [ ] `wellness-day-education.jpg` (still a placeholder)
 - [ ] Every spot in the first table has a real photo, or you've knowingly chosen to keep the placeholder
 - [ ] Every person pictured has photo/video consent on file
 - [ ] Every uploaded photo has meaningful alt text

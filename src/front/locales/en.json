@@ -716,48 +716,94 @@
     "title": "Senior Wellness Day",
     "lead": "Movement, care, creativity, and community for older adults in Boston.",
     "statusDefault": "Coming spring 2027",
-    "intro": "A free day of movement, care, creativity, and community for older adults in Boston. Senior Wellness Day brings together experienced instructors and licensed practitioners in one welcoming place, with plenty of time to relax, connect, and enjoy a meal together.",
+    "intro": "A free day of movement, care, creativity, and community for older adults in Boston. Experienced instructors and licensed practitioners, a marketplace of local vendors and senior makers, and plenty of time to relax, connect, and share a meal.",
     "jumpInterest": "Join the interest list",
-    "jumpPartner": "Partners, vendors & volunteers",
+    "jumpPartner": "Vendors, practitioners & volunteers",
+    "glanceTitle": "A day at a glance",
+    "glanceLead": "About four hours together. Come for part of the day or all of it.",
+    "stepLabel": "Part {{n}}",
+    "glance": {
+      "welcome": {
+        "title": "Welcome and Tai Chi",
+        "body": "Arrive, settle in, and start the day together with gentle, flowing movement. Chairs available."
+      },
+      "choose": {
+        "title": "Choose your activities",
+        "body": "Massage, acupuncture, yoga, art, and more. Try one or several, at your own pace."
+      },
+      "marketplace": {
+        "title": "Marketplace",
+        "body": "Browse local vendors and handmade goods from the Senior Makers Market."
+      },
+      "lunch": {
+        "title": "Lunch and social time",
+        "body": "Share a meal, meet neighbors, and enjoy good conversation."
+      }
+    },
     "offerTitle": "What we plan to offer",
-    "offerings": [
-      {
-        "key": "tai_chi_baguazhang",
+    "offerLead": "Pick what interests you. Every activity can be done seated or standing.",
+    "categories": {
+      "movement": "Movement",
+      "care": "Care",
+      "creativity": "Creativity",
+      "community": "Community"
+    },
+    "offerings": {
+      "tai_chi_baguazhang": {
         "title": "Tai Chi and Baguazhang",
         "body": "Gentle, flowing movement and circle walking, with chair options."
       },
-      {
-        "key": "chair_yoga_meditation",
+      "chair_yoga_meditation": {
         "title": "Chair yoga and meditation",
         "body": "Stretching, breathing, and relaxation."
       },
-      {
-        "key": "massage_acupressure",
-        "title": "Chair massage and acupressure",
-        "body": "Offered by licensed, insured practitioners."
+      "chair_massage": {
+        "title": "Chair massage",
+        "body": "Offered by licensed, insured massage therapists."
       },
-      {
-        "key": "strength_balance",
+      "acupuncture": {
+        "title": "Acupuncture",
+        "body": "Offered by licensed acupuncturists in a calm, private space."
+      },
+      "acupressure": {
+        "title": "Acupressure",
+        "body": "Gentle pressure-point work by trained practitioners."
+      },
+      "strength_balance": {
         "title": "Strength and balance",
         "body": "Gentle exercises led by a certified trainer."
       },
-      {
-        "key": "painting_sewing",
+      "painting_sewing": {
         "title": "Painting and sewing",
         "body": "Creative circles to make something and share it."
       },
-      {
-        "key": "wellness_education",
+      "wellness_education": {
         "title": "Wellness education",
         "body": "Short talks and community resources."
       },
-      {
-        "key": "food_social",
+      "marketplace": {
+        "title": "Vendor marketplace and Senior Makers Market",
+        "body": "Shop local vendors and handmade goods made by seniors."
+      },
+      "food_social": {
         "title": "Food and social time",
         "body": "Refreshments and conversation."
       }
-    ],
-    "offerNote": "Plans depend on funding and may change. Participants should consult their healthcare provider before starting a new exercise program. Massage and acupressure are optional and offered only by licensed practitioners.",
+    },
+    "offerNote": "Plans depend on funding and may change. Participants should consult their healthcare provider before starting a new exercise program. Massage, acupressure, and acupuncture are optional and offered only by licensed practitioners.",
+    "marketTitle": "Marketplace",
+    "marketBody": "Senior Wellness Day includes a marketplace where local vendors and senior makers can sell their goods, from crafts, art, and clothing to wellness products and food. Seniors are welcome to sell their own handmade work at the Senior Makers Market.",
+    "marketSell": "Sell at the marketplace",
+    "marketMaker": "I'm a senior maker",
+    "photosTitle": "From our classes",
+    "photosLead": "Senior Wellness Day grows out of the classes we already teach around Boston.",
+    "photoCaptions": {
+      "seniors-banner": "A seated movement class",
+      "seniors-join": "Tai Chi practice together",
+      "research-banner": "Baguazhang circle walking",
+      "seniors-baguazhang": "Guidance during class",
+      "seniors-chair-massage": "Chair massage at a senior program"
+    },
     "expectTitle": "What to expect",
     "expect": [
       "A free event of about four hours",
@@ -770,16 +816,24 @@
     "dateLabel": "Date",
     "locationLabel": "Location",
     "lineupTitle": "Who's joining us",
-    "lineupLead": "Practitioners, instructors, and community partners confirmed so far.",
+    "lineupLead": "Practitioners, instructors, vendors, and community partners confirmed so far.",
     "types": {
-      "practitioner": "Practitioner",
+      "practitioner_massage": "Massage",
+      "practitioner_acupuncture": "Acupuncture",
+      "practitioner_bodywork": "Acupressure and bodywork",
       "instructor": "Instructor",
       "arts_crafts": "Arts and crafts",
+      "vendor": "Vendor",
+      "food_vendor": "Food vendor",
       "resource_table": "Community resource table",
-      "food": "Food or refreshments",
       "volunteer": "Volunteer",
       "sponsor": "Sponsor"
     },
+    "signupTitle": "Sign up",
+    "signupLead": "Choose the form that fits you.",
+    "tabsLabel": "Sign-up forms",
+    "tabSeniors": "For seniors and families",
+    "tabPartners": "For vendors, practitioners and volunteers",
     "interest": {
       "title": "Join the interest list",
       "lead": "Tell us how to reach you and we'll let you know when the date and place are set. Family members and friends are welcome to sign up on someone's behalf.",
@@ -793,6 +847,18 @@
       "otherNeighborhood": "Other",
       "activities": "Which activities interest you?",
       "activitiesHint": "Choose as many as you like.",
+      "activityLabels": {
+        "tai_chi_baguazhang": "Tai Chi and Baguazhang",
+        "chair_yoga_meditation": "Chair yoga and meditation",
+        "chair_massage": "Chair massage",
+        "acupuncture": "Acupuncture",
+        "acupressure": "Acupressure",
+        "strength_balance": "Strength and balance",
+        "painting_sewing": "Painting and sewing",
+        "wellness_education": "Wellness education",
+        "marketplace": "Marketplace",
+        "food_social": "Food and social time"
+      },
       "contactMethod": "How would you like us to contact you?",
       "methods": {
         "email": "Email",
@@ -804,6 +870,17 @@
         "myself": "Myself",
         "someone_else": "A family member or friend"
       },
+      "sellTitle": "Senior Makers Market",
+      "wantsToSell": "I'd like to sell my own crafts or goods at the Senior Makers Market.",
+      "wantsToSellShort": "Senior Makers Market",
+      "sellItems": "What would you sell?",
+      "sellItemsHint": "For example: quilts, jewelry, paintings, baked goods.",
+      "needsTable": "Do you need a table?",
+      "yesNo": {
+        "yes": "Yes",
+        "no": "No"
+      },
+      "needSellItems": "Tell us what you would sell.",
       "consent": "Yes, Qi Code Academy may contact me about Senior Wellness Day.",
       "needContact": "Please give an email address or a phone number.",
       "needEmail": "Add an email address so we can email you.",
@@ -814,8 +891,8 @@
       "consentShort": "Permission to contact you"
     },
     "partner": {
-      "title": "Want to be part of Senior Wellness Day?",
-      "lead": "We're looking for licensed practitioners, instructors, artists, community resource tables, food and refreshments, volunteers, and sponsors.",
+      "title": "Be part of Senior Wellness Day",
+      "lead": "We're looking for licensed practitioners, instructors, artists, marketplace and food vendors, community resource tables, volunteers, and sponsors.",
       "name": "Your name",
       "organization": "Organization or business name",
       "email": "Email",
@@ -824,11 +901,14 @@
       "types": "I'd like to participate as",
       "typesHint": "Choose one or more.",
       "typeOptions": {
-        "practitioner": "Practitioner: massage, acupressure, or other bodywork",
+        "practitioner_massage": "Practitioner (massage)",
+        "practitioner_acupuncture": "Practitioner (acupuncture)",
+        "practitioner_bodywork": "Practitioner (acupressure or other bodywork)",
         "instructor": "Instructor: yoga, meditation, strength and balance, Tai Chi, etc.",
-        "arts_crafts": "Arts and crafts: painting, sewing, or other creative activity",
+        "arts_crafts": "Arts and crafts: lead a painting, sewing, or other creative activity",
+        "vendor": "Vendor (sell products)",
+        "food_vendor": "Food vendor",
         "resource_table": "Community resource table: health, senior services, housing, benefits, library, etc.",
-        "food": "Food or refreshments",
         "volunteer": "Volunteer",
         "sponsor": "Sponsor"
       },
@@ -836,10 +916,26 @@
       "offerHint": "Up to 600 characters.",
       "charsLeft": "{{count}} characters left",
       "licenseTitle": "License or certification",
-      "licenseNote": "Massage and bodywork must be provided by Massachusetts-licensed practitioners.",
+      "licenseNote": "Massage and acupuncture must be provided by Massachusetts-licensed practitioners.",
       "licenseType": "License type",
-      "licenseTypeHint": "Example: Massachusetts massage therapist license",
+      "licenseTypeHint": "Example: Massachusetts massage therapist license, or Massachusetts acupuncture license",
       "licenseNumber": "License number",
+      "vendorTitle": "About what you sell",
+      "vendorProducts": "What do you sell?",
+      "vendorCategory": "Category",
+      "vendorCategories": {
+        "crafts": "Crafts",
+        "art": "Art",
+        "clothing": "Clothing and accessories",
+        "jewelry": "Jewelry",
+        "wellness_products": "Wellness products",
+        "food": "Food and drinks",
+        "books_media": "Books and media",
+        "other": "Other"
+      },
+      "priceRange": "Price range",
+      "priceRangeHint": "A rough range is fine.",
+      "needProducts": "Tell us what you sell.",
       "insurance": "Do you carry liability insurance?",
       "insuranceOptions": {
         "yes": "Yes",
@@ -858,6 +954,7 @@
         "table": "Table",
         "chairs": "Chairs",
         "electricity": "Electricity",
+        "tent": "Tent",
         "quiet_space": "Private or quiet space",
         "none": "None"
       },
@@ -868,15 +965,20 @@
         "sundays": "Sundays"
       },
       "referral": "How did you hear about us?",
-      "agreeNoSales": "I understand this is a free event for seniors. Product sales or sales pitches to participants are not permitted unless approved in advance by Qi Code Academy.",
+      "agreementsTitle": "Please read and agree",
       "agreeNotConfirmed": "I understand that submitting this form does not confirm my participation.",
+      "agreeRespectful": "I'll treat participants with respect: no high-pressure sales.",
+      "agreePermits": "I'm responsible for any permits, licenses, and sales tax that apply to what I sell. Food vendors need a City of Boston food permit.",
+      "agreeRestricted": "Vendors selling insurance, Medicare plans, or financial products need approval from Qi Code Academy in advance.",
+      "agreeNotConfirmedShort": "Participation not yet confirmed",
+      "agreeRespectfulShort": "Respect, no high-pressure sales",
+      "agreePermitsShort": "Permits, licenses, and sales tax",
+      "agreeRestrictedShort": "Insurance, Medicare, and financial products",
       "needAgree": "Please check this box to continue.",
       "needLicense": "Required for practitioners.",
       "submit": "Send my submission",
       "successTitle": "Thank you!",
-      "questions": "Questions? Email",
-      "agreeNoSalesShort": "Free event, no sales agreement",
-      "agreeNotConfirmedShort": "Participation not yet confirmed"
+      "questions": "Questions? Email"
     }
   }
 }

@@ -14,11 +14,17 @@ INTEREST = {"name": "Rose Brown", "email": "rose@example.org", "neighborhood": "
             "activities": ["tai_chi_baguazhang", "painting_sewing"], "contact_method": "email",
             "signing_up_for": "myself", "consent_to_contact": True}
 
+AGREEMENTS = {"agrees_not_confirmed": True, "agrees_respectful": True, "agrees_permits": True,
+              "agrees_restricted_products": True}
 PARTNER = {"name": "Ana Silva", "organization": "Silva Bodywork", "email": "ana@example.org",
-           "participation_types": ["practitioner"], "offer_description": "Seated chair massage, 10-minute sessions.",
+           "participation_types": ["practitioner_massage"], "offer_description": "Seated chair massage, 10-minute sessions.",
            "license_type": "Massachusetts massage therapist", "license_number": "MT-12345",
            "has_insurance": "yes", "compensation": "volunteer", "setup_needs": ["chairs", "quiet_space"],
-           "availability": ["saturdays"], "agrees_no_sales": True, "agrees_not_confirmed": True}
+           "availability": ["saturdays"], **AGREEMENTS}
+VENDOR = {"name": "Kay Mensah", "organization": "Mensah Beads", "email": "kay@example.org",
+          "participation_types": ["vendor"], "offer_description": "A table of handmade jewelry.",
+          "vendor_products": "Beaded necklaces and bracelets", "vendor_category": "jewelry",
+          "vendor_price_range": "Most items under twenty", "setup_needs": ["table", "tent"], **AGREEMENTS}
 
 
 def _partner(db, **kw):
@@ -75,6 +81,35 @@ def test_interest_never_stores_health_or_age(client, db):
     assert res.status_code == 201
 
 
+def test_interest_senior_maker_fields(client, db, outbox, app):
+    app.config["ADMIN_NOTIFY_EMAIL"] = "staff@example.org"
+    payload = {**INTEREST, "activities": ["acupuncture", "marketplace"], "wants_to_sell": True,
+               "sell_items": "Quilts and knitted hats", "needs_table": "yes"}
+    assert client.post("/api/wellness-day/interest", json=payload).status_code == 201
+    row = db.session.query(WellnessDayInterest).one()
+    assert row.wants_to_sell is True and row.sell_items == "Quilts and knitted hats" and row.needs_table == "yes"
+    assert row.activities == ["acupuncture", "marketplace"]
+    admin_mail = next(m for m in outbox if m.to == ["staff@example.org"])
+    assert "Quilts and knitted hats" in admin_mail.text
+
+
+def test_interest_seller_details_dropped_when_not_selling(client, db):
+    payload = {**INTEREST, "wants_to_sell": False, "sell_items": "Paintings", "needs_table": "no"}
+    assert client.post("/api/wellness-day/interest", json=payload).status_code == 201
+    row = db.session.query(WellnessDayInterest).one()
+    assert row.wants_to_sell is False and row.sell_items is None and row.needs_table is None
+
+
+@pytest.mark.parametrize("change, field", [
+    ({"wants_to_sell": True, "sell_items": ""}, "sell_items"),
+    ({"wants_to_sell": True, "sell_items": "Art", "needs_table": "maybe"}, "needs_table"),
+    ({"wants_to_sell": True, "sell_items": "x" * 301}, "sell_items"),
+])
+def test_interest_seller_validation(client, db, change, field):
+    res = client.post("/api/wellness-day/interest", json={**INTEREST, **change})
+    assert res.status_code == 400 and field in res.get_json()["errors"]
+
+
 def test_interest_honeypot(client, db, outbox):
     res = client.post("/api/wellness-day/interest", json={**INTEREST, "website": "spam.example"})
     assert res.status_code == 201 and res.get_json()["ok"] is True
@@ -114,8 +149,12 @@ def test_partner_paid_rate_kept_and_none_setup_dropped(client, db):
     ({"offer_description": "x" * 601}, "offer_description"),
     ({"license_number": ""}, "license_number"),          # practitioner needs a license
     ({"license_type": ""}, "license_type"),
-    ({"agrees_no_sales": False}, "agrees_no_sales"),
     ({"agrees_not_confirmed": False}, "agrees_not_confirmed"),
+    ({"agrees_respectful": False}, "agrees_respectful"),
+    ({"agrees_permits": False}, "agrees_permits"),
+    ({"agrees_restricted_products": False}, "agrees_restricted_products"),
+    ({"participation_types": ["practitioner"]}, "participation_types"),  # old combined key is gone
+    ({"vendor_category": "cars"}, "vendor_category"),
     ({"has_insurance": "maybe"}, "has_insurance"),
     ({"availability": ["mondays"]}, "availability"),
 ])
@@ -125,9 +164,57 @@ def test_partner_validation(client, db, change, field):
     assert db.session.query(WellnessDayPartner).count() == 0
 
 
-def test_non_practitioner_needs_no_license(client, db):
-    payload = {**PARTNER, "participation_types": ["volunteer", "food"], "license_type": None, "license_number": None}
+@pytest.mark.parametrize("ptype", ["practitioner_massage", "practitioner_acupuncture", "practitioner_bodywork"])
+def test_every_practitioner_type_needs_a_license(client, db, ptype):
+    payload = {**PARTNER, "participation_types": ["volunteer", ptype], "license_type": "", "license_number": ""}
+    res = client.post("/api/wellness-day/partners", json=payload)
+    assert res.status_code == 400
+    errors = res.get_json()["errors"]
+    assert {"license_type", "license_number"} <= set(errors)
+    assert "Massachusetts-licensed" in " ".join(errors["license_number"])
+
+
+def test_acupuncturist_with_license_accepted(client, db):
+    payload = {**PARTNER, "participation_types": ["practitioner_acupuncture"],
+               "license_type": "Massachusetts acupuncture license", "license_number": "AC-777"}
     assert client.post("/api/wellness-day/partners", json=payload).status_code == 201
+    p = db.session.query(WellnessDayPartner).one()
+    assert p.participation_types == ["practitioner_acupuncture"] and p.license_number == "AC-777"
+
+
+def test_non_practitioner_needs_no_license(client, db):
+    payload = {**PARTNER, "participation_types": ["volunteer", "instructor"], "license_type": None, "license_number": None}
+    assert client.post("/api/wellness-day/partners", json=payload).status_code == 201
+
+
+def test_vendor_submission_stores_vendor_fields(client, db, outbox, app):
+    app.config["ADMIN_NOTIFY_EMAIL"] = "staff@example.org"
+    assert client.post("/api/wellness-day/partners", json=VENDOR).status_code == 201
+    p = db.session.query(WellnessDayPartner).one()
+    assert (p.vendor_products, p.vendor_category, p.vendor_price_range) == (
+        "Beaded necklaces and bracelets", "jewelry", "Most items under twenty")
+    assert p.setup_needs == ["table", "tent"] and p.license_number is None
+    assert p.agrees_respectful and p.agrees_permits and p.agrees_restricted_products and p.agrees_not_confirmed
+    admin_mail = next(m for m in outbox if m.to == ["staff@example.org"])
+    assert "Beaded necklaces" in admin_mail.text and "Jewelry" in admin_mail.text
+
+
+@pytest.mark.parametrize("ptype", ["vendor", "food_vendor"])
+def test_vendors_must_say_what_they_sell(client, db, ptype):
+    res = client.post("/api/wellness-day/partners", json={**VENDOR, "participation_types": [ptype], "vendor_products": ""})
+    assert res.status_code == 400 and "vendor_products" in res.get_json()["errors"]
+
+
+def test_vendor_fields_dropped_for_non_vendors(client, db):
+    payload = {**VENDOR, "participation_types": ["volunteer"]}
+    assert client.post("/api/wellness-day/partners", json=payload).status_code == 201
+    p = db.session.query(WellnessDayPartner).one()
+    assert p.vendor_products is None and p.vendor_category is None and p.vendor_price_range is None
+
+
+def test_old_no_sales_agreement_is_not_required(client, db):
+    # The marketplace replaced the old "no product sales" agreement; old clients sending it are ignored.
+    assert client.post("/api/wellness-day/partners", json={**PARTNER, "agrees_no_sales": False}).status_code == 201
 
 
 def test_partner_honeypot(client, db):
@@ -158,7 +245,7 @@ def test_both_forms_rate_limited(rate_limited_app):
 def test_lineup_only_confirmed_and_public(client, db):
     assert client.get("/api/wellness-day/lineup").get_json() == {"items": []}
     _partner(db, organization="Shown Org", status="confirmed", show_publicly=True,
-             participation_types=["practitioner", "volunteer"])
+             participation_types=["practitioner_acupuncture", "volunteer"])
     _partner(db, name="Solo Person", organization=None, email="solo@example.org", status="confirmed",
              show_publicly=True, participation_types=["instructor"])
     _partner(db, organization="Confirmed But Private", status="confirmed", show_publicly=False)
@@ -166,7 +253,7 @@ def test_lineup_only_confirmed_and_public(client, db):
     _partner(db, organization="Contacted Org", status="contacted", show_publicly=True)
     _partner(db, organization="Declined Org", status="declined", show_publicly=True)
     items = client.get("/api/wellness-day/lineup").get_json()["items"]
-    assert items == [{"name": "Shown Org", "participation_types": ["practitioner", "volunteer"]},
+    assert items == [{"name": "Shown Org", "participation_types": ["practitioner_acupuncture", "volunteer"]},
                      {"name": "Solo Person", "participation_types": ["instructor"]}]
     # Only the display name and types: never contact details, licenses, notes, or descriptions.
     assert all(set(i) == {"name", "participation_types"} for i in items)
@@ -180,23 +267,31 @@ def test_admin_interest_list_filters_summary_and_csv(client, db, auth_headers):
     client.post("/api/wellness-day/interest", json={**INTEREST, "name": "Lee", "neighborhood": "Roxbury",
                                                     "activities": ["food_social"]})
     client.post("/api/wellness-day/interest", json={**INTEREST, "name": "Kim", "neighborhood": None,
-                                                    "activities": ["painting_sewing"]})
+                                                    "activities": ["painting_sewing"], "wants_to_sell": True,
+                                                    "sell_items": "Watercolors", "needs_table": "no"})
     assert client.get("/api/admin/wellness-day-interest").status_code == 401
     res = client.get("/api/admin/wellness-day-interest?neighborhood=Roxbury", headers=auth_headers).get_json()
     assert [r["name"] for r in res["items"]] == ["Lee"]
     res = client.get("/api/admin/wellness-day-interest?activity=painting_sewing", headers=auth_headers).get_json()
     assert sorted(r["name"] for r in res["items"]) == ["Kim", "Rose Brown"]
     assert client.get("/api/admin/wellness-day-interest?activity=%25", headers=auth_headers).status_code == 400
+    res = client.get("/api/admin/wellness-day-interest?wants_to_sell=true", headers=auth_headers).get_json()
+    assert [r["name"] for r in res["items"]] == ["Kim"] and res["items"][0]["sell_items"] == "Watercolors"
 
     s = client.get("/api/admin/wellness-day/summary", headers=auth_headers).get_json()
     assert s["interest_total"] == 3
     assert s["interest_by_activity"]["painting_sewing"] == 2 and s["interest_by_activity"]["food_social"] == 1
     assert s["interest_by_neighborhood"]["Dorchester"] == 1 and s["interest_by_neighborhood"]["not_given"] == 1
+    assert s["senior_makers_total"] == 1
 
     csv = client.get("/api/admin/wellness-day-interest/export.csv?neighborhood=Dorchester", headers=auth_headers)
     lines = csv.get_data(as_text=True).lstrip("﻿").strip().splitlines()
     assert lines[0].startswith("id,created_at_utc,name,email,phone,neighborhood,activities")
     assert len(lines) == 2 and "Rose Brown" in lines[1]
+    assert lines[0].endswith("consent_to_contact,wants_to_sell,sell_items,needs_table")
+    makers = client.get("/api/admin/wellness-day-interest/export.csv?wants_to_sell=true", headers=auth_headers)
+    rows = makers.get_data(as_text=True).lstrip("\ufeff").strip().splitlines()
+    assert len(rows) == 2 and "Kim" in rows[1] and "Watercolors" in rows[1]
 
 
 def test_admin_partners_filters_lineup_and_csv(client, db, auth_headers):
@@ -226,6 +321,25 @@ def test_admin_partners_filters_lineup_and_csv(client, db, auth_headers):
     assert "B Org" in text and "A Org" not in text and "admin_notes" in text.splitlines()[0]
 
 
+def test_admin_vendor_category_filter_csv_and_summary(client, db, auth_headers):
+    client.post("/api/wellness-day/partners", json=VENDOR)
+    client.post("/api/wellness-day/partners", json={**VENDOR, "organization": "Soup Co", "email": "s@example.org",
+                                                     "participation_types": ["food_vendor"], "vendor_category": "food",
+                                                     "vendor_products": "Soup"})
+    _partner(db, organization="Massage Co")
+    res = client.get("/api/admin/wellness-day-partners?vendor_category=jewelry", headers=auth_headers).get_json()
+    assert [r["organization"] for r in res["items"]] == ["Mensah Beads"]
+    res = client.get("/api/admin/wellness-day-partners?participation_type=food_vendor", headers=auth_headers).get_json()
+    assert [r["organization"] for r in res["items"]] == ["Soup Co"]
+    csv = client.get("/api/admin/wellness-day-partners/export.csv?vendor_category=food", headers=auth_headers)
+    lines = csv.get_data(as_text=True).lstrip("\ufeff").strip().splitlines()
+    assert "vendor_category" in lines[0] and "vendor_products" in lines[0] and "agrees_permits" in lines[0]
+    assert len(lines) == 2 and "Soup Co" in lines[1]
+    s = client.get("/api/admin/wellness-day/summary", headers=auth_headers).get_json()
+    assert s["vendors_by_category"]["jewelry"] == 1 and s["vendors_by_category"]["food"] == 1
+    assert s["partners_by_type"]["vendor"] == 1 and s["partners_by_type"]["practitioner_massage"] == 1
+
+
 def test_dashboard_counts(client, db, auth_headers):
     client.post("/api/wellness-day/interest", json=INTEREST)
     _partner(db)
@@ -251,7 +365,9 @@ def test_flask_admin_views(client, db, admin_user):
     assert "Confirmed Co" in lineup and "New Co" not in lineup
     # Filters by participation type (custom JSON-list filter) and status are offered.
     page = client.get("/flask-admin/fa_wellness_day_partners/").get_data(as_text=True)
-    assert "Participation type" in page and "Status" in page
+    assert "Participation type" in page and "Status" in page and "Vendor category" in page
+    page = client.get("/flask-admin/fa_wellness_day_interest/").get_data(as_text=True)
+    assert "Senior makers" in page
 
 
 def test_flask_admin_json_list_filter(app, db):
@@ -294,3 +410,100 @@ def test_wellness_page_has_no_donations_or_dollar_amounts():
     copy = " ".join(walk(en))
     assert "$" not in copy and not re.search(r"\bdonat", copy, re.I)
     assert "Participants should consult their healthcare provider before starting a new exercise program." in copy
+
+
+# ---------------------------------------------------------------------------
+# Migration: old combined keys are split into the new ones
+# ---------------------------------------------------------------------------
+def test_migration_remaps_old_keys():
+    import importlib.util
+
+    import sqlalchemy as sa
+    from alembic.migration import MigrationContext
+    from alembic.operations import Operations
+
+    path = next((ROOT / "migrations/versions").glob("a3c9e2f1b7d4_*.py"))
+    spec = importlib.util.spec_from_file_location("wd_marketplace_migration", path)
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+
+    engine = sa.create_engine("sqlite://")
+    meta = sa.MetaData()
+    interest = sa.Table("wellness_day_interest", meta, sa.Column("id", sa.Integer, primary_key=True),
+                        sa.Column("activities", sa.JSON))
+    partners = sa.Table("wellness_day_partners", meta, sa.Column("id", sa.Integer, primary_key=True),
+                        sa.Column("participation_types", sa.JSON))
+    meta.create_all(engine)
+    with engine.begin() as conn:
+        conn.execute(interest.insert(), [{"id": 1, "activities": ["massage_acupressure", "food_social"]},
+                                         {"id": 2, "activities": ["chair_yoga_meditation"]}])
+        conn.execute(partners.insert(), [{"id": 1, "participation_types": ["practitioner", "food", "volunteer"]}])
+        with Operations.context(MigrationContext.configure(conn)):
+            mod._remap("wellness_day_interest", "activities", mod.ACTIVITY_UP)
+            mod._remap("wellness_day_partners", "participation_types", mod.TYPE_UP)
+        acts = dict(conn.execute(sa.select(interest.c.id, interest.c.activities)).all())
+        types = conn.execute(sa.select(partners.c.participation_types)).scalar_one()
+    assert acts == {1: ["chair_massage", "acupressure", "food_social"], 2: ["chair_yoga_meditation"]}
+    assert types == ["practitioner_bodywork", "food_vendor", "volunteer"]
+
+
+# ---------------------------------------------------------------------------
+# Page: event first, forms behind accessible tabs; photos follow the photo rules
+# ---------------------------------------------------------------------------
+PAGE = ROOT / "src/front/js/pages/WellnessDay.js"
+
+
+def test_page_forms_are_behind_keyboard_operable_tabs():
+    js = PAGE.read_text()
+    assert 'role="tablist"' in js and 'role="tab"' in js and 'role="tabpanel"' in js
+    assert "aria-selected={active === tab}" in js and "tabIndex={active === tab ? 0 : -1}" in js
+    assert all(key in js for key in ("ArrowRight", "ArrowLeft", "Home", "End"))
+    # Only one form shows at a time (the other panel is hidden, but stays mounted to keep its values).
+    assert 'hidden={active !== "seniors"}' in js and 'hidden={active !== "partners"}' in js
+    # Hero and marketplace buttons open the right tab; the marketplace ones pre-fill the form.
+    assert js.count('openSignup("seniors"') == 2 and js.count('openSignup("partners"') == 2
+    assert 'openSignup("partners", { type: "vendor" })' in js and 'openSignup("seniors", { sell: true })' in js
+    # Smooth scrolling only when the visitor hasn't asked for reduced motion.
+    assert "prefers-reduced-motion: reduce" in js
+    # The event content comes before the sign-up section.
+    assert js.index('className="wd-hero"') < js.index("wd-glance") < js.index("wd-offer") < js.index("wd-market") \
+        < js.index("<SignupTabs")
+
+
+def test_page_lists_every_activity_and_type_the_api_accepts():
+    from api.models import WELLNESS_ACTIVITIES, WELLNESS_PARTICIPATION, WELLNESS_VENDOR_CATEGORIES
+    js = PAGE.read_text()
+
+    def js_list(name):
+        return re.findall(r'"([a-z_]+)"', js.split(f"const {name} = [", 1)[1].split("];", 1)[0])
+    assert js_list("ACTIVITIES") == list(WELLNESS_ACTIVITIES)
+    assert js_list("PARTICIPATION") == list(WELLNESS_PARTICIPATION)
+    assert js_list("VENDOR_CATEGORIES") == list(WELLNESS_VENDOR_CATEGORIES)
+    import json
+    en = json.loads((ROOT / "src/front/locales/en.json").read_text())["wellnessDay"]
+    assert set(en["interest"]["activityLabels"]) == set(WELLNESS_ACTIVITIES) == set(en["offerings"])
+    assert set(en["partner"]["typeOptions"]) == set(WELLNESS_PARTICIPATION) == set(en["types"])
+    assert en["partner"]["licenseNote"] == ("Massage and acupuncture must be provided by Massachusetts-licensed "
+                                           "practitioners.")
+
+
+def test_wellness_day_photo_slots():
+    import json
+
+    from api.commands import SITE_IMAGE_SLOTS
+    from api.models import STOCK_ALLOWED_SLOTS, WELLNESS_DAY_STOCK_SLOTS
+    js = PAGE.read_text()
+    used = set(re.findall(r'"((?:wellness-day|seniors|research)-[a-z-]+)"', js))
+    credits = json.loads((ROOT / "src/front/img/site/credits.json").read_text())
+    assert set(WELLNESS_DAY_STOCK_SLOTS) <= set(STOCK_ALLOWED_SLOTS) and set(WELLNESS_DAY_STOCK_SLOTS) <= set(SITE_IMAGE_SLOTS)
+    for slot in used:
+        assert slot in SITE_IMAGE_SLOTS, slot
+    # Our own photos where we have them.
+    for ours in ("seniors-banner", "seniors-join", "research-banner", "seniors-chair-massage"):
+        assert ours in used and credits[ours]["type"] == "founder-owned"
+    # Each stock photo is credited with its source page and license.
+    for slot in WELLNESS_DAY_STOCK_SLOTS:
+        if slot in credits:
+            c = credits[slot]
+            assert c["type"] == "stock" and c["page_url"].startswith(("https://unsplash.com/", "https://nappy.co/"))
+            assert "license" in c["license"].lower()

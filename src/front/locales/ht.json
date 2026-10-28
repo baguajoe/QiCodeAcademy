@@ -716,48 +716,94 @@
     "title": "TODO: Senior Wellness Day",
     "lead": "TODO: Movement, care, creativity, and community for older adults in Boston.",
     "statusDefault": "TODO: Coming spring 2027",
-    "intro": "TODO: A free day of movement, care, creativity, and community for older adults in Boston. Senior Wellness Day brings together experienced instructors and licensed practitioners in one welcoming place, with plenty of time to relax, connect, and enjoy a meal together.",
+    "intro": "TODO: A free day of movement, care, creativity, and community for older adults in Boston. Experienced instructors and licensed practitioners, a marketplace of local vendors and senior makers, and plenty of time to relax, connect, and share a meal.",
     "jumpInterest": "TODO: Join the interest list",
-    "jumpPartner": "TODO: Partners, vendors & volunteers",
+    "jumpPartner": "TODO: Vendors, practitioners & volunteers",
+    "glanceTitle": "TODO: A day at a glance",
+    "glanceLead": "TODO: About four hours together. Come for part of the day or all of it.",
+    "stepLabel": "TODO: Part {{n}}",
+    "glance": {
+      "welcome": {
+        "title": "TODO: Welcome and Tai Chi",
+        "body": "TODO: Arrive, settle in, and start the day together with gentle, flowing movement. Chairs available."
+      },
+      "choose": {
+        "title": "TODO: Choose your activities",
+        "body": "TODO: Massage, acupuncture, yoga, art, and more. Try one or several, at your own pace."
+      },
+      "marketplace": {
+        "title": "TODO: Marketplace",
+        "body": "TODO: Browse local vendors and handmade goods from the Senior Makers Market."
+      },
+      "lunch": {
+        "title": "TODO: Lunch and social time",
+        "body": "TODO: Share a meal, meet neighbors, and enjoy good conversation."
+      }
+    },
     "offerTitle": "TODO: What we plan to offer",
-    "offerings": [
-      {
-        "key": "TODO: tai_chi_baguazhang",
+    "offerLead": "TODO: Pick what interests you. Every activity can be done seated or standing.",
+    "categories": {
+      "movement": "TODO: Movement",
+      "care": "TODO: Care",
+      "creativity": "TODO: Creativity",
+      "community": "TODO: Community"
+    },
+    "offerings": {
+      "tai_chi_baguazhang": {
         "title": "TODO: Tai Chi and Baguazhang",
         "body": "TODO: Gentle, flowing movement and circle walking, with chair options."
       },
-      {
-        "key": "TODO: chair_yoga_meditation",
+      "chair_yoga_meditation": {
         "title": "TODO: Chair yoga and meditation",
         "body": "TODO: Stretching, breathing, and relaxation."
       },
-      {
-        "key": "TODO: massage_acupressure",
-        "title": "TODO: Chair massage and acupressure",
-        "body": "TODO: Offered by licensed, insured practitioners."
+      "chair_massage": {
+        "title": "TODO: Chair massage",
+        "body": "TODO: Offered by licensed, insured massage therapists."
       },
-      {
-        "key": "TODO: strength_balance",
+      "acupuncture": {
+        "title": "TODO: Acupuncture",
+        "body": "TODO: Offered by licensed acupuncturists in a calm, private space."
+      },
+      "acupressure": {
+        "title": "TODO: Acupressure",
+        "body": "TODO: Gentle pressure-point work by trained practitioners."
+      },
+      "strength_balance": {
         "title": "TODO: Strength and balance",
         "body": "TODO: Gentle exercises led by a certified trainer."
       },
-      {
-        "key": "TODO: painting_sewing",
+      "painting_sewing": {
         "title": "TODO: Painting and sewing",
         "body": "TODO: Creative circles to make something and share it."
       },
-      {
-        "key": "TODO: wellness_education",
+      "wellness_education": {
         "title": "TODO: Wellness education",
         "body": "TODO: Short talks and community resources."
       },
-      {
-        "key": "TODO: food_social",
+      "marketplace": {
+        "title": "TODO: Vendor marketplace and Senior Makers Market",
+        "body": "TODO: Shop local vendors and handmade goods made by seniors."
+      },
+      "food_social": {
         "title": "TODO: Food and social time",
         "body": "TODO: Refreshments and conversation."
       }
-    ],
-    "offerNote": "TODO: Plans depend on funding and may change. Participants should consult their healthcare provider before starting a new exercise program. Massage and acupressure are optional and offered only by licensed practitioners.",
+    },
+    "offerNote": "TODO: Plans depend on funding and may change. Participants should consult their healthcare provider before starting a new exercise program. Massage, acupressure, and acupuncture are optional and offered only by licensed practitioners.",
+    "marketTitle": "TODO: Marketplace",
+    "marketBody": "TODO: Senior Wellness Day includes a marketplace where local vendors and senior makers can sell their goods, from crafts, art, and clothing to wellness products and food. Seniors are welcome to sell their own handmade work at the Senior Makers Market.",
+    "marketSell": "TODO: Sell at the marketplace",
+    "marketMaker": "TODO: I'm a senior maker",
+    "photosTitle": "TODO: From our classes",
+    "photosLead": "TODO: Senior Wellness Day grows out of the classes we already teach around Boston.",
+    "photoCaptions": {
+      "seniors-banner": "TODO: A seated movement class",
+      "seniors-join": "TODO: Tai Chi practice together",
+      "research-banner": "TODO: Baguazhang circle walking",
+      "seniors-baguazhang": "TODO: Guidance during class",
+      "seniors-chair-massage": "TODO: Chair massage at a senior program"
+    },
     "expectTitle": "TODO: What to expect",
     "expect": [
       "TODO: A free event of about four hours",
@@ -770,16 +816,24 @@
     "dateLabel": "TODO: Date",
     "locationLabel": "TODO: Location",
     "lineupTitle": "TODO: Who's joining us",
-    "lineupLead": "TODO: Practitioners, instructors, and community partners confirmed so far.",
+    "lineupLead": "TODO: Practitioners, instructors, vendors, and community partners confirmed so far.",
     "types": {
-      "practitioner": "TODO: Practitioner",
+      "practitioner_massage": "TODO: Massage",
+      "practitioner_acupuncture": "TODO: Acupuncture",
+      "practitioner_bodywork": "TODO: Acupressure and bodywork",
       "instructor": "TODO: Instructor",
       "arts_crafts": "TODO: Arts and crafts",
+      "vendor": "TODO: Vendor",
+      "food_vendor": "TODO: Food vendor",
       "resource_table": "TODO: Community resource table",
-      "food": "TODO: Food or refreshments",
       "volunteer": "TODO: Volunteer",
       "sponsor": "TODO: Sponsor"
     },
+    "signupTitle": "TODO: Sign up",
+    "signupLead": "TODO: Choose the form that fits you.",
+    "tabsLabel": "TODO: Sign-up forms",
+    "tabSeniors": "TODO: For seniors and families",
+    "tabPartners": "TODO: For vendors, practitioners and volunteers",
     "interest": {
       "title": "TODO: Join the interest list",
       "lead": "TODO: Tell us how to reach you and we'll let you know when the date and place are set. Family members and friends are welcome to sign up on someone's behalf.",
@@ -793,6 +847,18 @@
       "otherNeighborhood": "TODO: Other",
       "activities": "TODO: Which activities interest you?",
       "activitiesHint": "TODO: Choose as many as you like.",
+      "activityLabels": {
+        "tai_chi_baguazhang": "TODO: Tai Chi and Baguazhang",
+        "chair_yoga_meditation": "TODO: Chair yoga and meditation",
+        "chair_massage": "TODO: Chair massage",
+        "acupuncture": "TODO: Acupuncture",
+        "acupressure": "TODO: Acupressure",
+        "strength_balance": "TODO: Strength and balance",
+        "painting_sewing": "TODO: Painting and sewing",
+        "wellness_education": "TODO: Wellness education",
+        "marketplace": "TODO: Marketplace",
+        "food_social": "TODO: Food and social time"
+      },
       "contactMethod": "TODO: How would you like us to contact you?",
       "methods": {
         "email": "TODO: Email",
@@ -804,6 +870,17 @@
         "myself": "TODO: Myself",
         "someone_else": "TODO: A family member or friend"
       },
+      "sellTitle": "TODO: Senior Makers Market",
+      "wantsToSell": "TODO: I'd like to sell my own crafts or goods at the Senior Makers Market.",
+      "wantsToSellShort": "TODO: Senior Makers Market",
+      "sellItems": "TODO: What would you sell?",
+      "sellItemsHint": "TODO: For example: quilts, jewelry, paintings, baked goods.",
+      "needsTable": "TODO: Do you need a table?",
+      "yesNo": {
+        "yes": "TODO: Yes",
+        "no": "TODO: No"
+      },
+      "needSellItems": "TODO: Tell us what you would sell.",
       "consent": "TODO: Yes, Qi Code Academy may contact me about Senior Wellness Day.",
       "needContact": "TODO: Please give an email address or a phone number.",
       "needEmail": "TODO: Add an email address so we can email you.",
@@ -814,8 +891,8 @@
       "consentShort": "TODO: Permission to contact you"
     },
     "partner": {
-      "title": "TODO: Want to be part of Senior Wellness Day?",
-      "lead": "TODO: We're looking for licensed practitioners, instructors, artists, community resource tables, food and refreshments, volunteers, and sponsors.",
+      "title": "TODO: Be part of Senior Wellness Day",
+      "lead": "TODO: We're looking for licensed practitioners, instructors, artists, marketplace and food vendors, community resource tables, volunteers, and sponsors.",
       "name": "TODO: Your name",
       "organization": "TODO: Organization or business name",
       "email": "TODO: Email",
@@ -824,11 +901,14 @@
       "types": "TODO: I'd like to participate as",
       "typesHint": "TODO: Choose one or more.",
       "typeOptions": {
-        "practitioner": "TODO: Practitioner: massage, acupressure, or other bodywork",
+        "practitioner_massage": "TODO: Practitioner (massage)",
+        "practitioner_acupuncture": "TODO: Practitioner (acupuncture)",
+        "practitioner_bodywork": "TODO: Practitioner (acupressure or other bodywork)",
         "instructor": "TODO: Instructor: yoga, meditation, strength and balance, Tai Chi, etc.",
-        "arts_crafts": "TODO: Arts and crafts: painting, sewing, or other creative activity",
+        "arts_crafts": "TODO: Arts and crafts: lead a painting, sewing, or other creative activity",
+        "vendor": "TODO: Vendor (sell products)",
+        "food_vendor": "TODO: Food vendor",
         "resource_table": "TODO: Community resource table: health, senior services, housing, benefits, library, etc.",
-        "food": "TODO: Food or refreshments",
         "volunteer": "TODO: Volunteer",
         "sponsor": "TODO: Sponsor"
       },
@@ -836,10 +916,26 @@
       "offerHint": "TODO: Up to 600 characters.",
       "charsLeft": "TODO: {{count}} characters left",
       "licenseTitle": "TODO: License or certification",
-      "licenseNote": "TODO: Massage and bodywork must be provided by Massachusetts-licensed practitioners.",
+      "licenseNote": "TODO: Massage and acupuncture must be provided by Massachusetts-licensed practitioners.",
       "licenseType": "TODO: License type",
-      "licenseTypeHint": "TODO: Example: Massachusetts massage therapist license",
+      "licenseTypeHint": "TODO: Example: Massachusetts massage therapist license, or Massachusetts acupuncture license",
       "licenseNumber": "TODO: License number",
+      "vendorTitle": "TODO: About what you sell",
+      "vendorProducts": "TODO: What do you sell?",
+      "vendorCategory": "TODO: Category",
+      "vendorCategories": {
+        "crafts": "TODO: Crafts",
+        "art": "TODO: Art",
+        "clothing": "TODO: Clothing and accessories",
+        "jewelry": "TODO: Jewelry",
+        "wellness_products": "TODO: Wellness products",
+        "food": "TODO: Food and drinks",
+        "books_media": "TODO: Books and media",
+        "other": "TODO: Other"
+      },
+      "priceRange": "TODO: Price range",
+      "priceRangeHint": "TODO: A rough range is fine.",
+      "needProducts": "TODO: Tell us what you sell.",
       "insurance": "TODO: Do you carry liability insurance?",
       "insuranceOptions": {
         "yes": "TODO: Yes",
@@ -858,6 +954,7 @@
         "table": "TODO: Table",
         "chairs": "TODO: Chairs",
         "electricity": "TODO: Electricity",
+        "tent": "TODO: Tent",
         "quiet_space": "TODO: Private or quiet space",
         "none": "TODO: None"
       },
@@ -868,15 +965,20 @@
         "sundays": "TODO: Sundays"
       },
       "referral": "TODO: How did you hear about us?",
-      "agreeNoSales": "TODO: I understand this is a free event for seniors. Product sales or sales pitches to participants are not permitted unless approved in advance by Qi Code Academy.",
+      "agreementsTitle": "TODO: Please read and agree",
       "agreeNotConfirmed": "TODO: I understand that submitting this form does not confirm my participation.",
+      "agreeRespectful": "TODO: I'll treat participants with respect: no high-pressure sales.",
+      "agreePermits": "TODO: I'm responsible for any permits, licenses, and sales tax that apply to what I sell. Food vendors need a City of Boston food permit.",
+      "agreeRestricted": "TODO: Vendors selling insurance, Medicare plans, or financial products need approval from Qi Code Academy in advance.",
+      "agreeNotConfirmedShort": "TODO: Participation not yet confirmed",
+      "agreeRespectfulShort": "TODO: Respect, no high-pressure sales",
+      "agreePermitsShort": "TODO: Permits, licenses, and sales tax",
+      "agreeRestrictedShort": "TODO: Insurance, Medicare, and financial products",
       "needAgree": "TODO: Please check this box to continue.",
       "needLicense": "TODO: Required for practitioners.",
       "submit": "TODO: Send my submission",
       "successTitle": "TODO: Thank you!",
-      "questions": "TODO: Questions? Email",
-      "agreeNoSalesShort": "TODO: Free event, no sales agreement",
-      "agreeNotConfirmedShort": "TODO: Participation not yet confirmed"
+      "questions": "TODO: Questions? Email"
     }
   }
 }

@@ -2,7 +2,11 @@ import CREDITS from "../img/site/credits.json";
 
 // Photo rules: stock photos may ONLY fill these slots (mirrors STOCK_ALLOWED_SLOTS in src/api/models.py).
 export const STOCK_ALLOWED_SLOTS = ["hero-home", "youth-banner", "seniors-banner", "intergenerational-banner",
-  "research-banner", "donate", "home-card-youth", "home-card-seniors", "home-card-research"];
+  "research-banner", "donate", "home-card-youth", "home-card-seniors", "home-card-research",
+  // Senior Wellness Day activity and marketplace photos
+  "wellness-day-yoga", "wellness-day-acupuncture", "wellness-day-acupressure", "wellness-day-strength",
+  "wellness-day-crafts", "wellness-day-education", "wellness-day-marketplace", "wellness-day-market-baskets",
+  "wellness-day-market-painting", "wellness-day-market-sewing", "wellness-day-social"];
 
 // Credits for files in src/front/img/site/ (type: "founder-owned" | "stock"). See IMAGE_CREDITS.md.
 export function localCredit(slot) {
@@ -137,6 +141,62 @@ export const SLOTS = {
     page: "Donate (beside the form)", size: "1200×1500 (portrait)", ratio: "4 / 5", division: "community",
     subject: "Donate photo: youth and older adults at a Qi Code Academy program",
     alt: "Youth and older adults at a Qi Code Academy program",
+  },
+  // Senior Wellness Day activity cards and marketplace band (stock allowed until we have event photos).
+  "wellness-day-yoga": {
+    page: "Senior Wellness Day (Chair yoga and meditation card)", size: "1200×900", ratio: "4 / 3", division: "senior",
+    subject: "Older adults doing seated yoga or meditation",
+    alt: "Older adults stretching together",
+  },
+  "wellness-day-acupuncture": {
+    page: "Senior Wellness Day (Acupuncture card)", size: "1200×900", ratio: "4 / 3", division: "senior",
+    subject: "A licensed acupuncturist working in a calm, private space",
+    alt: "A practitioner gently placing an acupuncture needle",
+  },
+  "wellness-day-acupressure": {
+    page: "Senior Wellness Day (Acupressure card)", size: "1200×900", ratio: "4 / 3", division: "senior",
+    subject: "Gentle pressure-point work on a hand or forearm",
+    alt: "Hands pressing gently on a person's forearm",
+  },
+  "wellness-day-strength": {
+    page: "Senior Wellness Day (Strength and balance card)", size: "1200×900", ratio: "4 / 3", division: "senior",
+    subject: "Older adults doing gentle strength or balance exercises, seated or standing",
+    alt: "Older adults doing gentle strength exercises",
+  },
+  "wellness-day-crafts": {
+    page: "Senior Wellness Day (Painting and sewing card)", size: "1200×900", ratio: "4 / 3", division: "senior",
+    subject: "Older adults painting or sewing together",
+    alt: "An older adult showing a sewing project",
+  },
+  "wellness-day-education": {
+    page: "Senior Wellness Day (Wellness education card)", size: "1200×900", ratio: "4 / 3", division: "senior",
+    subject: "A short community talk or resource table with older adults",
+    alt: "Older adults listening to a short community talk",
+  },
+  "wellness-day-marketplace": {
+    page: "Senior Wellness Day (Marketplace card + day timeline)", size: "1200×900", ratio: "4 / 3", division: "senior",
+    subject: "A vendor or senior maker at a table of handmade goods",
+    alt: "A vendor at a table of handmade goods",
+  },
+  "wellness-day-market-baskets": {
+    page: "Senior Wellness Day (Marketplace band, 1st)", size: "1200×900", ratio: "4 / 3", division: "senior",
+    subject: "Handmade crafts for sale",
+    alt: "Handmade baskets at a market",
+  },
+  "wellness-day-market-painting": {
+    page: "Senior Wellness Day (Marketplace band, 2nd)", size: "1200×900", ratio: "4 / 3", division: "senior",
+    subject: "Art made by local or senior artists",
+    alt: "A hand painting a design on canvas",
+  },
+  "wellness-day-market-sewing": {
+    page: "Senior Wellness Day (Marketplace band, 3rd)", size: "1200×900", ratio: "4 / 3", division: "senior",
+    subject: "Sewing, clothing, or textile work",
+    alt: "Hands guiding fabric through a sewing machine",
+  },
+  "wellness-day-social": {
+    page: "Senior Wellness Day (Food and social time card + day timeline)", size: "1200×900", ratio: "4 / 3", division: "senior",
+    subject: "Older adults sharing food and conversation",
+    alt: "Older adults talking around a table",
   },
 };
 

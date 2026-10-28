@@ -392,10 +392,16 @@ class _WellnessInterestFields:
     contact_method = fields.String(allow_none=True, validate=validate.OneOf(m.WELLNESS_CONTACT_METHODS))
     signing_up_for = fields.String(allow_none=True, validate=validate.OneOf(m.WELLNESS_SIGNUP_FOR))
     consent_to_contact = fields.Boolean(required=True)
+    # Senior Makers Market (optional)
+    wants_to_sell = fields.Boolean(load_default=False)
+    sell_items = S(300)
+    needs_table = fields.String(allow_none=True, validate=validate.OneOf(m.WELLNESS_YES_NO))
 
     @validates_schema
     def _check(self, data, **kwargs):
         errors = {}
+        if data.get("wants_to_sell") and not (data.get("sell_items") or "").strip():
+            errors["sell_items"] = ["Tell us what you would sell at the Senior Makers Market."]
         if not data.get("email") and not data.get("phone"):
             errors["email"] = ["Please give an email address or a phone number (or both)."]
         elif data.get("contact_method") == "email" and not data.get("email"):
@@ -409,6 +415,9 @@ class _WellnessInterestFields:
 
     @post_load
     def _normalize(self, data, **kwargs):
+        if "wants_to_sell" in data and not data["wants_to_sell"]:
+            data["sell_items"] = None
+            data["needs_table"] = None
         return _dedupe(data, "activities")
 
 
@@ -438,15 +447,22 @@ class _WellnessPartnerFields:
     setup_needs = ChoiceList(m.WELLNESS_SETUP_NEEDS)
     availability = ChoiceList(m.WELLNESS_AVAILABILITY)
     referral_source = S(300)
+    vendor_category = fields.String(allow_none=True, validate=validate.OneOf(m.WELLNESS_VENDOR_CATEGORIES))
+    vendor_products = S(300)
+    vendor_price_range = S(100)
 
     @validates_schema
     def _check(self, data, **kwargs):
         errors = {}
-        if "practitioner" in (data.get("participation_types") or []):
-            msg = "Required for practitioners. Massage and bodywork must be provided by Massachusetts-licensed practitioners."
+        types = data.get("participation_types") or []
+        if any(t in m.WELLNESS_PRACTITIONER_TYPES for t in types):
+            msg = ("Required for practitioners. Massage and acupuncture must be provided by "
+                   "Massachusetts-licensed practitioners.")
             for f in ("license_type", "license_number"):
                 if not (data.get(f) or "").strip():
                     errors[f] = [msg]
+        if any(t in m.WELLNESS_VENDOR_TYPES for t in types) and not (data.get("vendor_products") or "").strip():
+            errors["vendor_products"] = ["Tell us what you sell."]
         if errors:
             raise ValidationError(errors)
 
@@ -455,30 +471,42 @@ class _WellnessPartnerFields:
         _dedupe(data, "participation_types", "setup_needs", "availability")
         if data.get("compensation") != "paid":
             data["typical_rate"] = None
+        if "participation_types" in data and not any(t in m.WELLNESS_VENDOR_TYPES for t in data["participation_types"]):
+            data["vendor_category"] = data["vendor_products"] = data["vendor_price_range"] = None
         needs = data.get("setup_needs") or []
         if "none" in needs and len(needs) > 1:
             data["setup_needs"] = [n for n in needs if n != "none"]
         return data
 
 
+WELLNESS_AGREEMENTS = {
+    "agrees_not_confirmed": "Please confirm you understand this form doesn't confirm your participation.",
+    "agrees_respectful": "Please agree to treat participants with respect, with no high-pressure sales.",
+    "agrees_permits": "Please confirm you're responsible for any permits, licenses, and sales tax that apply.",
+    "agrees_restricted_products": ("Please confirm you understand that insurance, Medicare plans, and financial "
+                                   "products need approval from Qi Code Academy in advance."),
+}
+
+
 class WellnessDayPartnerCreateSchema(_WellnessPartnerFields, PublicFormSchema):
-    agrees_no_sales = fields.Boolean(required=True)
     agrees_not_confirmed = fields.Boolean(required=True)
+    agrees_respectful = fields.Boolean(required=True)
+    agrees_permits = fields.Boolean(required=True)
+    agrees_restricted_products = fields.Boolean(required=True)
 
     @validates_schema
     def _agreements(self, data, **kwargs):
-        errors = {}
-        if data.get("agrees_no_sales") is not True:
-            errors["agrees_no_sales"] = ["Please agree that product sales and sales pitches need advance approval."]
-        if data.get("agrees_not_confirmed") is not True:
-            errors["agrees_not_confirmed"] = ["Please confirm you understand this form doesn't confirm your participation."]
+        errors = {k: [msg] for k, msg in WELLNESS_AGREEMENTS.items() if data.get(k) is not True}
         if errors:
             raise ValidationError(errors)
 
 
 class WellnessDayPartnerSchema(_WellnessPartnerFields, AdminSchema):
-    agrees_no_sales = fields.Boolean(load_default=False)
     agrees_not_confirmed = fields.Boolean(load_default=False)
+    agrees_respectful = fields.Boolean(load_default=False)
+    agrees_permits = fields.Boolean(load_default=False)
+    agrees_restricted_products = fields.Boolean(load_default=False)
+    agrees_no_sales = fields.Boolean(load_default=False)  # old form only
     status = Choice(m.WELLNESS_PARTNER_STATUSES, load_default="new")
     show_publicly = fields.Boolean(load_default=False)
     admin_notes = S(5000)

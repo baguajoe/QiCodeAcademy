@@ -42,7 +42,8 @@ STATIC_PAGES = {
                           "adults, designed to encourage healthy and active aging.", "seniors-banner", True),
     "/programs/seniors/wellness-day": ("Senior Wellness Day",
                                        "A free day of movement, care, creativity, and community for older adults "
-                                       "in Boston, planned for spring 2027. Join the interest list.", None, True),
+                                       "in Boston, with a marketplace for local vendors and senior makers. Planned "
+                                       "for spring 2027. Join the interest list.", "seniors-banner", True),
     "/programs/intergenerational": ("Intergenerational Programs",
                                     "Youth help older adults learn technology: young people gain leadership "
                                     "experience, and seniors gain digital skills.", "intergenerational-banner", True),

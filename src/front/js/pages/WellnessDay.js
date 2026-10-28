@@ -1,61 +1,91 @@
-// Senior Wellness Day (planned for spring 2027): what we plan to offer, a senior interest list,
-// and a form for practitioners, instructors, vendors, volunteers, and sponsors.
+// Senior Wellness Day (planned for spring 2027): an event page first, a sign-up page second.
+// Hero → a day at a glance → activity cards → marketplace → class photos → details → lineup →
+// sign-up tabs (seniors and families | vendors, practitioners and volunteers).
 // Health language: describe what happens; never promise outcomes. No donations on this page.
+import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { api } from "../api";
 import { useApi } from "../hooks/useApi";
 import { useSeo } from "../seo";
 import { useStore } from "../store/appContext";
-import { PageBanner, SectionHeader, useSettingText } from "../component/common";
+import { SectionHeader, useSettingText } from "../component/common";
+import { PhotoRow, SiteImage } from "../component/Photo";
 import { CheckboxField, CheckboxGroup, FormShell, RadioGroup, SelectField, TextArea, TextField, useForm } from "../component/Form";
 
 const NEIGHBORHOODS = ["Dorchester", "Roxbury", "Mattapan", "Hyde Park", "South End"];
 const OFFER_MAX = 600;
 const EMAIL = "info@qicodeacademy.org";
 
-// Simple line icons (decorative; each card has a visible heading).
-const ICONS = {
-  tai_chi_baguazhang: <><circle cx="24" cy="24" r="15" /><path d="M24 9a7.5 7.5 0 0 1 0 15a7.5 7.5 0 0 0 0 15" /><circle cx="24" cy="16.5" r="1.6" /><circle cx="24" cy="31.5" r="1.6" /></>,
-  chair_yoga_meditation: <><circle cx="24" cy="11" r="4" /><path d="M24 15v11M14 22l10 4 10-4M15 36c3-5 6-7 9-7s6 2 9 7M11 38h26" /></>,
-  massage_acupressure: <><path d="M17 40V22a3 3 0 0 1 6 0v6M23 27v-8a3 3 0 0 1 6 0v8M29 27v-5a3 3 0 0 1 6 0v9c0 6-4 10-10 10h-1c-4 0-7-2-9-6l-3-6a2.6 2.6 0 0 1 4.4-2.7L17 30" /><path d="M8 12c2-2 4-2 6 0M34 9c2-2 4-2 6 0" /></>,
-  strength_balance: <><path d="M10 24h28M14 17v14M34 17v14M9 20v8M39 20v8" /><path d="M18 40l6-6 6 6" /></>,
-  painting_sewing: <><path d="M10 38c4 0 6-2 6-5s3-4 5-2-1 7-11 7z" /><path d="M20 30L36 10l3 3-16 20" /><path d="M30 34c4-2 7 1 6 4s-5 3-6 0M33 20l7 7" /></>,
-  wellness_education: <><path d="M8 13c6-2 11-1 16 3 5-4 10-5 16-3v24c-6-2-11-1-16 3-5-4-10-5-16-3z" /><path d="M24 16v24" /></>,
-  food_social: <><path d="M10 22h24v4a10 10 0 0 1-10 10h-4A10 10 0 0 1 10 26z" /><path d="M34 24h3a4 4 0 0 1 0 8h-4M8 40h28" /><path d="M17 16c0-3 2-3 2-6M23 16c0-3 2-3 2-6" /></>,
-};
+// Must match WELLNESS_ACTIVITIES / WELLNESS_PRACTITIONER_TYPES / WELLNESS_VENDOR_TYPES in src/api/models.py.
+const ACTIVITIES = ["tai_chi_baguazhang", "chair_yoga_meditation", "chair_massage", "acupuncture", "acupressure",
+  "strength_balance", "painting_sewing", "wellness_education", "marketplace", "food_social"];
+const PARTICIPATION = ["practitioner_massage", "practitioner_acupuncture", "practitioner_bodywork", "instructor",
+  "arts_crafts", "vendor", "food_vendor", "resource_table", "volunteer", "sponsor"];
+const PRACTITIONER_TYPES = ["practitioner_massage", "practitioner_acupuncture", "practitioner_bodywork"];
+const VENDOR_TYPES = ["vendor", "food_vendor"];
+const VENDOR_CATEGORIES = ["crafts", "art", "clothing", "jewelry", "wellness_products", "food", "books_media", "other"];
 
-function Icon({ name }) {
-  return (
-    <svg className="wd-icon" viewBox="0 0 48 48" fill="none" stroke="currentColor" strokeWidth="2.2"
-      strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" focusable="false">
-      {ICONS[name]}
-    </svg>
-  );
-}
+// Activity cards: our own photos first; stock (credited in credits.json) where we have none yet.
+const OFFERINGS = [
+  { key: "tai_chi_baguazhang", slot: "research-banner", cat: "movement", position: "center 30%" },
+  { key: "chair_yoga_meditation", slot: "wellness-day-yoga", cat: "movement" },
+  { key: "strength_balance", slot: "wellness-day-strength", cat: "movement" },
+  { key: "chair_massage", slot: "seniors-chair-massage", cat: "care", position: "center 18%" },
+  { key: "acupuncture", slot: "wellness-day-acupuncture", cat: "care" },
+  { key: "acupressure", slot: "wellness-day-acupressure", cat: "care" },
+  { key: "painting_sewing", slot: "wellness-day-crafts", cat: "creativity", position: "center 35%" },
+  { key: "marketplace", slot: "wellness-day-marketplace", cat: "creativity" },
+  { key: "wellness_education", slot: "wellness-day-education", cat: "community" },
+  { key: "food_social", slot: "wellness-day-social", cat: "community" },
+];
 
+const DAY = [
+  { key: "welcome", slots: ["seniors-join"], position: "center 60%" },
+  { key: "choose", slots: ["seniors-chair-massage", "wellness-day-acupuncture", "wellness-day-yoga", "wellness-day-crafts"] },
+  { key: "marketplace", slots: ["wellness-day-marketplace"] },
+  { key: "lunch", slots: ["wellness-day-social"] },
+];
+
+const MARKET_PHOTOS = ["wellness-day-market-baskets", "wellness-day-market-painting", "wellness-day-market-sewing"];
+const CLASS_PHOTOS = ["seniors-join", "research-banner", "seniors-baguazhang", "seniors-chair-massage"];
+
+const TABS = ["seniors", "partners"];
+const TAB_HASH = { seniors: "signup-seniors", partners: "signup-partners" };
 const opts = (map) => Object.entries(map).map(([value, label]) => ({ value, label }));
+const hasAny = (list, wanted) => list.some((x) => wanted.includes(x));
+const reducedMotion = () => typeof window !== "undefined" && window.matchMedia
+  && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-function InterestForm() {
+function InterestForm({ preset }) {
   const { t } = useTranslation();
   const k = (key) => t(`wellnessDay.interest.${key}`);
   const form = useForm({
     formId: "wd-interest",
     endpoint: "/wellness-day/interest",
     initial: { name: "", email: "", phone: "", neighborhood: "", activities: [], contact_method: "",
-      signing_up_for: "", consent_to_contact: false },
+      signing_up_for: "", wants_to_sell: false, sell_items: "", needs_table: "", consent_to_contact: false },
     required: ["name"],
     emails: ["email"],
     validate: (v) => ({
       email: !v.email.trim() && !v.phone.trim() ? k("needContact")
         : v.contact_method === "email" && !v.email.trim() ? k("needEmail") : undefined,
       phone: ["phone", "text"].includes(v.contact_method) && !v.phone.trim() ? k("needPhone") : undefined,
+      sell_items: v.wants_to_sell && !v.sell_items.trim() ? k("needSellItems") : undefined,
       consent_to_contact: v.consent_to_contact ? undefined : k("needConsent"),
     }),
+    transform: (v) => (v.wants_to_sell ? v : { ...v, sell_items: "", needs_table: "" }),
   });
+  // "I'm a senior maker" (marketplace band) checks the seller box.
+  useEffect(() => {
+    if (preset && preset.sell) form.set("wants_to_sell", true);
+  }, [preset]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const v = form.values;
   const labels = { name: k("name"), email: k("email"), phone: k("phone"), neighborhood: k("neighborhood"),
     activities: k("activities"), contact_method: k("contactMethod"), signing_up_for: k("signingUpFor"),
+    wants_to_sell: k("wantsToSellShort"), sell_items: k("sellItems"), needs_table: k("needsTable"),
     consent_to_contact: k("consentShort") };
-  const activities = t("wellnessDay.offerings", { returnObjects: true }).map((o) => ({ value: o.key, label: o.title }));
+  const activities = ACTIVITIES.map((a) => ({ value: a, label: t(`wellnessDay.interest.activityLabels.${a}`) }));
   return (
     <FormShell form={form} labels={labels} submitLabel={k("submit")} successTitle={k("successTitle")} className="form-large">
       <p className="alert alert-info">{k("privacy")}</p>
@@ -69,12 +99,22 @@ function InterestForm() {
       <CheckboxGroup form={form} name="activities" legend={labels.activities} hint={k("activitiesHint")} options={activities} />
       <RadioGroup form={form} name="contact_method" legend={labels.contact_method} options={opts(t("wellnessDay.interest.methods", { returnObjects: true }))} />
       <RadioGroup form={form} name="signing_up_for" legend={labels.signing_up_for} options={opts(t("wellnessDay.interest.forOptions", { returnObjects: true }))} />
+      <fieldset className="field wd-reveal wd-reveal-gold">
+        <legend>{k("sellTitle")}</legend>
+        <CheckboxField form={form} name="wants_to_sell" label={k("wantsToSell")} />
+        {v.wants_to_sell && (
+          <>
+            <TextField form={form} name="sell_items" label={labels.sell_items} hint={k("sellItemsHint")} required maxLength={300} />
+            <RadioGroup form={form} name="needs_table" legend={labels.needs_table} options={opts(t("wellnessDay.interest.yesNo", { returnObjects: true }))} />
+          </>
+        )}
+      </fieldset>
       <CheckboxField form={form} name="consent_to_contact" label={k("consent")} required />
     </FormShell>
   );
 }
 
-function PartnerForm() {
+function PartnerForm({ preset }) {
   const { t } = useTranslation();
   const k = (key, o) => t(`wellnessDay.partner.${key}`, o);
   const o = (key) => opts(t(`wellnessDay.partner.${key}`, { returnObjects: true }));
@@ -82,35 +122,63 @@ function PartnerForm() {
     formId: "wd-partner",
     endpoint: "/wellness-day/partners",
     initial: { name: "", organization: "", email: "", phone: "", website_or_social: "", participation_types: [],
-      offer_description: "", license_type: "", license_number: "", has_insurance: "", compensation: "",
-      typical_rate: "", setup_needs: [], availability: [], referral_source: "", agrees_no_sales: false,
-      agrees_not_confirmed: false },
+      offer_description: "", license_type: "", license_number: "", vendor_products: "", vendor_category: "",
+      vendor_price_range: "", has_insurance: "", compensation: "", typical_rate: "", setup_needs: [], availability: [],
+      referral_source: "", agrees_not_confirmed: false, agrees_respectful: false, agrees_permits: false,
+      agrees_restricted_products: false },
     required: ["name", "email", "participation_types", "offer_description"],
     emails: ["email"],
     validate: (v) => {
-      const practitioner = v.participation_types.includes("practitioner");
+      const practitioner = hasAny(v.participation_types, PRACTITIONER_TYPES);
+      const vendor = hasAny(v.participation_types, VENDOR_TYPES);
+      const agree = (f) => (v[f] ? undefined : k("needAgree"));
       return {
         offer_description: v.offer_description.length > OFFER_MAX ? k("offerHint") : undefined,
         license_type: practitioner && !v.license_type.trim() ? k("needLicense") : undefined,
         license_number: practitioner && !v.license_number.trim() ? k("needLicense") : undefined,
-        agrees_no_sales: v.agrees_no_sales ? undefined : k("needAgree"),
-        agrees_not_confirmed: v.agrees_not_confirmed ? undefined : k("needAgree"),
+        vendor_products: vendor && !v.vendor_products.trim() ? k("needProducts") : undefined,
+        agrees_not_confirmed: agree("agrees_not_confirmed"),
+        agrees_respectful: agree("agrees_respectful"),
+        agrees_permits: agree("agrees_permits"),
+        agrees_restricted_products: agree("agrees_restricted_products"),
       };
     },
-    transform: (v) => ({
-      ...v,
-      license_type: v.participation_types.includes("practitioner") ? v.license_type : "",
-      license_number: v.participation_types.includes("practitioner") ? v.license_number : "",
-      typical_rate: v.compensation === "paid" ? v.typical_rate : "",
-    }),
+    transform: (v) => {
+      const practitioner = hasAny(v.participation_types, PRACTITIONER_TYPES);
+      const vendor = hasAny(v.participation_types, VENDOR_TYPES);
+      return {
+        ...v,
+        license_type: practitioner ? v.license_type : "",
+        license_number: practitioner ? v.license_number : "",
+        vendor_products: vendor ? v.vendor_products : "",
+        vendor_category: vendor ? v.vendor_category : "",
+        vendor_price_range: vendor ? v.vendor_price_range : "",
+        typical_rate: v.compensation === "paid" ? v.typical_rate : "",
+      };
+    },
   });
+  // "Sell at the marketplace" preselects Vendor.
+  useEffect(() => {
+    if (preset && preset.type) {
+      form.setValues((cur) => (cur.participation_types.includes(preset.type) ? cur
+        : { ...cur, participation_types: [...cur.participation_types, preset.type] }));
+    }
+  }, [preset]); // eslint-disable-line react-hooks/exhaustive-deps
+
   const v = form.values;
+  const practitioner = hasAny(v.participation_types, PRACTITIONER_TYPES);
+  const vendor = hasAny(v.participation_types, VENDOR_TYPES);
   const labels = { name: k("name"), organization: k("organization"), email: k("email"), phone: k("phone"),
     website_or_social: k("link"), participation_types: k("types"), offer_description: k("offer"),
-    license_type: k("licenseType"), license_number: k("licenseNumber"), has_insurance: k("insurance"),
+    license_type: k("licenseType"), license_number: k("licenseNumber"), vendor_products: k("vendorProducts"),
+    vendor_category: k("vendorCategory"), vendor_price_range: k("priceRange"), has_insurance: k("insurance"),
     compensation: k("compensation"), typical_rate: k("rate"), setup_needs: k("setup"), availability: k("availability"),
-    referral_source: k("referral"), agrees_no_sales: k("agreeNoSalesShort"), agrees_not_confirmed: k("agreeNotConfirmedShort") };
+    referral_source: k("referral"), agrees_not_confirmed: k("agreeNotConfirmedShort"),
+    agrees_respectful: k("agreeRespectfulShort"), agrees_permits: k("agreePermitsShort"),
+    agrees_restricted_products: k("agreeRestrictedShort") };
   const left = OFFER_MAX - v.offer_description.length;
+  const types = PARTICIPATION.map((p) => ({ value: p, label: k(`typeOptions.${p}`) }));
+  const categories = VENDOR_CATEGORIES.map((c) => ({ value: c, label: k(`vendorCategories.${c}`) }));
   return (
     <FormShell form={form} labels={labels} submitLabel={k("submit")} successTitle={k("successTitle")} className="form-large">
       <div className="grid grid-2 form-pair">
@@ -121,25 +189,39 @@ function PartnerForm() {
       </div>
       <TextField form={form} name="website_or_social" label={labels.website_or_social} inputMode="url" autoComplete="url" />
       <CheckboxGroup form={form} name="participation_types" legend={labels.participation_types} hint={k("typesHint")}
-        options={o("typeOptions")} required />
-      {v.participation_types.includes("practitioner") && (
-        <fieldset className="field wd-license">
+        options={types} required />
+      {practitioner && (
+        <fieldset className="field wd-reveal wd-reveal-clay">
           <legend>{k("licenseTitle")}</legend>
           <p className="hint">{k("licenseNote")}</p>
           <TextField form={form} name="license_type" label={labels.license_type} hint={k("licenseTypeHint")} required />
           <TextField form={form} name="license_number" label={labels.license_number} required />
         </fieldset>
       )}
+      {vendor && (
+        <fieldset className="field wd-reveal wd-reveal-gold">
+          <legend>{k("vendorTitle")}</legend>
+          <TextField form={form} name="vendor_products" label={labels.vendor_products} required maxLength={300} />
+          <SelectField form={form} name="vendor_category" label={labels.vendor_category}
+            placeholder={t("wellnessDay.interest.choose")} options={categories} />
+          <TextField form={form} name="vendor_price_range" label={labels.vendor_price_range} hint={k("priceRangeHint")} maxLength={100} />
+        </fieldset>
+      )}
       <TextArea form={form} name="offer_description" label={labels.offer_description} required rows={5} maxLength={OFFER_MAX}
         hint={`${k("offerHint")} ${k("charsLeft", { count: left })}`} />
+      <CheckboxGroup form={form} name="setup_needs" legend={labels.setup_needs} options={o("setupOptions")} />
       <RadioGroup form={form} name="has_insurance" legend={labels.has_insurance} options={o("insuranceOptions")} />
       <RadioGroup form={form} name="compensation" legend={labels.compensation} options={o("compensationOptions")} />
       {v.compensation === "paid" && <TextField form={form} name="typical_rate" label={labels.typical_rate} />}
-      <CheckboxGroup form={form} name="setup_needs" legend={labels.setup_needs} options={o("setupOptions")} />
       <CheckboxGroup form={form} name="availability" legend={labels.availability} options={o("availabilityOptions")} />
       <TextField form={form} name="referral_source" label={labels.referral_source} />
-      <CheckboxField form={form} name="agrees_no_sales" label={k("agreeNoSales")} required />
-      <CheckboxField form={form} name="agrees_not_confirmed" label={k("agreeNotConfirmed")} required />
+      <fieldset className="field wd-agreements">
+        <legend>{k("agreementsTitle")}</legend>
+        <CheckboxField form={form} name="agrees_not_confirmed" label={k("agreeNotConfirmed")} required />
+        <CheckboxField form={form} name="agrees_respectful" label={k("agreeRespectful")} required />
+        <CheckboxField form={form} name="agrees_permits" label={k("agreePermits")} required />
+        <CheckboxField form={form} name="agrees_restricted_products" label={k("agreeRestricted")} required />
+      </fieldset>
     </FormShell>
   );
 }
@@ -167,57 +249,195 @@ function Lineup() {
   );
 }
 
+// WAI-ARIA tabs: arrow keys / Home / End move between tabs (automatic activation); both
+// panels stay mounted so a half-filled form survives a tab switch.
+function SignupTabs({ active, onSelect, tabRefs, interestPreset, partnerPreset }) {
+  const { t } = useTranslation();
+  const label = { seniors: t("wellnessDay.tabSeniors"), partners: t("wellnessDay.tabPartners") };
+  const onKeyDown = (e) => {
+    const i = TABS.indexOf(active);
+    const next = { ArrowRight: i + 1, ArrowDown: i + 1, ArrowLeft: i - 1, ArrowUp: i - 1, Home: 0, End: TABS.length - 1 }[e.key];
+    if (next === undefined) return;
+    e.preventDefault();
+    const tab = TABS[(next + TABS.length) % TABS.length];
+    onSelect(tab);
+    tabRefs.current[tab].focus();
+  };
+  return (
+    <>
+      <div className="wd-tabs" role="tablist" aria-label={t("wellnessDay.tabsLabel")}>
+        {TABS.map((tab) => (
+          <button key={tab} type="button" role="tab" id={`wd-tab-${tab}`} aria-controls={`wd-panel-${tab}`}
+            aria-selected={active === tab} tabIndex={active === tab ? 0 : -1} className={`wd-tab wd-tab-${tab}`}
+            ref={(el) => { tabRefs.current[tab] = el; }} onClick={() => onSelect(tab)} onKeyDown={onKeyDown}>
+            {label[tab]}
+          </button>
+        ))}
+      </div>
+      <div role="tabpanel" id="wd-panel-seniors" aria-labelledby="wd-tab-seniors" tabIndex={0} className="wd-panel"
+        hidden={active !== "seniors"}>
+        <h3 className="wd-panel-title">{t("wellnessDay.interest.title")}</h3>
+        <p className="lead">{t("wellnessDay.interest.lead")}</p>
+        <InterestForm preset={interestPreset} />
+      </div>
+      <div role="tabpanel" id="wd-panel-partners" aria-labelledby="wd-tab-partners" tabIndex={0} className="wd-panel"
+        hidden={active !== "partners"}>
+        <h3 className="wd-panel-title">{t("wellnessDay.partner.title")}</h3>
+        <p className="lead">{t("wellnessDay.partner.lead")}</p>
+        <PartnerForm preset={partnerPreset} />
+        <p className="wd-questions">
+          {t("wellnessDay.partner.questions")}{" "}
+          <a href={`mailto:${EMAIL}?subject=${encodeURIComponent("Senior Wellness Day")}`}>{EMAIL}</a>
+        </p>
+      </div>
+    </>
+  );
+}
+
 export default function WellnessDay() {
   const { t } = useTranslation();
   const { actions } = useStore();
   const fromSetting = useSettingText();
-  useSeo({ title: t("wellnessDay.title"), description: t("wellnessDay.intro") });
+  useSeo({ title: t("wellnessDay.title"), description: t("wellnessDay.intro"), imageSlot: "seniors-banner" });
   const status = fromSetting("wellness_day_status", "wellnessDay.statusDefault");
   const date = actions.setting("wellness_day_date").trim();
   const location = actions.setting("wellness_day_location").trim();
-  const offerings = t("wellnessDay.offerings", { returnObjects: true });
+
+  const [tab, setTab] = useState("seniors");
+  const [interestPreset, setInterestPreset] = useState(null);
+  const [partnerPreset, setPartnerPreset] = useState(null);
+  const signupRef = useRef(null);
+  const tabRefs = useRef({});
+
+  // Open a tab (optionally pre-filling the form), scroll to the sign-up section, and focus the tab.
+  const openSignup = (which, preset) => (e) => {
+    if (e) e.preventDefault();
+    setTab(which);
+    if (preset && which === "seniors") setInterestPreset({ ...preset, at: Date.now() });
+    if (preset && which === "partners") setPartnerPreset({ ...preset, at: Date.now() });
+    if (window.history && window.history.replaceState) window.history.replaceState(null, "", `#${TAB_HASH[which]}`);
+    requestAnimationFrame(() => {
+      if (signupRef.current) signupRef.current.scrollIntoView({ behavior: reducedMotion() ? "auto" : "smooth", block: "start" });
+      const el = tabRefs.current[which];
+      if (el) el.focus({ preventScroll: true });
+    });
+  };
+
+  // Deep links: #signup-partners / #partners open the partner tab; #signup-seniors / #interest the seniors tab.
+  useEffect(() => {
+    const fromHash = () => {
+      const h = window.location.hash.replace("#", "");
+      if (["signup-partners", "partners"].includes(h)) setTab("partners");
+      else if (["signup-seniors", "interest"].includes(h)) setTab("seniors");
+      else return;
+      requestAnimationFrame(() => signupRef.current && signupRef.current.scrollIntoView({ block: "start" }));
+    };
+    fromHash();
+    window.addEventListener("hashchange", fromHash);
+    return () => window.removeEventListener("hashchange", fromHash);
+  }, []);
 
   return (
     <div className="theme-senior wellness-day">
-      <PageBanner motto={t("nav.seniors")} title={t("wellnessDay.title")} lead={t("wellnessDay.lead")}>
-        <p className="wd-status"><span className="badge badge-solid">{status}</span></p>
-      </PageBanner>
-
-      <section className="section">
-        <div className="container container-narrow">
-          <p className="page-intro">{t("wellnessDay.intro")}</p>
-          <div className="cluster">
-            <a className="btn btn-lg" href="#interest">{t("wellnessDay.jumpInterest")}</a>
-            <a className="btn btn-lg btn-outline" href="#partners">{t("wellnessDay.jumpPartner")}</a>
+      <section className="wd-hero" aria-labelledby="wd-title">
+        <div className="wd-hero-media">
+          <SiteImage slot="seniors-banner" sizes="100vw" priority ratio={null} position="center 40%" />
+        </div>
+        <div className="container wd-hero-content">
+          <span className="wd-eyebrow">{t("nav.seniors")}</span>
+          <h1 id="wd-title">{t("wellnessDay.title")}</h1>
+          <p className="wd-status"><span className="wd-status-badge">{status}</span></p>
+          <p className="wd-hero-intro">{t("wellnessDay.intro")}</p>
+          <div className="wd-hero-actions">
+            <a className="btn btn-lg wd-btn-gold" href="#signup-seniors" onClick={openSignup("seniors")}>
+              {t("wellnessDay.jumpInterest")}
+            </a>
+            <a className="btn btn-lg btn-ghost-light" href="#signup-partners" onClick={openSignup("partners")}>
+              {t("wellnessDay.jumpPartner")}
+            </a>
           </div>
         </div>
       </section>
 
-      <section className="section section-accent" aria-labelledby="wd-offer-title">
+      <section className="section wd-glance" aria-labelledby="wd-glance-title">
         <div className="container">
-          <SectionHeader title={t("wellnessDay.offerTitle")} id="wd-offer-title" />
-          <ul className="wd-offerings">
-            {offerings.map((o) => (
-              <li key={o.key} className="feature wd-offering">
-                <Icon name={o.key} />
-                <div>
-                  <h3>{o.title}</h3>
-                  <p>{o.body}</p>
+          <SectionHeader title={t("wellnessDay.glanceTitle")} lead={t("wellnessDay.glanceLead")} id="wd-glance-title" center />
+          <ol className="wd-timeline">
+            {DAY.map((step, i) => (
+              <li key={step.key} className="wd-step">
+                <div className={`wd-step-media ${step.slots.length > 1 ? "wd-collage" : ""}`}>
+                  {step.slots.map((slot) => (
+                    <SiteImage key={slot} slot={slot} ratio="4 / 3"
+                      sizes={step.slots.length > 1 ? "(min-width: 64rem) 8rem, 45vw" : "(min-width: 64rem) 17rem, 90vw"}
+                      position={step.position} />
+                  ))}
+                </div>
+                <span className="wd-step-marker" aria-hidden="true"><span className="wd-step-num">{i + 1}</span></span>
+                <h3><span className="sr-only">{t("wellnessDay.stepLabel", { n: i + 1 })}: </span>{t(`wellnessDay.glance.${step.key}.title`)}</h3>
+                <p>{t(`wellnessDay.glance.${step.key}.body`)}</p>
+              </li>
+            ))}
+          </ol>
+        </div>
+      </section>
+
+      <section className="section wd-offer" aria-labelledby="wd-offer-title">
+        <div className="container">
+          <SectionHeader title={t("wellnessDay.offerTitle")} lead={t("wellnessDay.offerLead")} id="wd-offer-title" />
+          <ul className="wd-cards">
+            {OFFERINGS.map((o) => (
+              <li key={o.key} className={`wd-card wd-cat-${o.cat}`}>
+                <SiteImage slot={o.slot} ratio="4 / 3" sizes="(min-width: 64rem) 23rem, (min-width: 40rem) 45vw, 100vw"
+                  position={o.position} />
+                <div className="wd-card-body">
+                  <span className="wd-cat">{t(`wellnessDay.categories.${o.cat}`)}</span>
+                  <h3>{t(`wellnessDay.offerings.${o.key}.title`)}</h3>
+                  <p>{t(`wellnessDay.offerings.${o.key}.body`)}</p>
                 </div>
               </li>
             ))}
           </ul>
-          <p className="disclaimer wd-note">{t("wellnessDay.offerNote")}</p>
+          <p className="wd-note">{t("wellnessDay.offerNote")}</p>
         </div>
       </section>
 
-      <section className="section">
+      <section className="wd-market" aria-labelledby="wd-market-title">
+        <div className="container wd-market-inner">
+          <div className="wd-market-text">
+            <h2 id="wd-market-title">{t("wellnessDay.marketTitle")}</h2>
+            <p>{t("wellnessDay.marketBody")}</p>
+            <div className="wd-market-actions">
+              <a className="btn btn-lg wd-btn-gold" href="#signup-partners" onClick={openSignup("partners", { type: "vendor" })}>
+                {t("wellnessDay.marketSell")}
+              </a>
+              <a className="btn btn-lg btn-ghost-light" href="#signup-seniors" onClick={openSignup("seniors", { sell: true })}>
+                {t("wellnessDay.marketMaker")}
+              </a>
+            </div>
+          </div>
+          <div className="wd-market-photos">
+            {MARKET_PHOTOS.map((slot) => (
+              <SiteImage key={slot} slot={slot} ratio="4 / 3" sizes="(min-width: 64rem) 20rem, 50vw" />
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="section wd-photos" aria-labelledby="wd-photos-title">
+        <div className="container">
+          <SectionHeader title={t("wellnessDay.photosTitle")} lead={t("wellnessDay.photosLead")} id="wd-photos-title" />
+          <PhotoRow label={t("wellnessDay.photosTitle")}
+            items={CLASS_PHOTOS.map((slot) => ({ slot, caption: t(`wellnessDay.photoCaptions.${slot}`) }))} />
+        </div>
+      </section>
+
+      <section className="section wd-details-band">
         <div className="container grid grid-2 wd-details">
-          <section className="gain" aria-labelledby="wd-expect-title">
+          <section className="wd-panel-card" aria-labelledby="wd-expect-title">
             <h2 id="wd-expect-title">{t("wellnessDay.expectTitle")}</h2>
             <ul className="check-list">{t("wellnessDay.expect", { returnObjects: true }).map((i) => <li key={i}>{i}</li>)}</ul>
           </section>
-          <section className="gain" aria-labelledby="wd-when-title">
+          <section className="wd-panel-card" aria-labelledby="wd-when-title">
             <h2 id="wd-when-title">{t("wellnessDay.whenTitle")}</h2>
             {(date || location) && (
               <dl className="level-facts wd-when">
@@ -225,30 +445,19 @@ export default function WellnessDay() {
                 {location && <div><dt>{t("wellnessDay.locationLabel")}</dt><dd>{location}</dd></div>}
               </dl>
             )}
-            {!date && !location && <p style={{ margin: 0 }}>{t("wellnessDay.when")}</p>}
+            {!date && !location && <p>{t("wellnessDay.when")}</p>}
           </section>
         </div>
       </section>
 
       <Lineup />
 
-      <section className="section section-alt" id="interest" aria-labelledby="wd-interest-title">
+      <section className="section wd-signup" id="signup" ref={signupRef} aria-labelledby="wd-signup-title">
         <div className="container container-narrow">
-          <h2 id="wd-interest-title">{t("wellnessDay.interest.title")}</h2>
-          <p className="lead">{t("wellnessDay.interest.lead")}</p>
-          <InterestForm />
-        </div>
-      </section>
-
-      <section className="section" id="partners" aria-labelledby="wd-partner-title">
-        <div className="container container-narrow">
-          <h2 id="wd-partner-title">{t("wellnessDay.partner.title")}</h2>
-          <p className="lead">{t("wellnessDay.partner.lead")}</p>
-          <PartnerForm />
-          <p className="wd-questions">
-            {t("wellnessDay.partner.questions")}{" "}
-            <a href={`mailto:${EMAIL}?subject=${encodeURIComponent("Senior Wellness Day")}`}>{EMAIL}</a>
-          </p>
+          <h2 id="wd-signup-title">{t("wellnessDay.signupTitle")}</h2>
+          <p className="lead">{t("wellnessDay.signupLead")}</p>
+          <SignupTabs active={tab} onSelect={setTab} tabRefs={tabRefs}
+            interestPreset={interestPreset} partnerPreset={partnerPreset} />
         </div>
       </section>
     </div>

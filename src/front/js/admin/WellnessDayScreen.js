@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 import { adminApi } from "../api";
 import { ErrorNote, Loading } from "../component/common";
 import { useTitle } from "./AdminApp";
-import { WD_ACTIVITIES, WD_STATUS, WD_TYPES } from "./resources";
+import { WD_ACTIVITIES, WD_STATUS, WD_TYPES, WD_VENDOR_CATEGORIES } from "./resources";
 
 const label = (opts, v) => (opts.find((o) => o[0] === v) || [v, v])[1];
 
@@ -50,6 +50,7 @@ export function WellnessDayScreen() {
       </div>
       <ul className="admin-tiles">
         <li><Link to="/admin/wellness-day-interest"><span className="value">{data.interest_total}</span><span className="label">Interest list sign-ups</span></Link></li>
+        <li><Link to="/admin/wellness-day-interest?wants_to_sell=true"><span className="value">{data.senior_makers_total}</span><span className="label">Senior makers (want to sell)</span></Link></li>
         {WD_STATUS.map(([k, l]) => (
           <li key={k}><Link to={`/admin/wellness-day-partners?status=${k}`}><span className="value">{data.partners_by_status[k]}</span><span className="label">Partners: {l}</span></Link></li>
         ))}
@@ -67,11 +68,18 @@ export function WellnessDayScreen() {
         </section>
       </div>
 
-      <section aria-labelledby="wd-types">
-        <h2 id="wd-types">Partner submissions by type</h2>
-        <CountTable caption="Partner submissions by type" rows={WD_TYPES.map(([k, l]) =>
-          [l, data.partners_by_type[k], `/admin/wellness-day-partners?participation_type=${k}`])} />
-      </section>
+      <div className="grid grid-2" style={{ alignItems: "start" }}>
+        <section aria-labelledby="wd-types">
+          <h2 id="wd-types">Partner submissions by type</h2>
+          <CountTable caption="Partner submissions by type" rows={WD_TYPES.map(([k, l]) =>
+            [l, data.partners_by_type[k], `/admin/wellness-day-partners?participation_type=${k}`])} />
+        </section>
+        <section aria-labelledby="wd-vendors">
+          <h2 id="wd-vendors">Marketplace vendors by category</h2>
+          <CountTable caption="Marketplace vendors by category" rows={WD_VENDOR_CATEGORIES.map(([k, l]) =>
+            [l, data.vendors_by_category[k], `/admin/wellness-day-partners?vendor_category=${k}`])} />
+        </section>
+      </div>
 
       <section aria-labelledby="wd-lineup">
         <h2 id="wd-lineup">Confirmed lineup</h2>

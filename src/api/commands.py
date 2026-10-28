@@ -89,6 +89,10 @@ SITE_IMAGE_SLOTS = [
     # In-page photos (shown only when a photo exists — never as an empty placeholder)
     "seniors-tai-chi", "seniors-baguazhang", "seniors-chair-massage", "seniors-join", "youth-movement",
     "founder-gin-soon", "founder-chen-xiao-ping", "founder-prague-group", "founder-yoga-training", "founder-graduation",
+    # Senior Wellness Day (stock allowed; see IMAGE_GUIDE.md)
+    "wellness-day-yoga", "wellness-day-acupuncture", "wellness-day-acupressure", "wellness-day-strength",
+    "wellness-day-crafts", "wellness-day-education", "wellness-day-marketplace", "wellness-day-market-baskets",
+    "wellness-day-market-painting", "wellness-day-market-sewing", "wellness-day-social",
 ]
 
 

@@ -12,7 +12,7 @@ from datetime import timedelta
 from flask import current_app, flash, redirect, request, session, url_for
 from flask_admin import Admin, AdminIndexView, expose
 from flask_admin.contrib.sqla import ModelView
-from flask_admin.contrib.sqla.filters import BaseSQLAFilter, FilterEqual
+from flask_admin.contrib.sqla.filters import BaseSQLAFilter, BooleanEqualFilter, FilterEqual
 from flask_admin.form import SecureForm
 from flask_admin.menu import MenuLink
 from flask_admin.theme import Bootstrap4Theme
@@ -119,7 +119,8 @@ class ProgramAdminView(SecureModelView):
 
 
 # --- Senior Wellness Day ----------------------------------------------------
-from .services.notifications import WELLNESS_ACTIVITY_LABELS, WELLNESS_PARTICIPATION_LABELS  # noqa: E402
+from .services.notifications import (WELLNESS_ACTIVITY_LABELS, WELLNESS_PARTICIPATION_LABELS,  # noqa: E402
+                                     WELLNESS_VENDOR_CATEGORY_LABELS)
 
 PARTNER_STATUS_CHOICES = [(s, s.title()) for s in m.WELLNESS_PARTNER_STATUSES]
 
@@ -145,21 +146,24 @@ class WellnessInterestAdminView(SecureModelView):
     list_template = "flask_admin_custom/wellness_interest_list.html"
     can_export = True
     column_list = ("name", "email", "phone", "neighborhood", "activities", "contact_method", "signing_up_for",
-                   "created_at")
-    column_searchable_list = ("name", "email", "phone")
+                   "wants_to_sell", "sell_items", "created_at")
+    column_labels = {"wants_to_sell": "Senior maker", "sell_items": "Would sell", "needs_table": "Needs a table"}
+    column_searchable_list = ("name", "email", "phone", "sell_items")
     column_filters = (
         FilterEqual(m.WellnessDayInterest.neighborhood, "Neighborhood",
                     options=[(h, h) for h in m.WELLNESS_NEIGHBORHOODS]),
         JsonListContainsFilter(m.WellnessDayInterest.activities, "Activity",
                                options=list(WELLNESS_ACTIVITY_LABELS.items())),
+        BooleanEqualFilter(m.WellnessDayInterest.wants_to_sell, "Senior makers"),
     )
     column_formatters = {"activities": lambda v, c, mdl, n: _labels(mdl.activities, WELLNESS_ACTIVITY_LABELS)}
     form_overrides = {"activities": SelectMultipleField, "neighborhood": SelectField,
-                      "contact_method": SelectField, "signing_up_for": SelectField}
+                      "contact_method": SelectField, "signing_up_for": SelectField, "needs_table": SelectField}
     form_args = {"activities": {"choices": list(WELLNESS_ACTIVITY_LABELS.items())},
                  "neighborhood": {"choices": [("", "—")] + [(h, h) for h in m.WELLNESS_NEIGHBORHOODS]},
                  "contact_method": {"choices": [("", "—")] + _choices(m.WELLNESS_CONTACT_METHODS)},
-                 "signing_up_for": {"choices": [("", "—")] + _choices(m.WELLNESS_SIGNUP_FOR)}}
+                 "signing_up_for": {"choices": [("", "—")] + _choices(m.WELLNESS_SIGNUP_FOR)},
+                 "needs_table": {"choices": [("", "—")] + _choices(m.WELLNESS_YES_NO)}}
     column_descriptions = {"name": "No age, birth date, or health information is collected — by design."}
 
     @expose("/")
@@ -184,42 +188,63 @@ class WellnessInterestAdminView(SecureModelView):
         model.neighborhood = model.neighborhood or None
         model.contact_method = model.contact_method or None
         model.signing_up_for = model.signing_up_for or None
+        model.needs_table = model.needs_table or None
         if not model.email and not model.phone:
             raise ValueError("Enter an email address or a phone number.")
+        if model.wants_to_sell and not (model.sell_items or "").strip():
+            raise ValueError("Senior makers need \"Would sell\" filled in.")
 
 
 class WellnessPartnerAdminView(SecureModelView):
     can_export = True
-    column_list = ("name", "organization", "participation_types", "status", "show_publicly", "email", "created_at")
-    column_searchable_list = ("name", "organization", "email")
+    column_list = ("name", "organization", "participation_types", "vendor_category", "status", "show_publicly",
+                   "email", "created_at")
+    column_labels = {"vendor_category": "Vendor category", "vendor_products": "Sells",
+                     "vendor_price_range": "Price range",
+                     "agrees_respectful": "Agreed: respectful, no high-pressure sales",
+                     "agrees_permits": "Agreed: own permits, licenses, sales tax",
+                     "agrees_restricted_products": "Agreed: insurance/Medicare/financial need approval",
+                     "agrees_not_confirmed": "Agreed: submitting doesn't confirm participation",
+                     "agrees_no_sales": "Agreed: no sales (old form)"}
+    column_searchable_list = ("name", "organization", "email", "vendor_products")
     column_filters = (
         FilterEqual(m.WellnessDayPartner.status, "Status", options=PARTNER_STATUS_CHOICES),
         JsonListContainsFilter(m.WellnessDayPartner.participation_types, "Participation type",
                                options=list(WELLNESS_PARTICIPATION_LABELS.items())),
+        FilterEqual(m.WellnessDayPartner.vendor_category, "Vendor category",
+                    options=list(WELLNESS_VENDOR_CATEGORY_LABELS.items())),
         "show_publicly",
     )
     column_formatters = {"participation_types": lambda v, c, mdl, n: _labels(mdl.participation_types,
-                                                                             WELLNESS_PARTICIPATION_LABELS)}
+                                                                             WELLNESS_PARTICIPATION_LABELS),
+                         "vendor_category": lambda v, c, mdl, n: WELLNESS_VENDOR_CATEGORY_LABELS.get(
+                             mdl.vendor_category, mdl.vendor_category or "")}
     column_formatters_export = {}
     form_overrides = {"participation_types": SelectMultipleField, "setup_needs": SelectMultipleField,
                       "availability": SelectMultipleField, "status": SelectField, "has_insurance": SelectField,
-                      "compensation": SelectField}
+                      "compensation": SelectField, "vendor_category": SelectField}
     form_args = {"participation_types": {"choices": list(WELLNESS_PARTICIPATION_LABELS.items())},
                  "setup_needs": {"choices": _choices(m.WELLNESS_SETUP_NEEDS)},
                  "availability": {"choices": _choices(m.WELLNESS_AVAILABILITY)},
                  "status": {"choices": PARTNER_STATUS_CHOICES},
                  "has_insurance": {"choices": [("", "—")] + _choices(m.WELLNESS_INSURANCE)},
-                 "compensation": {"choices": [("", "—")] + _choices(m.WELLNESS_COMPENSATION)}}
+                 "compensation": {"choices": [("", "—")] + _choices(m.WELLNESS_COMPENSATION)},
+                 "vendor_category": {"choices": [("", "—")] + list(WELLNESS_VENDOR_CATEGORY_LABELS.items())}}
     column_descriptions = {
         "show_publicly": "Listed in \"Who's joining us\" on the public page ONLY when status is Confirmed too "
                          "(organization or name + participation type only).",
-        "license_number": "Required for practitioners (Massachusetts license for massage/bodywork)."}
+        "license_number": "Required for any practitioner type (Massachusetts license for massage and acupuncture).",
+        "vendor_products": "Required for vendors and food vendors."}
 
     def on_model_change(self, form, model, is_created):
         model.has_insurance = model.has_insurance or None
         model.compensation = model.compensation or None
-        if "practitioner" in (model.participation_types or []) and not (model.license_type and model.license_number):
+        model.vendor_category = model.vendor_category or None
+        types = model.participation_types or []
+        if any(t in m.WELLNESS_PRACTITIONER_TYPES for t in types) and not (model.license_type and model.license_number):
             raise ValueError("Practitioners need a license type and number.")
+        if any(t in m.WELLNESS_VENDOR_TYPES for t in types) and not (model.vendor_products or "").strip():
+            raise ValueError("Vendors need \"Sells\" filled in.")
 
 
 class WellnessLineupAdminView(WellnessPartnerAdminView):

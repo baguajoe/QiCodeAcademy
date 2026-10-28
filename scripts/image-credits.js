@@ -19,7 +19,8 @@ ${rows.join("\n")}
 **Types:** *founder-owned* = photos owned by Joseph Gallop, used with his permission. The founder portrait is an AI-enhanced version of his own real photo — an approved exception to the no-AI-photos rule (no other AI images are allowed).
 *stock* = free-license stock photos. Stock photos show models, not Qi Code Academy participants, and may only be
 used in these slots: hero-home, youth-banner, seniors-banner, intergenerational-banner, research-banner, donate,
-home-card-youth, home-card-seniors, home-card-research.
+home-card-youth, home-card-seniors, home-card-research, and the Senior Wellness Day activity and marketplace
+slots (wellness-day-*).
 
 Nappy's license (CC0): https://nappy.co/license — free for commercial and personal use; credit appreciated but not required;
 don't resell the photos unmodified or use them to degrade their subjects.

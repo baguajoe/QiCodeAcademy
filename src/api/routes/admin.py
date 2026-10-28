@@ -6,7 +6,7 @@ from sqlalchemy import Boolean, Integer, String, cast, func, or_, select
 
 from ..extensions import db
 from ..models import (REGISTRATION_STATUSES, WELLNESS_ACTIVITIES, WELLNESS_NEIGHBORHOODS, WELLNESS_PARTICIPATION,
-                      WELLNESS_PARTNER_STATUSES, ContactMessage, CurriculumModule, Donation, Event, GalleryPhoto,
+                      WELLNESS_PARTNER_STATUSES, WELLNESS_VENDOR_CATEGORIES, ContactMessage, CurriculumModule, Donation, Event, GalleryPhoto,
                       ImpactStat, NewsPost, Partner, Program, Registration, ResearchInterest,
                       ResearchPartnerInquiry, ResearchReference, SiteImage, SiteSetting,
                       TeamMember, User, Volunteer, WellnessDayInterest, WellnessDayPartner, utcnow)
@@ -245,10 +245,12 @@ for _r in [
     Resource("research-interest", ResearchInterest, ResearchInterestSchema,
              search=("name", "email_or_phone", "neighborhood")),
     Resource("wellness-day-interest", WellnessDayInterest, WellnessDayInterestSchema,
-             search=("name", "email", "phone"), filters=("neighborhood", "contact_method", "signing_up_for"),
+             search=("name", "email", "phone", "sell_items"),
+             filters=("neighborhood", "contact_method", "signing_up_for", "wants_to_sell"),
              list_filters={"activity": ("activities", WELLNESS_ACTIVITIES)}),
     Resource("wellness-day-partners", WellnessDayPartner, WellnessDayPartnerSchema,
-             search=("name", "organization", "email"), filters=("status", "show_publicly", "compensation"),
+             search=("name", "organization", "email", "vendor_products"),
+             filters=("status", "show_publicly", "compensation", "vendor_category"),
              list_filters={"participation_type": ("participation_types", WELLNESS_PARTICIPATION)}),
 ]:
     register(_r)
@@ -302,15 +304,18 @@ def _wellness_interest_query():
         q = q.where(WellnessDayInterest.neighborhood.in_(request.args["neighborhood"].split(",")))
     if request.args.get("activity"):
         q = q.where(json_list_contains(WellnessDayInterest.activities, request.args["activity"], WELLNESS_ACTIVITIES))
+    if request.args.get("wants_to_sell"):
+        q = q.where(WellnessDayInterest.wants_to_sell.is_(parse_bool(request.args["wants_to_sell"])))
     return q
 
 
 @bp.get("/wellness-day-interest/export.csv")
 def export_wellness_interest():
     header = ["id", "created_at_utc", "name", "email", "phone", "neighborhood", "activities",
-              "contact_method", "signing_up_for", "consent_to_contact"]
+              "contact_method", "signing_up_for", "consent_to_contact", "wants_to_sell", "sell_items", "needs_table"]
     rows = ([r.id, r.created_at.isoformat(timespec="seconds"), r.name, r.email, r.phone, r.neighborhood,
-             r.activities or [], r.contact_method, r.signing_up_for, r.consent_to_contact]
+             r.activities or [], r.contact_method, r.signing_up_for, r.consent_to_contact, r.wants_to_sell,
+             r.sell_items, r.needs_table]
             for r in db.session.scalars(_wellness_interest_query()))
     return csv_response("wellness-day-interest.csv", header, rows)
 
@@ -323,14 +328,20 @@ def export_wellness_partners():
     if request.args.get("participation_type"):
         q = q.where(json_list_contains(WellnessDayPartner.participation_types,
                                        request.args["participation_type"], WELLNESS_PARTICIPATION))
+    if request.args.get("vendor_category"):
+        q = q.where(WellnessDayPartner.vendor_category.in_(request.args["vendor_category"].split(",")))
     header = ["id", "created_at_utc", "status", "show_publicly", "name", "organization", "email", "phone",
               "website_or_social", "participation_types", "offer_description", "license_type", "license_number",
-              "has_insurance", "compensation", "typical_rate", "setup_needs", "availability", "referral_source",
-              "agrees_no_sales", "agrees_not_confirmed", "admin_notes"]
+              "has_insurance", "compensation", "typical_rate", "vendor_category", "vendor_products",
+              "vendor_price_range", "setup_needs", "availability", "referral_source", "agrees_not_confirmed",
+              "agrees_respectful", "agrees_permits", "agrees_restricted_products", "agrees_no_sales_old_form",
+              "admin_notes"]
     rows = ([p.id, p.created_at.isoformat(timespec="seconds"), p.status, p.show_publicly, p.name, p.organization,
              p.email, p.phone, p.website_or_social, p.participation_types or [], p.offer_description, p.license_type,
-             p.license_number, p.has_insurance, p.compensation, p.typical_rate, p.setup_needs or [],
-             p.availability or [], p.referral_source, p.agrees_no_sales, p.agrees_not_confirmed, p.admin_notes]
+             p.license_number, p.has_insurance, p.compensation, p.typical_rate, p.vendor_category, p.vendor_products,
+             p.vendor_price_range, p.setup_needs or [], p.availability or [], p.referral_source,
+             p.agrees_not_confirmed, p.agrees_respectful, p.agrees_permits, p.agrees_restricted_products,
+             p.agrees_no_sales, p.admin_notes]
             for p in db.session.scalars(q))
     return csv_response("wellness-day-partners.csv", header, rows)
 
@@ -359,14 +370,16 @@ def wellness_day_summary():
     confirmed = sorted((p for p in partners if p.status == "confirmed"), key=lambda p: p.display_name.lower())
     return jsonify({
         "interest_total": len(interest),
+        "senior_makers_total": sum(bool(r.wants_to_sell) for r in interest),
         "interest_by_activity": by_activity,
         "interest_by_neighborhood": {**by_hood, "not_given": not_given},
         "partners_total": len(partners),
         "partners_by_status": {s: sum(p.status == s for p in partners) for s in WELLNESS_PARTNER_STATUSES},
         "partners_by_type": by_type,
+        "vendors_by_category": {c: sum(p.vendor_category == c for p in partners) for c in WELLNESS_VENDOR_CATEGORIES},
         "confirmed_lineup": WellnessDayPartnerSchema(
             only=("id", "name", "organization", "display_name", "email", "phone", "participation_types",
-                  "show_publicly", "license_type", "license_number", "has_insurance", "setup_needs",
+                  "show_publicly", "license_type", "license_number", "has_insurance", "vendor_category", "setup_needs",
                   "availability")).dump(confirmed, many=True),
     })
 

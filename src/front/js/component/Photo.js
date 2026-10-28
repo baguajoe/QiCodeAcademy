@@ -63,7 +63,7 @@ export function Photo({ src, alt = "", sizes = "100vw", priority = false, placeh
 }
 
 // A named site photo slot (see siteImages.js / IMAGE_GUIDE.md).
-export function SiteImage({ slot, sizes, priority, ratio, className, alt }) {
+export function SiteImage({ slot, sizes, priority, ratio, className, alt, position }) {
   const { store } = useStore();
   const r = resolveSlot(slot, store.siteImages);
   return (
@@ -74,7 +74,7 @@ export function SiteImage({ slot, sizes, priority, ratio, className, alt }) {
       priority={priority}
       ratio={ratio === undefined ? r.meta.ratio : ratio}
       className={className}
-      position={r.meta.position}
+      position={position || r.meta.position}
       placeholder={{ division: r.meta.division, subject: r.meta.subject, size: r.meta.size }}
     />
   );
