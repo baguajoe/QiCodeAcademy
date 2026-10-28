@@ -66,25 +66,46 @@ function Divisions() {
   );
 }
 
-// Senior Wellness Day (spring 2027) card. Badge text is the wellness_day_status setting.
+// Senior Wellness Day band: text left, photo right (alternates with the Baguazhang band above,
+// whose photo is on the left); on phones the photo comes first. Uses the Wellness Day page's hero
+// photo slot, so an admin upload (with its alt text and credit) carries over. Badge = wellness_day_status;
+// the date line appears only once wellness_day_date is set.
+const WD_CHIPS = [
+  { key: "wellnessDayChipMovement", icon: "M12 3a9 9 0 1 0 0 18 4.5 4.5 0 0 1 0-9 4.5 4.5 0 0 0 0-9Zm0 4.5a1.2 1.2 0 1 1 0 2.4 1.2 1.2 0 0 1 0-2.4Zm0 9a1.2 1.2 0 1 1 0 2.4 1.2 1.2 0 0 1 0-2.4Z" },
+  { key: "wellnessDayChipCare", icon: "M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10Z" },
+  { key: "wellnessDayChipMarket", icon: "M4 9h16l-1.2-4H5.2L4 9Zm0 0v1.5a2.7 2.7 0 0 0 5.3 0 2.7 2.7 0 0 0 5.4 0 2.7 2.7 0 0 0 5.3 0V9M5.5 13v7h13v-7M10 20v-4h4v4" },
+];
+
 function WellnessDayCard() {
   const { t } = useTranslation();
+  const { actions } = useStore();
   const status = useSettingText()("wellness_day_status", "wellnessDay.statusDefault");
+  const date = actions.setting("wellness_day_date").trim();
   return (
-    <section className="section" aria-labelledby="wd-home-title">
-      <div className="container">
-        <article className="wd-band theme-senior">
-          <div>
-            <span className="badge badge-solid">{status}</span>
-            <h2 id="wd-home-title">{t("home.wellnessDayTitle")}</h2>
-            <p style={{ margin: 0 }}>{t("home.wellnessDayText")}</p>
-          </div>
-          <div>
-            <Link className="btn" to="/programs/seniors/wellness-day">
-              {t("home.wellnessDayCta")}<span className="sr-only">: {t("home.wellnessDayTitle")}</span>
-            </Link>
-          </div>
-        </article>
+    <section className="section wd-home theme-senior" aria-labelledby="wd-home-title">
+      <div className="container wd-home-inner">
+        <div className="wd-home-body">
+          <span className="badge badge-solid">{status}</span>
+          <h2 id="wd-home-title">{t("home.wellnessDayTitle")}</h2>
+          {date && <p className="wd-home-date">{date}</p>}
+          <p>{t("home.wellnessDayText")}</p>
+          <ul className="wd-home-chips">
+            {WD_CHIPS.map((c) => (
+              <li key={c.key}>
+                <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false">
+                  <path d={c.icon} fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+                {t(`home.${c.key}`)}
+              </li>
+            ))}
+          </ul>
+          <Link className="btn btn-lg" to="/programs/seniors/wellness-day">
+            {t("home.wellnessDayCta")}<span className="sr-only">: {t("home.wellnessDayTitle")}</span>
+          </Link>
+        </div>
+        <div className="wd-home-media">
+          <SiteImage slot="seniors-banner" ratio="4 / 3" sizes="(min-width: 56rem) 45vw, 100vw" position="center 45%" />
+        </div>
       </div>
     </section>
   );

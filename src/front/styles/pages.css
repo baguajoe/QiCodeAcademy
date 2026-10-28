@@ -214,10 +214,30 @@ section[id], div[id] { scroll-margin-top: 7rem; }
 
 /* --- Senior Wellness Day ---------------------------------------------------- */
 /* Home + Programs teaser band and callout */
-.wd-band { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--space-5); align-items: center; border-radius: var(--radius); background: var(--accent-soft); padding: var(--space-6); border-left: 8px solid var(--accent); }
-@media (min-width: 48rem) { .wd-band { grid-template-columns: 2fr 1fr; } }
-.wd-band h2 { font-size: 1.4rem; }
-.wd-band .badge { margin-bottom: var(--space-2); }
+/* Home: Senior Wellness Day band. Mirrors the Baguazhang band (two columns, framed photo) with the
+   photo on the right; warm sage-to-cream background. Ink on both ends of the gradient >= 14:1. */
+.wd-home { background: linear-gradient(135deg, #e6efe4 0%, #f2f1e3 55%, var(--senior-sand) 100%); }
+.wd-home-inner { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--space-6); align-items: center; }
+.wd-home-media { order: -1; border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow-lg);
+  outline: 3px solid rgb(255 255 255 / 0.85); outline-offset: 6px; }
+.wd-home-media .photo { border-radius: 0; }
+@media (min-width: 56rem) {
+  .wd-home-inner { grid-template-columns: 1fr 1fr; gap: var(--space-7); }
+  .wd-home-media { order: 0; }
+}
+.wd-home-body .badge { margin-bottom: var(--space-3); }
+.wd-home-body h2 { font-size: clamp(1.8rem, 1.2rem + 2vw, 2.6rem); margin: var(--space-2) 0 var(--space-4); }
+.wd-home-body p { font-size: 1.15rem; max-width: 34rem; margin: 0 0 var(--space-4); }
+.wd-home-date { font-weight: 700; color: var(--senior-strong); }
+.wd-home-chips { list-style: none; display: flex; flex-wrap: wrap; gap: var(--space-2) var(--space-3); padding: 0; margin: 0 0 var(--space-5); }
+.wd-home-chips li { display: inline-flex; align-items: center; gap: var(--space-2); padding: 0.4rem 0.9rem 0.4rem 0.7rem;
+  border-radius: 999px; background: rgb(255 255 255 / 0.8); border: 1px solid rgb(47 107 85 / 0.25); color: var(--senior-strong);
+  font-weight: 600; font-size: 0.95rem; }
+.wd-home-chips svg { flex: none; color: var(--senior); }
+:root[data-contrast="high"] .wd-home { background: #fff; }
+:root[data-contrast="high"] .wd-home-chips li { background: #fff; border: 2px solid #000; color: #000; }
+:root[data-contrast="high"] .wd-home-chips svg { color: #000; }
+:root[data-contrast="high"] .wd-home-media { outline-color: #000; box-shadow: none; }
 .wd-callout { display: flex; flex-wrap: wrap; gap: var(--space-3) var(--space-5); align-items: center; justify-content: space-between; background: var(--accent-soft); border: 2px solid var(--accent); border-radius: var(--radius); padding: var(--space-4) var(--space-5); margin-top: var(--space-5); }
 .wd-callout h3 { margin: 0 0 var(--space-1); font-size: 1.25rem; }
 .wd-callout p { margin: 0; }
@@ -382,7 +402,7 @@ section[id], div[id] { scroll-margin-top: 7rem; }
 }
 
 /* High-contrast mode: pure black on white, no photo tints behind text */
-:root[data-contrast="high"] .wd-band, :root[data-contrast="high"] .wd-callout { background: #fff; border: 2px solid #000; }
+:root[data-contrast="high"] .wd-callout { background: #fff; border: 2px solid #000; }
 :root[data-contrast="high"] .wellness-day {
   --wd-cream: #fff; --wd-jade: #000; --wd-jade-deep: #000; --wd-clay: #000; --wd-blue: #000; --wd-gold-ink: #000;
   --wd-movement: #fff; --wd-care: #fff; --wd-creativity: #fff; --wd-community: #fff;

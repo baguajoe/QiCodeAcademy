@@ -169,7 +169,10 @@
     "historyLine": "TODO: Building on more than 18 years of community teaching in Boston.",
     "wellnessDayTitle": "TODO: Senior Wellness Day",
     "wellnessDayText": "TODO: A free day of movement, care, creativity, and community for older adults in Boston. Join the interest list, or find out how to take part as a practitioner, vendor, or volunteer.",
-    "wellnessDayCta": "TODO: Learn more and join the list"
+    "wellnessDayCta": "TODO: Learn more and join the list",
+    "wellnessDayChipMovement": "TODO: Tai Chi & Bagua",
+    "wellnessDayChipCare": "TODO: Acupuncture & massage",
+    "wellnessDayChipMarket": "TODO: Vendors & food"
   },
   "about": {
     "title": "TODO: About Qi Code Academy",

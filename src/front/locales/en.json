@@ -169,7 +169,10 @@
     "historyLine": "Building on more than 18 years of community teaching in Boston.",
     "wellnessDayTitle": "Senior Wellness Day",
     "wellnessDayText": "A free day of movement, care, creativity, and community for older adults in Boston. Join the interest list, or find out how to take part as a practitioner, vendor, or volunteer.",
-    "wellnessDayCta": "Learn more and join the list"
+    "wellnessDayCta": "Learn more and join the list",
+    "wellnessDayChipMovement": "Tai Chi & Bagua",
+    "wellnessDayChipCare": "Acupuncture & massage",
+    "wellnessDayChipMarket": "Vendors & food"
   },
   "about": {
     "title": "About Qi Code Academy",
