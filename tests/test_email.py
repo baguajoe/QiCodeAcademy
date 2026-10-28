@@ -11,7 +11,7 @@ def test_youth_registration_emails_guardian_and_admin(client, outbox, make_progr
     p = make_program(title="Robotics", schedule="Saturdays 10-12")
     client.post("/api/registrations", json={**YOUTH, "program_id": p.id})
     assert len(outbox) == 2
-    family, admin = outbox
+    admin, family = outbox  # admin notification is queued first
     assert family.to == ["pat@example.org"]
     assert "Registration received: Robotics" in family.subject
     assert "Sam Lee" in family.text and "Saturdays 10-12" in family.text
@@ -22,7 +22,7 @@ def test_youth_registration_emails_guardian_and_admin(client, outbox, make_progr
 def test_waitlist_email(client, outbox, make_program):
     p = make_program(capacity=0)
     client.post("/api/registrations", json={**YOUTH, "program_id": p.id})
-    assert outbox[0].subject.startswith("You're on the waitlist")
+    assert outbox[1].subject.startswith("You're on the waitlist")
 
 
 def test_senior_without_email_only_notifies_admin(client, outbox, make_program):
@@ -41,8 +41,10 @@ def test_honeypot_sends_nothing(client, outbox):
 def test_contact_escapes_html_and_sets_reply_to(client, outbox):
     client.post("/api/contact", json={"name": "<b>Eve</b>", "email": "eve@example.org",
                                       "subject": "Hi\r\nBcc: victim@x.org", "message": "<script>x</script>"})
-    ack, admin = outbox
+    admin, ack = outbox
     assert ack.to == ["eve@example.org"]
+    assert admin.to == ["admin-notify@example.org"]
+    assert admin.subject == "[Qi Code Academy] Contact: <b>Eve</b>"
     assert "<script>" not in admin.html and "&lt;script&gt;" in admin.html
     assert "\n" not in admin.subject and "\r" not in admin.subject
     assert admin.reply_to == "eve@example.org"
@@ -50,10 +52,11 @@ def test_contact_escapes_html_and_sets_reply_to(client, outbox):
 
 def test_volunteer_and_research_emails(client, outbox):
     client.post("/api/volunteers", json={"name": "V", "email": "v@example.org", "roles": ["senior_tech_tutor"]})
-    assert outbox[0].to == ["v@example.org"] and "Tech tutor for seniors" in outbox[0].text
+    assert outbox[0].to == ["admin-notify@example.org"] and outbox[0].reply_to == "v@example.org"
+    assert outbox[1].to == ["v@example.org"] and "Tech tutor for seniors" in outbox[1].text
     outbox.clear()
     client.post("/api/research/inquiries", json={"name": "R", "institution": "U", "email": "r@u.edu"})
-    assert [m.to for m in outbox] == [["r@u.edu"], ["admin-notify@example.org"]]
+    assert [m.to for m in outbox] == [["admin-notify@example.org"], ["r@u.edu"]]
     outbox.clear()
     client.post("/api/research/interest", json={"name": "Q", "email_or_phone": "617-555-0100",
                                                 "consent_to_contact": True})
@@ -166,6 +169,7 @@ def test_failed_email_still_saves_every_form(client, db, monkeypatch, make_progr
     def boom(msg):
         raise OSError("connection refused")
     monkeypatch.setattr(email_service, "_deliver", boom)
+    monkeypatch.setattr(email_service, "RETRY_DELAYS", (0, 0))
     assert client.post("/api/contact", json={"name": "a", "email": "a@x.org", "message": "m"}).status_code == 201
     assert client.post("/api/volunteers", json={"name": "V", "email": "v@x.org", "roles": ["event_help"]}).status_code == 201
     assert client.post("/api/wellness-day/interest", json={"name": "S", "email": "s@x.org", "consent_to_contact": True,
@@ -214,3 +218,79 @@ def test_admin_send_test_email_shows_exact_error(app, client, auth_headers):
 
 def test_admin_send_test_email_requires_admin(client):
     assert client.post("/api/admin/email/test", json={}).status_code == 401
+
+
+def test_every_form_notifies_admin_first_with_reply_to(client, outbox, make_program):
+    """Each public form queues the ADMIN_NOTIFY_EMAIL notification before the sender's acknowledgment."""
+    forms = [
+        ("/api/contact", {"name": "Ann", "email": "ann@example.org", "message": "Hello"}, "Contact: Ann"),
+        ("/api/contact", {"type": "partner", "name": "Pat", "email": "pat@example.org", "message": "m"},
+         "Partner / sponsor inquiry: Pat"),
+        ("/api/contact", {"type": "guest_instructor", "name": "Gil", "email": "gil@example.org", "message": "m"},
+         "Guest instructor inquiry: Gil"),
+        ("/api/volunteers", {"name": "Vic", "email": "vic@example.org", "roles": ["event_help"]}, "New volunteer: Vic"),
+        ("/api/research/inquiries", {"name": "Rae", "institution": "U", "email": "rae@u.edu"},
+         "Research partnership inquiry: U"),
+        ("/api/research/interest", {"name": "Ria", "email_or_phone": "ria@example.org", "consent_to_contact": True},
+         "New research interest sign-up"),
+        ("/api/wellness-day/interest", {"name": "Sue", "email": "sue@example.org", "consent_to_contact": True,
+                                        "activities": ["acupuncture"]}, "Senior Wellness Day: new interest sign-up"),
+    ]
+    for path, payload, subject in forms:
+        outbox.clear()
+        assert client.post(path, json=payload).status_code == 201, path
+        admin = outbox[0]
+        assert admin.to == ["admin-notify@example.org"], path
+        assert admin.subject == f"[Qi Code Academy] {subject}"
+        assert admin.reply_to == (payload.get("email") or payload.get("email_or_phone")), path
+
+
+def test_temporary_smtp_error_is_retried(app, monkeypatch, caplog):
+    import smtplib
+    monkeypatch.setattr(email_service, "RETRY_DELAYS", (0, 0))
+    calls = []
+
+    def flaky(msg):
+        calls.append(msg)
+        if len(calls) == 1:
+            raise smtplib.SMTPResponseException(421, b"4.7.0 Too many concurrent connections")
+        return True
+    monkeypatch.setattr(email_service, "_deliver", flaky)
+    assert email_service.send_email("a@example.org", "Hi", "text") is True
+    assert len(calls) == 2 and "retrying" in caplog.text
+
+
+def test_auth_error_is_not_retried(app, monkeypatch):
+    import smtplib
+    calls = []
+
+    def denied(msg):
+        calls.append(msg)
+        raise smtplib.SMTPAuthenticationError(535, b"5.7.8 Authentication failed")
+    monkeypatch.setattr(email_service, "_deliver", denied)
+    assert email_service.send_email("a@example.org", "Hi", "text") is False
+    assert len(calls) == 1
+
+
+def test_async_queue_sends_one_at_a_time_in_order(app, monkeypatch):
+    import threading
+    sent, active, peak = [], [0], [0]
+    lock = threading.Lock()
+
+    def slow(msg):
+        with lock:
+            active[0] += 1
+            peak[0] = max(peak[0], active[0])
+        import time
+        time.sleep(0.05)
+        with lock:
+            active[0] -= 1
+        sent.append(msg.subject)
+        return True
+    monkeypatch.setattr(email_service, "_deliver", slow)
+    app.config["EMAIL_ASYNC"] = True
+    monkeypatch.setattr(app, "testing", False)
+    for i in range(3):
+        email_service.send_email("a@example.org", f"m{i}", "text")
+    email_service._queue.join()
+    assert sent == ["m0", "m1", "m2"] and peak[0] == 1

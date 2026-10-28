@@ -1,16 +1,24 @@
 """Email delivery: SendGrid -> SMTP -> console fallback.
 
 send_email() never raises: a failed email must not break a form submission.
-In production, sending happens on a background thread so requests stay fast
-(EMAIL_ASYNC); tests and the CLI send inline. send_test_email() sends inline
-and reports the real error, for the admin "Send test email" button.
+In production, sending happens on one background worker thread per process so
+requests stay fast (EMAIL_ASYNC); tests and the CLI send inline. The worker sends
+one email at a time, in the order queued: mailbox hosts like Network Solutions
+can refuse several simultaneous logins to the same mailbox, which used to drop
+the second email of a form (e.g. the admin notification after the sender's
+acknowledgment). Temporary failures (4xx replies, dropped connections) are retried.
+send_test_email() sends inline and reports the real error, for the admin
+"Send test email" button.
 
 Failures are logged with the provider's actual error message. The SMTP
 password is never logged or returned.
 """
+import os
+import queue
 import smtplib
 import ssl
 import threading
+import time
 from dataclasses import dataclass, field
 from email.message import EmailMessage as MIMEMessage
 from email.utils import formataddr, formatdate, make_msgid, parseaddr
@@ -46,9 +54,36 @@ def send_email(to, subject, text, html=None, reply_to=None, tags=None):
         return False
     app = current_app._get_current_object()
     if app.config.get("EMAIL_ASYNC", False) and not app.testing:
-        threading.Thread(target=_deliver_in_context, args=(app, msg), daemon=True).start()
+        _enqueue(app, msg)
         return True
     return _safe_deliver(app, msg)
+
+
+# One worker per process, started lazily so it exists in each gunicorn worker after fork.
+_queue = queue.Queue()
+_worker = None
+_worker_pid = None
+_worker_lock = threading.Lock()
+
+
+def _enqueue(app, msg):
+    global _worker, _worker_pid
+    with _worker_lock:
+        if _worker is None or not _worker.is_alive() or _worker_pid != os.getpid():
+            _worker = threading.Thread(target=_work, name="email-sender", daemon=True)
+            _worker_pid = os.getpid()
+            _worker.start()
+    _queue.put((app, msg))
+
+
+def _work():
+    while True:
+        app, msg = _queue.get()
+        try:
+            with app.app_context():
+                _safe_deliver(app, msg)
+        finally:
+            _queue.task_done()
 
 
 def send_test_email(to, subject, text):
@@ -102,17 +137,32 @@ def _log_failure(app, msg, exc):
                      cfg.get("SMTP_USERNAME") or "-", describe_error(exc), msg.subject, msg.to)
 
 
-def _deliver_in_context(app, msg):
-    with app.app_context():
-        _safe_deliver(app, msg)
+RETRY_DELAYS = (3, 10)  # seconds before the 2nd and 3rd attempts
+
+
+def _is_temporary(exc):
+    if isinstance(exc, smtplib.SMTPResponseException):
+        return 400 <= exc.smtp_code < 500
+    if isinstance(exc, smtplib.SMTPRecipientsRefused):
+        return all(400 <= code < 500 for code, _ in exc.recipients.values())
+    return isinstance(exc, (smtplib.SMTPServerDisconnected, smtplib.SMTPConnectError, OSError))
 
 
 def _safe_deliver(app, msg):
-    try:
-        return bool(_deliver(msg))
-    except Exception as exc:  # noqa: BLE001 — log and move on
-        _log_failure(app, msg, exc)
-        return False
+    for attempt in range(len(RETRY_DELAYS) + 1):
+        try:
+            ok = bool(_deliver(msg))
+        except Exception as exc:  # noqa: BLE001 — log and move on
+            if attempt < len(RETRY_DELAYS) and _is_temporary(exc):
+                app.logger.warning("Email attempt %d failed (%s); retrying: %r -> %s",
+                                   attempt + 1, describe_error(exc), msg.subject, msg.to)
+                time.sleep(RETRY_DELAYS[attempt])
+                continue
+            _log_failure(app, msg, exc)
+            return False
+        if ok and provider_name(app.config) != "console":
+            app.logger.info("Email sent via %s: %r -> %s", provider_name(app.config), msg.subject, msg.to)
+        return ok
 
 
 def _deliver(msg):

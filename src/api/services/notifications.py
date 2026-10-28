@@ -81,6 +81,8 @@ def _form_notification(fn):
 
 
 def _notify_admin(subject, lines, reply_to=None):
+    """Every form handler calls this FIRST (before the sender's acknowledgment), so the
+    notification to ADMIN_NOTIFY_EMAIL is queued ahead of anything else."""
     to = _admin_recipients()
     if not to:
         current_app.logger.warning("ADMIN_NOTIFY_EMAIL is not set; admin notification skipped: %s", subject)
@@ -109,6 +111,11 @@ def registration_received(reg):
     program = reg.program
     to = reg.contact_email
     who = reg.guardian_name if reg.type == "youth" else reg.participant_first_name
+    _notify_admin(f"New {reg.type} registration ({reg.status}): {program.title}", [
+        ("Program", program.title), ("Type", reg.type), ("Status", reg.status),
+        ("Participant", reg.participant_name),
+        ("Seats left", "unlimited" if program.capacity is None else program.seats_left),
+    ], reply_to=to)
     if reg.status == "waitlist":
         subject = f"You're on the waitlist: {program.title}"
         body = [f"Thank you for registering {reg.participant_name} for {program.title}. "
@@ -124,12 +131,6 @@ def registration_received(reg):
         text, html = _render(f"Hi {who},", body,
                              [("Participant", reg.participant_name)] + _program_details(program))
         send_email(to, subject, text, html, reply_to=current_app.config.get("MAIL_REPLY_TO"))
-
-    _notify_admin(f"New {reg.type} registration ({reg.status}): {program.title}", [
-        ("Program", program.title), ("Type", reg.type), ("Status", reg.status),
-        ("Participant", reg.participant_name),
-        ("Seats left", "unlimited" if program.capacity is None else program.seats_left),
-    ], reply_to=to)
 
 
 def registration_confirmed(reg):
@@ -152,51 +153,54 @@ def registration_confirmed(reg):
 @_form_notification
 def volunteer_received(vol):
     roles = ", ".join(ROLE_LABELS.get(r, r) for r in vol.roles or [])
+    _notify_admin(f"New volunteer: {vol.name}", [
+        ("Name", vol.name), ("Email", vol.email), ("Phone", vol.phone), ("Roles", roles),
+        ("Availability", vol.availability), ("Message", vol.message)], reply_to=vol.email)
     text, html = _render(
         f"Hi {vol.name},",
         [f"Thank you for offering to volunteer with {_org()}! We've received your information "
          "and a member of our team will reach out about next steps."],
         [("Roles", roles), ("Availability", vol.availability)])
     send_email(vol.email, f"Thanks for volunteering with {_org()}", text, html)
-    _notify_admin(f"New volunteer: {vol.name}", [
-        ("Name", vol.name), ("Email", vol.email), ("Phone", vol.phone), ("Roles", roles),
-        ("Availability", vol.availability), ("Message", vol.message)], reply_to=vol.email)
 
 
-CONTACT_SUBJECTS = {"general": "Contact message", "guest_instructor": "Guest instructor inquiry",
+CONTACT_SUBJECTS = {"general": "Contact", "guest_instructor": "Guest instructor inquiry",
                     "partner": "Partner / sponsor inquiry"}
 
 
 @_form_notification
 def contact_received(msg):
-    kind = CONTACT_SUBJECTS.get(msg.type, "Contact message")
+    kind = CONTACT_SUBJECTS.get(msg.type, "Contact")
+    _notify_admin(f"{kind}: {msg.name}", [
+        ("Type", kind), ("Name", msg.name), ("Email", msg.email),
+        ("Organization", msg.organization), ("Subject", msg.subject), ("Message", msg.message)],
+        reply_to=msg.email)
     text, html = _render(
         f"Hi {msg.name},",
         [f"Thanks for contacting {_org()}. We've received your message and will get back to you soon."],
         [("Subject", msg.subject), ("Your message", msg.message)])
     send_email(msg.email, f"We received your message — {_org()}", text, html)
-    _notify_admin(f"{kind}: {msg.subject or msg.name}", [
-        ("Type", kind), ("Name", msg.name), ("Email", msg.email),
-        ("Organization", msg.organization), ("Subject", msg.subject), ("Message", msg.message)],
-        reply_to=msg.email)
 
 
 @_form_notification
 def research_inquiry_received(inq):
+    _notify_admin(f"Research partnership inquiry: {inq.institution}", [
+        ("Name", inq.name), ("Institution", inq.institution), ("Role", inq.role),
+        ("Email", inq.email), ("Area of interest", inq.area_of_interest),
+        ("Message", inq.message)], reply_to=inq.email)
     text, html = _render(
         f"Hi {inq.name},",
         [f"Thank you for your interest in research partnership with {_org()}. "
          "We'll review your note and follow up by email."],
         [("Institution", inq.institution), ("Area of interest", inq.area_of_interest)])
     send_email(inq.email, f"Research partnership inquiry received — {_org()}", text, html)
-    _notify_admin(f"Research partnership inquiry: {inq.institution}", [
-        ("Name", inq.name), ("Institution", inq.institution), ("Role", inq.role),
-        ("Email", inq.email), ("Area of interest", inq.area_of_interest),
-        ("Message", inq.message)], reply_to=inq.email)
 
 
 @_form_notification
 def research_interest_received(ri):
+    _notify_admin("New research interest sign-up", [
+        ("Name", ri.name), ("Neighborhood", ri.neighborhood)],
+        reply_to=ri.email_or_phone if "@" in ri.email_or_phone else None)
     if "@" in ri.email_or_phone:
         text, html = _render(
             f"Hi {ri.name},",
@@ -205,9 +209,6 @@ def research_interest_received(ri):
              "opportunity becomes available. You can ask us to remove your information at "
              "any time by replying to this email."])
         send_email(ri.email_or_phone, f"Thanks for your interest — {_org()}", text, html)
-    _notify_admin("New research interest sign-up", [
-        ("Name", ri.name), ("Neighborhood", ri.neighborhood)],
-        reply_to=ri.email_or_phone if "@" in ri.email_or_phone else None)
 
 
 # ---------------------------------------------------------------------------
@@ -237,6 +238,14 @@ def _labels(values, mapping):
 @_form_notification
 def wellness_interest_received(row):
     activities = _labels(row.activities, WELLNESS_ACTIVITY_LABELS)
+    # Like research interest: no contact details in the body (they're in the admin panel); Reply-To reaches them.
+    _notify_admin("Senior Wellness Day: new interest sign-up", [
+        ("Name", row.name), ("Neighborhood", row.neighborhood), ("Activities", activities),
+        ("Signing up for", "A family member or friend" if row.signing_up_for == "someone_else" else
+         "Themselves" if row.signing_up_for == "myself" else None),
+        ("Preferred contact", CONTACT_METHOD_LABELS.get(row.contact_method)),
+        ("Senior maker (wants to sell)", f"{row.sell_items} (table: {row.needs_table or 'not given'})"
+         if row.wants_to_sell else None)], reply_to=row.email)
     if row.email:
         text, html = _render(
             f"Hi {row.name},",
@@ -248,27 +257,11 @@ def wellness_interest_received(row):
          ("Senior Makers Market", f"You'd like to sell: {row.sell_items}" if row.wants_to_sell else None)])
         send_email(row.email, f"You're on the Senior Wellness Day interest list — {_org()}", text, html,
                    reply_to=current_app.config.get("MAIL_REPLY_TO"))
-    # Like research interest: no contact details in the body (they're in the admin panel); Reply-To reaches them.
-    _notify_admin("Senior Wellness Day: new interest sign-up", [
-        ("Name", row.name), ("Neighborhood", row.neighborhood), ("Activities", activities),
-        ("Signing up for", "A family member or friend" if row.signing_up_for == "someone_else" else
-         "Themselves" if row.signing_up_for == "myself" else None),
-        ("Preferred contact", CONTACT_METHOD_LABELS.get(row.contact_method)),
-        ("Senior maker (wants to sell)", f"{row.sell_items} (table: {row.needs_table or 'not given'})"
-         if row.wants_to_sell else None)], reply_to=row.email)
 
 
 @_form_notification
 def wellness_partner_received(row):
     types = _labels(row.participation_types, WELLNESS_PARTICIPATION_LABELS)
-    text, html = _render(
-        f"Hi {row.name},",
-        ["Thank you for offering to be part of Senior Wellness Day! We'll review your submission and be in "
-         "touch as plans come together.",
-         "Please note that submitting the form does not confirm your participation."],
-        [("Organization", row.organization), ("Participating as", types)])
-    send_email(row.email, f"Senior Wellness Day: we received your submission — {_org()}", text, html,
-               reply_to=current_app.config.get("MAIL_REPLY_TO"))
     license_info = " ".join(v for v in (row.license_type, row.license_number) if v) or None
     _notify_admin(f"Senior Wellness Day: {types} — {row.display_name}", [
         ("Name", row.name), ("Organization", row.organization), ("Email", row.email), ("Phone", row.phone),
@@ -278,6 +271,14 @@ def wellness_partner_received(row):
         ("Vendor category", WELLNESS_VENDOR_CATEGORY_LABELS.get(row.vendor_category)),
         ("Sells", row.vendor_products), ("Price range", row.vendor_price_range),
         ("Setup needs", ", ".join(row.setup_needs or []) or None)], reply_to=row.email)
+    text, html = _render(
+        f"Hi {row.name},",
+        ["Thank you for offering to be part of Senior Wellness Day! We'll review your submission and be in "
+         "touch as plans come together.",
+         "Please note that submitting the form does not confirm your participation."],
+        [("Organization", row.organization), ("Participating as", types)])
+    send_email(row.email, f"Senior Wellness Day: we received your submission — {_org()}", text, html,
+               reply_to=current_app.config.get("MAIL_REPLY_TO"))
 
 
 # ---------------------------------------------------------------------------
