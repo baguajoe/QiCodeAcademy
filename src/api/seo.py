@@ -35,7 +35,7 @@ SOCIAL_IMAGES = {
     "default": "Qi Code Academy logo and the words Learn. Move. Create. Connect. over a photo of a "
                "movement class practicing together.",
     "wellness-day": "Older adults seated in a circle during a movement class, with the words Senior Wellness Day, "
-                    "Spring 2027.",
+                    "May 2027, free for seniors.",
     "baguazhang": "Older adults practicing Baguazhang circle walking in a gym, with the words Baguazhang for "
                   "Healthy Aging.",
     "youth": "Young people in a movement exercise, faces blurred, with the words Youth Tech, Grades 9–12.",
@@ -62,9 +62,9 @@ STATIC_PAGES = {
                           "Traditional Tai Chi, Baguazhang, yoga, wellness education, and social time for older "
                           "adults in Boston.", "baguazhang", True),
     WELLNESS_DAY_PATH: ("Senior Wellness Day",
-                        "A free day of movement, care, creativity, and community for older adults in Boston, with a "
-                        "marketplace for local vendors and senior makers. Planned for spring 2027; join the interest "
-                        "list.", "wellness-day", True),
+                        "A free day for older adults in Boston, May 2027, 10 AM–2 PM: Tai Chi, Qigong, chair yoga, "
+                        "chair massage, acupuncture, sound healing, painting, and an artists and vendors marketplace. "
+                        "Join the interest list.", "wellness-day", True),
     "/programs/intergenerational": ("Intergenerational Programs",
                                     "Youth help older adults learn technology: young people gain leadership "
                                     "experience, and seniors gain digital skills.", "default", True),

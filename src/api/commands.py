@@ -46,6 +46,10 @@ ORG_HISTORY = ("Qi Code Academy, Inc. was incorporated in 2026 to formalize and 
 # "applied for" wording doesn't stay in the code.
 LEGACY_SETTING_FINGERPRINTS = {
     "tax_status": {"f5f7f0f76fe63a4d1bf144e7349f52dcd3fd948f08147ad5a0fb80e3422ab114"},  # "... has applied for 501(c)(3) ..." (pre-approval)
+    "wellness_day_status": {"63b0157f5c44eac96c82620e1acfdb8e8502c5defb5b8f58186a933ff4f105e8"},  # "Coming spring 2027"
+    # Blank date/location (the earlier defaults) become May 2027 / "BCYF site to be confirmed".
+    "wellness_day_date": {"e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"},
+    "wellness_day_location": {"e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"},
 }
 
 DEFAULT_SETTINGS = [
@@ -74,10 +78,10 @@ DEFAULT_SETTINGS = [
     # Home page feature band for the signature program (describe the program, never promise outcomes)
     ("featured_program_title", FEATURED_PROGRAM_TITLE, True),
     ("featured_program_text", FEATURED_PROGRAM_TEXT, True),
-    # Senior Wellness Day page: badge text, and date/location (each shown only when filled in)
-    ("wellness_day_status", "Coming spring 2027", True),
-    ("wellness_day_date", "", True),
-    ("wellness_day_location", "", True),
+    # Senior Wellness Day page: badge text, date and location (the page falls back to these if blanked)
+    ("wellness_day_status", "Coming May 2027", True),
+    ("wellness_day_date", "May 2027", True),
+    ("wellness_day_location", "BCYF site to be confirmed", True),
 ]
 
 # Keep in sync with SLOTS in src/front/js/siteImages.js and IMAGE_GUIDE.md.
@@ -90,9 +94,11 @@ SITE_IMAGE_SLOTS = [
     "seniors-tai-chi", "seniors-baguazhang", "seniors-chair-massage", "seniors-join", "youth-movement",
     "founder-gin-soon", "founder-chen-xiao-ping", "founder-prague-group", "founder-yoga-training", "founder-graduation",
     # Senior Wellness Day (stock allowed; see IMAGE_GUIDE.md)
-    "wellness-day-yoga", "wellness-day-acupuncture", "wellness-day-acupressure", "wellness-day-strength",
-    "wellness-day-crafts", "wellness-day-education", "wellness-day-marketplace", "wellness-day-market-baskets",
-    "wellness-day-market-painting", "wellness-day-market-sewing", "wellness-day-social",
+    "wellness-day-chair-yoga", "wellness-day-chair-hip-hop", "wellness-day-breathing", "wellness-day-self-massage",
+    "wellness-day-sound", "wellness-day-acupuncture", "wellness-day-painting", "wellness-day-market-baskets",
+    "wellness-day-market-jewelry", "wellness-day-market-natural", "wellness-day-resources", "wellness-day-social",
+    # Our own photo only (no stock): fall prevention & balance card shows an icon until one is added
+    "wellness-day-balance",
 ]
 
 

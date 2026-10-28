@@ -1,15 +1,18 @@
-// Senior Wellness Day (planned for spring 2027): an event page first, a sign-up page second.
-// Hero → a day at a glance → activity cards → marketplace → class photos → details → lineup →
-// sign-up tabs (seniors and families | vendors, practitioners and volunteers).
-// Health language: describe what happens; never promise outcomes. No donations on this page.
+// Senior Wellness Day (May 2027): an event page first, a sign-up page second.
+// Hero → event basics → how the day works (seven areas) → mind, body & movement cards → bodywork and
+// creative cards → marketplace → resources and refreshments → details → lineup → sign-up tabs.
+// Health language: describe what happens ("may support", never promises). No donations or budget figures.
+// Photos: our own first, credited stock in allowed slots, else a line icon. Each photo appears once.
 import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { Link } from "react-router-dom";
 import { api } from "../api";
 import { useApi } from "../hooks/useApi";
 import { useSeo } from "../seo";
 import { useStore } from "../store/appContext";
 import { SectionHeader, useSettingText } from "../component/common";
-import { PhotoRow, SiteImage } from "../component/Photo";
+import { SiteImage } from "../component/Photo";
+import { resolveSlot } from "../siteImages";
 import { CheckboxField, CheckboxGroup, FormShell, RadioGroup, SelectField, TextArea, TextField, useForm } from "../component/Form";
 
 const NEIGHBORHOODS = ["Dorchester", "Roxbury", "Mattapan", "Hyde Park", "South End"];
@@ -17,37 +20,89 @@ const OFFER_MAX = 600;
 const EMAIL = "info@qicodeacademy.org";
 
 // Must match WELLNESS_ACTIVITIES / WELLNESS_PRACTITIONER_TYPES / WELLNESS_VENDOR_TYPES in src/api/models.py.
-const ACTIVITIES = ["tai_chi_baguazhang", "chair_yoga_meditation", "chair_massage", "acupuncture", "acupressure",
-  "strength_balance", "painting_sewing", "wellness_education", "marketplace", "food_social"];
-const PARTICIPATION = ["practitioner_massage", "practitioner_acupuncture", "practitioner_bodywork", "instructor",
-  "arts_crafts", "vendor", "food_vendor", "resource_table", "volunteer", "sponsor"];
+const ACTIVITIES = ["tai_chi_baguazhang", "chair_yoga_meditation", "chair_hip_hop", "fall_prevention_balance",
+  "self_massage", "sound_healing", "chair_massage", "acupuncture", "painting", "marketplace", "resources", "food_social"];
+const PARTICIPATION = ["practitioner_massage", "practitioner_acupuncture", "practitioner_bodywork", "sound_healing",
+  "instructor_chair_yoga", "instructor_chair_hip_hop", "instructor_meditation", "instructor", "painting", "vendor",
+  "food_vendor", "resource_table", "volunteer", "sponsor"];
 const PRACTITIONER_TYPES = ["practitioner_massage", "practitioner_acupuncture", "practitioner_bodywork"];
 const VENDOR_TYPES = ["vendor", "food_vendor"];
-const VENDOR_CATEGORIES = ["crafts", "art", "clothing", "jewelry", "wellness_products", "food", "books_media", "other"];
+const VENDOR_CATEGORIES = ["visual_art", "jewelry", "baskets", "clothing", "quilts_textiles", "pottery", "greeting_cards",
+  "books", "skincare_wellness", "sea_moss", "food", "insurance_financial", "other"];
 
-// Activity cards: our own photos first; stock (credited in credits.json) where we have none yet.
-const OFFERINGS = [
-  { key: "tai_chi_baguazhang", slot: "research-banner", cat: "movement", position: "center 30%" },
-  { key: "chair_yoga_meditation", slot: "wellness-day-yoga", cat: "movement" },
-  { key: "strength_balance", slot: "wellness-day-strength", cat: "movement" },
-  { key: "chair_massage", slot: "seniors-chair-massage", cat: "care", position: "center 18%" },
-  { key: "acupuncture", slot: "wellness-day-acupuncture", cat: "care" },
-  { key: "acupressure", slot: "wellness-day-acupressure", cat: "care" },
-  { key: "painting_sewing", slot: "wellness-day-crafts", cat: "creativity", position: "center 35%" },
-  { key: "marketplace", slot: "wellness-day-marketplace", cat: "creativity" },
-  { key: "wellness_education", slot: "wellness-day-education", cat: "community" },
-  { key: "food_social", slot: "wellness-day-social", cat: "community" },
+// Line icons (24×24, stroked) for cards with no photo yet and for the seven areas.
+const ICONS = {
+  movement: "M12 3a9 9 0 1 0 0 18 4.5 4.5 0 0 1 0-9 4.5 4.5 0 0 0 0-9Zm0 4.5a1.2 1.2 0 1 1 0 2.4 1.2 1.2 0 0 1 0-2.4Zm0 9a1.2 1.2 0 1 1 0 2.4 1.2 1.2 0 0 1 0-2.4Z",
+  heart: "M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10Z",
+  palette: "M12 3a9 9 0 0 0 0 18c1.2 0 1.8-.8 1.8-1.8 0-1.2-1-1.5-1-2.6 0-1 .8-1.6 1.8-1.6H17a4 4 0 0 0 4-4C21 6.6 17 3 12 3ZM7.5 11.5h.01M10 7.5h.01M15 7.5h.01",
+  bowl: "M3 12h18a9 9 0 0 1-18 0ZM8 21h8M16 4.5c1.2 1.2 1.2 3 0 4.2M19 2.5c2.3 2.3 2.3 6 0 8.3",
+  market: "M4 9h16l-1.2-4H5.2L4 9Zm0 0v1.5a2.7 2.7 0 0 0 5.3 0 2.7 2.7 0 0 0 5.4 0 2.7 2.7 0 0 0 5.3 0V9M5.5 13v7h13v-7M10 20v-4h4v4",
+  info: "M3 11h18M5 11v9M19 11v9M8 11V4h8v7M10.5 6.5h3M10.5 8.5h3",
+  cup: "M4 8h12v5a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5V8ZM16 10h1.5a2.5 2.5 0 0 1 0 5H16M7 3.5v2M11 3.5v2",
+  balance: "M12 3.5a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM5 10l7-1.5 7 1.5M12 8.5v6l-3 6.5M12 14.5l4.5 2.5",
+  hand: "M8 11V5.5a1.5 1.5 0 0 1 3 0V10m0-5.5V4a1.5 1.5 0 0 1 3 0v6m0-4.5a1.5 1.5 0 0 1 3 0V12m0-3a1.5 1.5 0 0 1 3 0v4a8 8 0 0 1-8 8h-.5a6.5 6.5 0 0 1-5.4-2.9L4.3 15a1.5 1.5 0 0 1 2.5-1.7L8 15",
+  leaf: "M5 19c0-8 6-14 15-14 0 9-6 15-14 15H5Zm0 0 8-8",
+  people: "M9 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6Zm7 0a2.5 2.5 0 1 0 0-5M3.5 20a5.5 5.5 0 0 1 11 0M16 14a4.5 4.5 0 0 1 4.5 6",
+};
+
+function LineIcon({ name, size = 24 }) {
+  return (
+    <svg viewBox="0 0 24 24" width={size} height={size} aria-hidden="true" focusable="false">
+      <path d={ICONS[name]} fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+// A card's photo, or (when the slot has no photo yet) a line icon in the same 4:3 frame.
+function CardMedia({ slot, icon, position, sizes }) {
+  const { store } = useStore();
+  if (resolveSlot(slot, store.siteImages).kind === "placeholder") {
+    return <div className="wd-card-icon"><LineIcon name={icon} size={56} /></div>;
+  }
+  return <SiteImage slot={slot} ratio="4 / 3" sizes={sizes} position={position} />;
+}
+
+const CARD_SIZES = "(min-width: 64rem) 23rem, (min-width: 40rem) 45vw, 100vw";
+
+// Our own photos first (Tai Chi, Baguazhang, Qigong, chair massage; fall prevention takes our own photo
+// only, an icon until we have one); stock (credited in credits.json) or an icon for the rest.
+const MOVEMENT = [
+  { key: "tai_chi", slot: "seniors-join", icon: "movement", position: "center 45%" },
+  { key: "baguazhang", slot: "research-banner", icon: "movement" },
+  { key: "qigong", slot: "seniors-baguazhang", icon: "movement", position: "center 30%" },
+  { key: "chair_yoga", slot: "wellness-day-chair-yoga", icon: "movement" },
+  { key: "chair_hip_hop", slot: "wellness-day-chair-hip-hop", icon: "movement", position: "center 20%" },
+  { key: "meditation_breathing", slot: "wellness-day-breathing", icon: "movement" },
+  { key: "fall_prevention_balance", slot: "wellness-day-balance", icon: "balance" },
+  { key: "self_massage", slot: "wellness-day-self-massage", icon: "hand" },
+  { key: "sound_healing", slot: "wellness-day-sound", icon: "bowl" },
+].map((o) => ({ ...o, cat: "movement" }));
+const SERVICES = [
+  { key: "chair_massage", slot: "seniors-chair-massage", icon: "heart", cat: "care", position: "center 18%" },
+  { key: "acupuncture", slot: "wellness-day-acupuncture", icon: "heart", cat: "care", untimed: true },
+  { key: "painting", slot: "wellness-day-painting", icon: "palette", cat: "creativity" },
+];
+const COMMUNITY = [
+  { key: "resources", slot: "wellness-day-resources", icon: "info", cat: "community" },
+  { key: "refreshments", slot: "wellness-day-social", icon: "cup", cat: "community" },
 ];
 
-const DAY = [
-  { key: "welcome", slots: ["seniors-join"], position: "center 60%" },
-  { key: "choose", slots: ["seniors-chair-massage", "wellness-day-acupuncture", "wellness-day-yoga", "wellness-day-crafts"] },
-  { key: "marketplace", slots: ["wellness-day-marketplace"] },
-  { key: "lunch", slots: ["wellness-day-social"] },
+// How the day works: seven areas open at the same time.
+const AREAS = [
+  { key: "main", icon: "movement" }, { key: "bodywork", icon: "heart" }, { key: "creative", icon: "palette" },
+  { key: "sound", icon: "bowl" }, { key: "marketplace", icon: "market" }, { key: "resources", icon: "info" },
+  { key: "refreshments", icon: "cup" },
 ];
 
-const MARKET_PHOTOS = ["wellness-day-market-baskets", "wellness-day-market-painting", "wellness-day-market-sewing"];
-const CLASS_PHOTOS = ["seniors-join", "research-banner", "seniors-baguazhang", "seniors-chair-massage"];
+// What we hope the day brings (same order as wellnessDay.hopes).
+const HOPE_ICONS = ["movement", "people", "info", "market"];
+
+// Marketplace strip: art and crafts, jewelry, natural products (icon until we have a photo).
+const MARKET_PHOTOS = [
+  { slot: "wellness-day-market-baskets", icon: "market" },
+  { slot: "wellness-day-market-jewelry", icon: "market" },
+  { slot: "wellness-day-market-natural", icon: "leaf", label: "marketNatural" },
+];
 
 const TABS = ["seniors", "partners"];
 const TAB_HASH = { seniors: "signup-seniors", partners: "signup-partners" };
@@ -226,6 +281,40 @@ function PartnerForm({ preset }) {
   );
 }
 
+// A grid of activity cards: photo (or icon), category, title, length, description.
+function Cards({ items }) {
+  const { t } = useTranslation();
+  return (
+    <ul className="wd-cards">
+      {items.map((o) => {
+        const meta = t(`wellnessDay.offerings.${o.key}.duration`);
+        return (
+          <li key={o.key} className={`wd-card wd-cat-${o.cat}`}>
+            <CardMedia slot={o.slot} icon={o.icon} position={o.position} sizes={CARD_SIZES} />
+            <div className="wd-card-body">
+              <span className="wd-cat">{t(`wellnessDay.categories.${o.cat}`)}</span>
+              <h3>{t(`wellnessDay.offerings.${o.key}.title`)}</h3>
+              {meta && (
+                <p className="wd-duration">
+                  {!o.untimed && (
+                    <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false">
+                      <circle cx="12" cy="12" r="8.5" fill="none" stroke="currentColor" strokeWidth="2" />
+                      <path d="M12 7.5V12l3 2" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+                    </svg>
+                  )}
+                  {!o.untimed && <span className="sr-only">{t("wellnessDay.durationLabel")}: </span>}
+                  {meta}
+                </p>
+              )}
+              <p>{t(`wellnessDay.offerings.${o.key}.body`)}</p>
+            </div>
+          </li>
+        );
+      })}
+    </ul>
+  );
+}
+
 // Only partners staff marked Confirmed AND "show publicly" (the API enforces both).
 function Lineup() {
   const { t } = useTranslation();
@@ -296,12 +385,14 @@ function SignupTabs({ active, onSelect, tabRefs, interestPreset, partnerPreset }
 
 export default function WellnessDay() {
   const { t } = useTranslation();
-  const { actions } = useStore();
+  const { store, actions } = useStore();
   const fromSetting = useSettingText();
   useSeo({ title: t("wellnessDay.title"), description: t("wellnessDay.intro"), imageSlot: "seniors-banner" });
   const status = fromSetting("wellness_day_status", "wellnessDay.statusDefault");
-  const date = actions.setting("wellness_day_date").trim();
-  const location = actions.setting("wellness_day_location").trim();
+  const date = actions.setting("wellness_day_date").trim() || t("wellnessDay.basics.whenDefault");
+  const location = actions.setting("wellness_day_location").trim() || t("wellnessDay.basics.whereDefault");
+
+  const isPlaceholder = (slot) => resolveSlot(slot, store.siteImages).kind === "placeholder";
 
   const [tab, setTab] = useState("seniors");
   const [interestPreset, setInterestPreset] = useState(null);
@@ -359,75 +450,107 @@ export default function WellnessDay() {
         </div>
       </section>
 
-      <section className="section wd-glance" aria-labelledby="wd-glance-title">
+      <section className="section wd-mission" aria-labelledby="wd-why-title">
+        <div className="container wd-mission-inner">
+          <div className="wd-why">
+            <h2 id="wd-why-title">{t("wellnessDay.whyTitle")}</h2>
+            <p>{t("wellnessDay.whyBody")}</p>
+          </div>
+          <div>
+            <h3 className="wd-hopes-title">{t("wellnessDay.hopesTitle")}</h3>
+            <ul className="wd-hopes">
+              {t("wellnessDay.hopes", { returnObjects: true }).map((h, i) => (
+                <li key={h}><span className="wd-area-icon"><LineIcon name={HOPE_ICONS[i]} /></span>{h}</li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section className="wd-basics" aria-labelledby="wd-basics-title">
         <div className="container">
-          <SectionHeader title={t("wellnessDay.glanceTitle")} lead={t("wellnessDay.glanceLead")} id="wd-glance-title" center />
-          <ol className="wd-timeline">
-            {DAY.map((step, i) => (
-              <li key={step.key} className="wd-step">
-                <div className={`wd-step-media ${step.slots.length > 1 ? "wd-collage" : ""}`}>
-                  {step.slots.map((slot) => (
-                    <SiteImage key={slot} slot={slot} ratio="4 / 3"
-                      sizes={step.slots.length > 1 ? "(min-width: 64rem) 8rem, 45vw" : "(min-width: 64rem) 17rem, 90vw"}
-                      position={step.position} />
-                  ))}
-                </div>
-                <span className="wd-step-marker" aria-hidden="true"><span className="wd-step-num">{i + 1}</span></span>
-                <h3><span className="sr-only">{t("wellnessDay.stepLabel", { n: i + 1 })}: </span>{t(`wellnessDay.glance.${step.key}.title`)}</h3>
-                <p>{t(`wellnessDay.glance.${step.key}.body`)}</p>
+          <h2 id="wd-basics-title" className="sr-only">{t("wellnessDay.basicsTitle")}</h2>
+          <dl className="wd-facts">
+            <div><dt>{t("wellnessDay.basics.whenLabel")}</dt><dd>{date}<br />{t("wellnessDay.basics.time")}</dd></div>
+            <div><dt>{t("wellnessDay.basics.whereLabel")}</dt><dd>{location}</dd></div>
+            <div><dt>{t("wellnessDay.basics.costLabel")}</dt><dd>{t("wellnessDay.basics.cost")}</dd></div>
+            <div><dt>{t("wellnessDay.basics.whoLabel")}</dt><dd>{t("wellnessDay.basics.who")}</dd></div>
+          </dl>
+        </div>
+      </section>
+
+      <section className="section wd-areas-band" aria-labelledby="wd-areas-title">
+        <div className="container">
+          <SectionHeader title={t("wellnessDay.areasTitle")} lead={t("wellnessDay.areasLead")} id="wd-areas-title" center />
+          <ul className="wd-areas">
+            {AREAS.map((a) => (
+              <li key={a.key} className={`wd-area wd-area-${a.key}`}>
+                <span className="wd-area-icon"><LineIcon name={a.icon} size={30} /></span>
+                <h3>{t(`wellnessDay.areas.${a.key}.title`)}</h3>
+                <p>{t(`wellnessDay.areas.${a.key}.body`)}</p>
               </li>
             ))}
-          </ol>
+          </ul>
         </div>
       </section>
 
       <section className="section wd-offer" aria-labelledby="wd-offer-title">
         <div className="container">
-          <SectionHeader title={t("wellnessDay.offerTitle")} lead={t("wellnessDay.offerLead")} id="wd-offer-title" />
-          <ul className="wd-cards">
-            {OFFERINGS.map((o) => (
-              <li key={o.key} className={`wd-card wd-cat-${o.cat}`}>
-                <SiteImage slot={o.slot} ratio="4 / 3" sizes="(min-width: 64rem) 23rem, (min-width: 40rem) 45vw, 100vw"
-                  position={o.position} />
-                <div className="wd-card-body">
-                  <span className="wd-cat">{t(`wellnessDay.categories.${o.cat}`)}</span>
-                  <h3>{t(`wellnessDay.offerings.${o.key}.title`)}</h3>
-                  <p>{t(`wellnessDay.offerings.${o.key}.body`)}</p>
-                </div>
-              </li>
-            ))}
-          </ul>
-          <p className="wd-note">{t("wellnessDay.offerNote")}</p>
+          <SectionHeader title={t("wellnessDay.movementTitle")} lead={t("wellnessDay.movementLead")} id="wd-offer-title" />
+          <Cards items={MOVEMENT} />
+        </div>
+      </section>
+
+      <section className="section wd-services" aria-labelledby="wd-services-title">
+        <div className="container">
+          <SectionHeader title={t("wellnessDay.servicesTitle")} lead={t("wellnessDay.servicesLead")} id="wd-services-title" />
+          <Cards items={SERVICES} />
         </div>
       </section>
 
       <section className="wd-market" aria-labelledby="wd-market-title">
-        <div className="container wd-market-inner">
-          <div className="wd-market-text">
+        <div className="container">
+          <div className="wd-market-head">
             <h2 id="wd-market-title">{t("wellnessDay.marketTitle")}</h2>
+            <p className="wd-market-hours">{t("wellnessDay.marketHours")}</p>
             <p>{t("wellnessDay.marketBody")}</p>
-            <div className="wd-market-actions">
-              <a className="btn btn-lg wd-btn-gold" href="#signup-partners" onClick={openSignup("partners", { type: "vendor" })}>
-                {t("wellnessDay.marketSell")}
-              </a>
-              <a className="btn btn-lg btn-ghost-light" href="#signup-seniors" onClick={openSignup("seniors", { sell: true })}>
-                {t("wellnessDay.marketMaker")}
-              </a>
-            </div>
           </div>
-          <div className="wd-market-photos">
-            {MARKET_PHOTOS.map((slot) => (
-              <SiteImage key={slot} slot={slot} ratio="4 / 3" sizes="(min-width: 64rem) 20rem, 50vw" />
+          <ul className="wd-market-strip" aria-label={t("wellnessDay.marketPhotosLabel")}>
+            {MARKET_PHOTOS.map((m) => (
+              <li key={m.slot}>
+                <CardMedia slot={m.slot} icon={m.icon} sizes="(min-width: 64rem) 22rem, 33vw" />
+                {m.label && isPlaceholder(m.slot) && <span className="wd-strip-label">{t(`wellnessDay.${m.label}`)}</span>}
+              </li>
             ))}
+          </ul>
+          <div className="wd-market-inner">
+            <div>
+              <h3>{t("wellnessDay.marketVendorsTitle")}</h3>
+              <ul className="wd-vendors">
+                {t("wellnessDay.marketVendors", { returnObjects: true }).map((v) => <li key={v}>{v}</li>)}
+              </ul>
+            </div>
+            <div>
+              <ul className="wd-market-rules">
+                {t("wellnessDay.marketRules", { returnObjects: true }).map((r) => <li key={r}>{r}</li>)}
+              </ul>
+              <div className="wd-market-actions">
+                <a className="btn btn-lg wd-btn-gold" href="#signup-partners" onClick={openSignup("partners", { type: "vendor" })}>
+                  {t("wellnessDay.marketSell")}
+                </a>
+                <a className="btn btn-lg btn-ghost-light" href="#signup-seniors" onClick={openSignup("seniors", { sell: true })}>
+                  {t("wellnessDay.marketMaker")}
+                </a>
+              </div>
+            </div>
           </div>
         </div>
       </section>
 
-      <section className="section wd-photos" aria-labelledby="wd-photos-title">
+      <section className="section wd-community" aria-labelledby="wd-community-title">
         <div className="container">
-          <SectionHeader title={t("wellnessDay.photosTitle")} lead={t("wellnessDay.photosLead")} id="wd-photos-title" />
-          <PhotoRow label={t("wellnessDay.photosTitle")}
-            items={CLASS_PHOTOS.map((slot) => ({ slot, caption: t(`wellnessDay.photoCaptions.${slot}`) }))} />
+          <SectionHeader title={t("wellnessDay.communityTitle")} lead={t("wellnessDay.communityLead")} id="wd-community-title" />
+          <Cards items={COMMUNITY} />
         </div>
       </section>
 
@@ -437,20 +560,24 @@ export default function WellnessDay() {
             <h2 id="wd-expect-title">{t("wellnessDay.expectTitle")}</h2>
             <ul className="check-list">{t("wellnessDay.expect", { returnObjects: true }).map((i) => <li key={i}>{i}</li>)}</ul>
           </section>
-          <section className="wd-panel-card" aria-labelledby="wd-when-title">
-            <h2 id="wd-when-title">{t("wellnessDay.whenTitle")}</h2>
-            {(date || location) && (
-              <dl className="level-facts wd-when">
-                {date && <div><dt>{t("wellnessDay.dateLabel")}</dt><dd>{date}</dd></div>}
-                {location && <div><dt>{t("wellnessDay.locationLabel")}</dt><dd>{location}</dd></div>}
-              </dl>
-            )}
-            {!date && !location && <p>{t("wellnessDay.when")}</p>}
+          <section className="wd-panel-card" aria-labelledby="wd-good-title">
+            <h2 id="wd-good-title">{t("wellnessDay.goodTitle")}</h2>
+            <ul className="check-list">{t("wellnessDay.good", { returnObjects: true }).map((i) => <li key={i}>{i}</li>)}</ul>
           </section>
         </div>
       </section>
 
       <Lineup />
+
+      <section className="wd-about" aria-labelledby="wd-about-title">
+        <div className="container wd-about-inner">
+          <div>
+            <h2 id="wd-about-title">{t("wellnessDay.aboutTitle")}</h2>
+            <p>{t("wellnessDay.aboutBody")}</p>
+          </div>
+          <Link className="btn btn-lg" to="/about">{t("wellnessDay.aboutLink")}</Link>
+        </div>
+      </section>
 
       <section className="section wd-signup" id="signup" ref={signupRef} aria-labelledby="wd-signup-title">
         <div className="container container-narrow">

@@ -230,12 +230,12 @@ Required: `name`, `email_or_phone` (a valid email or phone), `consent_to_contact
 #### `POST /api/wellness-day/interest` (senior interest list)
 ```json
 {"name": "Rose Brown", "email": "rose@example.org", "phone": "617-555-0100", "neighborhood": "Dorchester",
- "activities": ["tai_chi_baguazhang", "painting_sewing"], "contact_method": "email",
+ "activities": ["tai_chi_baguazhang", "painting"], "contact_method": "email",
  "signing_up_for": "myself", "wants_to_sell": true, "sell_items": "Quilts and knitted hats",
  "needs_table": "yes", "consent_to_contact": true, "website": ""}
 ```
 - Required: `name`, at least one of `email`/`phone`, `consent_to_contact: true`. If `contact_method` is `email` the email is required; if `phone` or `text`, the phone is required.
-- `neighborhood`: `Dorchester | Roxbury | Mattapan | Hyde Park | South End | Other`. `activities` (list): `tai_chi_baguazhang, chair_yoga_meditation, chair_massage, acupuncture, acupressure, strength_balance, painting_sewing, wellness_education, marketplace, food_social`. `contact_method`: `email | phone | text`. `signing_up_for`: `myself | someone_else`.
+- `neighborhood`: `Dorchester | Roxbury | Mattapan | Hyde Park | South End | Other`. `activities` (list): `tai_chi_baguazhang, chair_yoga_meditation, chair_hip_hop, fall_prevention_balance, self_massage, sound_healing, chair_massage, acupuncture, painting, marketplace, resources, food_social`. `contact_method`: `email | phone | text`. `signing_up_for`: `myself | someone_else`.
 - **Senior Makers Market (optional):** `wants_to_sell` (bool, default `false`). When `true`, `sell_items` ("What would you sell?", max 300) is required and `needs_table` is `yes | no` (optional). When `false`, `sell_items` and `needs_table` are discarded.
 - **No age, date of birth, health, medication, or medical information is collected**; unknown keys are ignored.
 - → `201 {"ok": true, "message": "Thank you! We'll be in touch when the date is set."}`. Sends a confirmation email when an email was given, and notifies `ADMIN_NOTIFY_EMAIL` (name, neighborhood, activities only; `Reply-To` = their email when given).
@@ -245,18 +245,18 @@ Required: `name`, `email_or_phone` (a valid email or phone), `consent_to_contact
 {"name": "Ana Silva", "organization": "Silva Bodywork", "email": "ana@example.org", "phone": "",
  "website_or_social": "instagram.com/silvabodywork", "participation_types": ["practitioner_massage", "vendor"],
  "offer_description": "Seated chair massage…", "license_type": "MA massage therapist", "license_number": "MT-12345",
- "vendor_products": "Massage oils and balms", "vendor_category": "wellness_products", "vendor_price_range": "…",
+ "vendor_products": "Massage oils and balms", "vendor_category": "skincare_wellness", "vendor_price_range": "…",
  "has_insurance": "yes", "compensation": "paid", "typical_rate": "…", "setup_needs": ["table", "tent"],
  "availability": ["saturdays"], "referral_source": "", "agrees_not_confirmed": true, "agrees_respectful": true,
  "agrees_permits": true, "agrees_restricted_products": true, "website": ""}
 ```
-- Required: `name`, `email`, `offer_description` (max 600 chars), `participation_types` (1+ of `practitioner_massage, practitioner_acupuncture, practitioner_bodywork, instructor, arts_crafts, vendor, food_vendor, resource_table, volunteer, sponsor`), and all four agreements `true`:
+- Required: `name`, `email`, `offer_description` (max 600 chars), `participation_types` (1+ of `practitioner_massage, practitioner_acupuncture, practitioner_bodywork, sound_healing, instructor_chair_yoga, instructor_chair_hip_hop, instructor_meditation, instructor, painting, vendor, food_vendor, resource_table, volunteer, sponsor`), and all four agreements `true`:
   - `agrees_not_confirmed`: submitting doesn't confirm participation
   - `agrees_respectful`: treat participants with respect, no high-pressure sales
   - `agrees_permits`: responsible for permits, licenses, and sales tax (food vendors need a City of Boston food permit)
   - `agrees_restricted_products`: insurance, Medicare plans, and financial products need advance approval
 - **Any practitioner type** (`practitioner_massage`, `practitioner_acupuncture`, `practitioner_bodywork`) requires `license_type` + `license_number` ("Massage and acupuncture must be provided by Massachusetts-licensed practitioners").
-- **Vendors** (`vendor` or `food_vendor`): `vendor_products` ("What do you sell?", max 300) is required; `vendor_category` (`crafts, art, clothing, jewelry, wellness_products, food, books_media, other`) and `vendor_price_range` (max 100) are optional. All three are discarded for non-vendors.
+- **Vendors** (`vendor` or `food_vendor`): `vendor_products` ("What do you sell?", max 300) is required; `vendor_category` ("Type of vendor": `visual_art, jewelry, baskets, clothing, quilts_textiles, pottery, greeting_cards, books, skincare_wellness, sea_moss, food, insurance_financial, other`) and `vendor_price_range` (max 100) are optional. All three are discarded for non-vendors.
 - The old `agrees_no_sales` key (pre-marketplace form) is ignored if sent. Existing rows keep their value.
 - The real link field is **`website_or_social`**; `website` is the honeypot, as on every form.
 - `has_insurance`: `yes | no | not_applicable`. `compensation`: `volunteer | paid | open`; `typical_rate` is kept only when `paid`. `setup_needs`: `table, chairs, electricity, tent, quiet_space, none` (`none` is dropped if combined with others). `availability`: `weekdays, saturdays, sundays`.
@@ -265,7 +265,7 @@ Required: `name`, `email_or_phone` (a valid email or phone), `consent_to_contact
 #### `GET /api/wellness-day/lineup`
 → `{"items": [{"name": "Silva Bodywork", "participation_types": ["practitioner_massage"]}]}`. ONLY partners with `status == "confirmed"` AND `show_publicly == true`; `name` is the organization, or the person's name if there is none. No other field is ever exposed. Empty list → the page hides "Who's joining us".
 
-Settings (public, `GET /api/settings`): `wellness_day_status` (badge, default "Coming spring 2027"), `wellness_day_date`, `wellness_day_location` (shown only when filled).
+Settings (public, `GET /api/settings`): `wellness_day_status` (badge, default "Coming May 2027"), `wellness_day_date` (default "May 2027"), `wellness_day_location` (default "BCYF site to be confirmed"). The page shows the date and location defaults if a value is blanked.
 
 ### Donations
 

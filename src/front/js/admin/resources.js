@@ -20,20 +20,27 @@ export const CURRICULUM_DIVISIONS = [["youth", "Youth"], ["senior", "Seniors"], 
 export const CURRICULUM_STATUS = [["available", "Available now"], ["in_development", "In development"]];
 // Senior Wellness Day
 export const WD_NEIGHBORHOODS = [...NEIGHBORHOODS, "Other"].map((n) => [n, n]);
-export const WD_ACTIVITIES = [["tai_chi_baguazhang", "Tai Chi and Baguazhang"], ["chair_yoga_meditation", "Chair yoga and meditation"],
-  ["chair_massage", "Chair massage"], ["acupuncture", "Acupuncture"], ["acupressure", "Acupressure"],
-  ["strength_balance", "Strength and balance"], ["painting_sewing", "Painting and sewing"], ["wellness_education", "Wellness education"],
-  ["marketplace", "Marketplace"], ["food_social", "Food and social time"]];
+export const WD_ACTIVITIES = [["tai_chi_baguazhang", "Tai Chi, Baguazhang and Qigong"],
+  ["chair_yoga_meditation", "Chair yoga, meditation and breathing"], ["chair_hip_hop", "Chair hip-hop"],
+  ["fall_prevention_balance", "Fall prevention and balance exercises"], ["self_massage", "Self-massage"],
+  ["sound_healing", "Sound healing"], ["chair_massage", "Chair massage"], ["acupuncture", "Acupuncture"],
+  ["painting", "Painting and creative expression"], ["marketplace", "Artists and vendors marketplace"],
+  ["resources", "Community resource tables"], ["food_social", "Healthy snacks and social time"]];
 export const WD_CONTACT = [["email", "Email"], ["phone", "Phone call"], ["text", "Text message"]];
 export const WD_FOR = [["myself", "Themselves"], ["someone_else", "A family member or friend"]];
-export const WD_TYPES = [["practitioner_massage", "Practitioner (massage)"], ["practitioner_acupuncture", "Practitioner (acupuncture)"],
-  ["practitioner_bodywork", "Practitioner (acupressure or other bodywork)"], ["instructor", "Instructor"], ["arts_crafts", "Arts and crafts"],
-  ["vendor", "Vendor (sell products)"], ["food_vendor", "Food vendor"], ["resource_table", "Community resource table"],
-  ["volunteer", "Volunteer"], ["sponsor", "Sponsor"]];
+export const WD_TYPES = [["practitioner_massage", "Licensed massage therapist"], ["practitioner_acupuncture", "Licensed acupuncturist"],
+  ["practitioner_bodywork", "Other licensed bodywork practitioner"], ["sound_healing", "Sound healing"],
+  ["instructor_chair_yoga", "Chair yoga instructor"], ["instructor_chair_hip_hop", "Chair hip-hop instructor"],
+  ["instructor_meditation", "Meditation and breathing instructor"], ["instructor", "Other movement instructor"],
+  ["painting", "Painting and creative expression"], ["vendor", "Vendor (sell products)"], ["food_vendor", "Food vendor"],
+  ["resource_table", "Community resource table"], ["volunteer", "Volunteer"], ["sponsor", "Sponsor"]];
 export const WD_PRACTITIONER_TYPES = ["practitioner_massage", "practitioner_acupuncture", "practitioner_bodywork"];
 export const WD_VENDOR_TYPES = ["vendor", "food_vendor"];
-export const WD_VENDOR_CATEGORIES = [["crafts", "Crafts"], ["art", "Art"], ["clothing", "Clothing and accessories"], ["jewelry", "Jewelry"],
-  ["wellness_products", "Wellness products"], ["food", "Food and drinks"], ["books_media", "Books and media"], ["other", "Other"]];
+export const WD_VENDOR_CATEGORIES = [["visual_art", "Painting and visual art"], ["jewelry", "Handmade jewelry"],
+  ["baskets", "Basket weaving"], ["clothing", "Handmade clothing and accessories"], ["quilts_textiles", "Quilts and textile art"],
+  ["pottery", "Pottery and ceramics"], ["greeting_cards", "Handmade greeting cards"], ["books", "Local author or bookseller"],
+  ["skincare_wellness", "Natural skincare and wellness products"], ["sea_moss", "Sea moss"], ["food", "Food and drinks"],
+  ["insurance_financial", "Insurance, Medicare or financial services (approval required)"], ["other", "Other community artisan"]];
 export const WD_YES_NO = [["yes", "Yes"], ["no", "No"]];
 export const WD_STATUS = [["new", "New"], ["contacted", "Contacted"], ["confirmed", "Confirmed"], ["declined", "Declined"]];
 export const WD_INSURANCE = [["yes", "Yes"], ["no", "No"], ["not_applicable", "Not applicable"]];

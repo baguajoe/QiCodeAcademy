@@ -31,7 +31,7 @@ GOLD = (243, 201, 105)
 # name -> source slot, focal point (x, y as 0-1 of the photo), headline, subline
 IMAGES = {
     "default": ("seniors-baguazhang", (0.5, 0.45), "Qi Code Academy", "Learn. Move. Create. Connect."),
-    "wellness-day": ("seniors-banner", (0.5, 0.5), "Senior Wellness Day", "Spring 2027 · Boston"),
+    "wellness-day": ("seniors-banner", (0.5, 0.5), "Senior Wellness Day", "May 2027 · Free for seniors · Boston"),
     "baguazhang": ("research-banner", (0.55, 0.4), "Baguazhang for Healthy Aging", "A signature program of Qi Code Academy"),
     "youth": ("youth-movement", (0.5, 0.5), "Youth Tech", "Grades 9–12 · Qi Code Academy"),
 }

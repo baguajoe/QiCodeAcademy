@@ -292,34 +292,48 @@ section[id], div[id] { scroll-margin-top: 7rem; }
 .wd-hero-actions, .wd-market-actions { display: flex; flex-wrap: wrap; gap: var(--space-3) var(--space-4); }
 @media (max-width: 40rem) { .wd-hero-actions .btn, .wd-market-actions .btn { width: 100%; justify-content: center; text-align: center; } }
 
-/* A day at a glance: numbered timeline with a photo per block */
-.wd-glance { background: var(--surface); }
-.wd-timeline { --gap: var(--space-6); list-style: none; margin: var(--space-6) 0 0; padding: 0; display: grid; gap: var(--gap); grid-template-columns: minmax(0, 1fr); }
-@media (min-width: 40rem) { .wd-timeline { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
-@media (min-width: 64rem) {
-  .wd-timeline { --gap: var(--space-5); grid-template-columns: repeat(4, minmax(0, 1fr)); }
-  /* the line joining the step numbers: each step draws its half to the left and right */
-  .wd-step-marker::before, .wd-step-marker::after { content: ""; position: absolute; top: 50%; height: 4px; margin-top: -2px; background: var(--line-c, var(--wd-jade)); }
-  .wd-step-marker::before { left: calc(var(--gap) / -2); right: 50%; }
-  .wd-step-marker::after { left: 50%; right: calc(var(--gap) / -2); }
-  .wd-step:first-child .wd-step-marker::before, .wd-step:last-child .wd-step-marker::after { display: none; }
-}
-.wd-step { position: relative; display: grid; justify-items: center; align-content: start; text-align: center; }
-.wd-step-media { width: 100%; aspect-ratio: 4 / 3; }
-.wd-step-media .photo { border-radius: var(--radius); box-shadow: var(--shadow); height: 100%; }
-/* four small photos sharing the same 4:3 box as the single-photo steps */
-.wd-collage { display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; gap: var(--space-2); }
-.wd-collage .photo { border-radius: var(--radius-sm); aspect-ratio: auto; min-height: 0; }
-.wd-step-marker { position: relative; display: flex; justify-content: center; width: 100%; margin: -1.6rem 0 var(--space-3); }
-.wd-step:nth-child(2) { --line-c: var(--wd-clay); }
-.wd-step:nth-child(3) { --line-c: var(--wd-gold); }
-.wd-step:nth-child(4) { --line-c: var(--wd-blue); }
-.wd-step-num { position: relative; z-index: 1; display: grid; place-items: center; width: 3.2rem; height: 3.2rem; border-radius: 50%; background: var(--wd-jade); color: #fff; font-weight: 800; font-size: 1.35rem; border: 4px solid var(--surface); }
-.wd-step:nth-child(2) .wd-step-num { background: var(--wd-clay); }
-.wd-step:nth-child(3) .wd-step-num { background: var(--wd-gold); color: var(--ink); }
-.wd-step:nth-child(4) .wd-step-num { background: var(--wd-blue); }
-.wd-step h3 { margin: 0 0 var(--space-2); }
-.wd-step p { margin: 0; max-width: 22rem; }
+/* Mission: why this day + what we hope it brings */
+.wd-mission { background: var(--wd-cream, var(--surface)); }
+.wd-mission-inner { display: grid; gap: var(--space-6); grid-template-columns: minmax(0, 1fr); align-items: start; }
+@media (min-width: 56rem) { .wd-mission-inner { grid-template-columns: minmax(0, 6fr) minmax(0, 5fr); } }
+.wd-why h2 { margin: 0 0 var(--space-3); border-bottom: 5px solid var(--wd-gold); display: inline-block; padding-bottom: var(--space-1); }
+.wd-why p { margin: 0; font-size: 1.2rem; line-height: 1.65; max-width: 40rem; }
+.wd-hopes-title { margin: 0 0 var(--space-4); font-size: 1.3rem; }
+.wd-hopes { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--space-3); }
+.wd-hopes li { --chip: var(--wd-jade); display: flex; align-items: center; gap: var(--space-3); font-size: 1.1rem; font-weight: 700; line-height: 1.4; }
+.wd-hopes li:nth-child(2) { --chip: var(--wd-clay); }
+.wd-hopes li:nth-child(3) { --chip: var(--wd-blue); }
+.wd-hopes li:nth-child(4) { --chip: var(--wd-gold-ink); }
+.wd-hopes .wd-area-icon { flex: none; }
+
+/* About Qi Code Academy: small band above the sign-up forms */
+.wd-about { background: var(--surface-alt); border-top: 6px solid var(--wd-jade); padding-block: var(--space-6); }
+.wd-about-inner { display: grid; gap: var(--space-4); grid-template-columns: minmax(0, 1fr); align-items: center; }
+@media (min-width: 56rem) { .wd-about-inner { grid-template-columns: minmax(0, 1fr) auto; gap: var(--space-6); } }
+.wd-about h2 { font-size: 1.5rem; margin: 0 0 var(--space-2); }
+.wd-about p { margin: 0; font-size: 1.1rem; max-width: 46rem; }
+@media (max-width: 40rem) { .wd-about .btn { width: 100%; justify-content: center; } }
+
+/* Event basics: four facts in a band under the hero */
+.wd-basics { background: var(--wd-jade-deep); color: #fff; padding-block: var(--space-5); }
+.wd-facts { margin: 0; display: grid; gap: var(--space-4) var(--space-5); grid-template-columns: repeat(2, minmax(0, 1fr)); }
+@media (min-width: 56rem) { .wd-facts { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+.wd-facts > div { border-left: 4px solid var(--wd-gold); padding-left: var(--space-3); }
+.wd-facts dt { font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; font-size: 0.85rem; color: var(--wd-gold); }
+.wd-facts dd { margin: var(--space-1) 0 0; font-size: 1.15rem; font-weight: 700; line-height: 1.4; }
+
+/* How the day works: seven areas open at the same time */
+.wd-areas-band { background: var(--surface); }
+.wd-areas { list-style: none; margin: var(--space-6) 0 0; padding: 0; display: grid; gap: var(--space-4); grid-template-columns: minmax(0, 1fr); }
+@media (min-width: 40rem) { .wd-areas { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (min-width: 64rem) { .wd-areas { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+.wd-area { --chip: var(--wd-jade); --band: var(--wd-movement); background: var(--band); border-radius: var(--radius); padding: var(--space-4) var(--space-5); border-top: 6px solid var(--chip); }
+.wd-area-bodywork, .wd-area-sound { --chip: var(--wd-clay); --band: var(--wd-care); }
+.wd-area-creative, .wd-area-marketplace { --chip: var(--wd-gold-ink); --band: var(--wd-creativity); }
+.wd-area-resources, .wd-area-refreshments { --chip: var(--wd-blue); --band: var(--wd-community); }
+.wd-area-icon { display: inline-grid; place-items: center; width: 3rem; height: 3rem; border-radius: 50%; background: var(--chip); color: #fff; }
+.wd-area h3 { margin: var(--space-3) 0 var(--space-1); font-size: 1.25rem; }
+.wd-area p { margin: 0; }
 
 /* Activity cards: photo >= 60% of each card, colored band per category */
 .wd-cards { list-style: none; margin: var(--space-6) 0 0; padding: 0; display: grid; gap: var(--space-5); grid-template-columns: minmax(0, 1fr); }
@@ -334,22 +348,31 @@ section[id], div[id] { scroll-margin-top: 7rem; }
 .wd-cat-care { --band: var(--wd-care); --chip: var(--wd-clay); }
 .wd-cat-creativity { --band: var(--wd-creativity); --chip: var(--wd-gold-ink); }
 .wd-cat-community { --band: var(--wd-community); --chip: var(--wd-blue); }
-.wd-card .placeholder .ph-caption { font-size: 0.95rem; }
-.wd-note { margin: var(--space-6) 0 0; max-width: 50rem; font-size: 1rem; color: var(--ink-muted); border-left: 5px solid var(--wd-clay); padding: var(--space-2) 0 var(--space-2) var(--space-4); }
+.wd-card-icon { aspect-ratio: 4 / 3; display: grid; place-items: center; color: var(--chip); background: linear-gradient(135deg, var(--surface) 0%, var(--band) 100%); }
+.wd-card .wd-duration { display: flex; align-items: center; gap: var(--space-2); font-weight: 800; margin: 0 0 var(--space-2); }
+.wd-duration svg { color: var(--chip); flex: none; }
+.wd-services { background: var(--surface-alt); }
 
 /* Marketplace band */
 .wd-market { background: linear-gradient(135deg, var(--wd-jade-deep) 0%, var(--wd-jade) 100%); color: #fff; padding-block: var(--space-8); }
-.wd-market-inner { display: grid; gap: var(--space-6); grid-template-columns: minmax(0, 1fr); align-items: center; }
-@media (min-width: 64rem) { .wd-market-inner { grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); } }
-.wd-market h2 { color: #fff; margin: 0 0 var(--space-4); border-bottom: 5px solid var(--wd-gold); display: inline-block; padding-bottom: var(--space-1); }
-.wd-market p { font-size: 1.15rem; line-height: 1.6; margin: 0 0 var(--space-5); }
-.wd-market-photos { display: grid; gap: var(--space-3); grid-template-columns: repeat(2, minmax(0, 1fr)); }
-.wd-market-photos .photo:first-child { grid-column: 1 / -1; }
-@media (min-width: 40rem) { .wd-market-photos { grid-template-columns: 2fr 1fr; grid-template-rows: 1fr 1fr; } .wd-market-photos .photo:first-child { grid-column: 1; grid-row: 1 / 3; aspect-ratio: auto; height: 100%; } }
-.wd-market-photos .photo { box-shadow: 0 8px 28px rgb(0 0 0 / 0.3); }
-
-/* Our class photos */
-.wd-photos .photo-row figcaption { font-size: 1rem; color: var(--ink-muted); margin-top: var(--space-2); }
+.wd-market h2 { color: #fff; margin: 0 0 var(--space-3); border-bottom: 5px solid var(--wd-gold); display: inline-block; padding-bottom: var(--space-1); }
+.wd-market h3 { color: #fff; margin: 0 0 var(--space-3); }
+.wd-market p { font-size: 1.15rem; line-height: 1.6; margin: 0 0 var(--space-3); }
+.wd-market-head { max-width: 44rem; }
+.wd-market-hours { display: inline-block; background: var(--wd-gold); color: var(--ink); font-weight: 800; padding: 0.3rem 0.9rem; border-radius: 999px; }
+.wd-market-strip { list-style: none; padding: 0; margin: var(--space-5) 0 var(--space-6); display: grid; gap: var(--space-3); grid-template-columns: repeat(3, minmax(0, 1fr)); max-width: 52rem; }
+.wd-market-strip li { position: relative; border-radius: var(--radius); overflow: hidden; box-shadow: 0 8px 28px rgb(0 0 0 / 0.3); }
+.wd-market-strip .photo { border-radius: var(--radius); }
+.wd-market-strip .wd-card-icon { --chip: var(--wd-jade-deep); --band: var(--wd-creativity); }
+.wd-strip-label { position: absolute; left: 0; right: 0; bottom: 0; padding: var(--space-1) var(--space-2); font-size: 0.85rem; font-weight: 700; line-height: 1.25; color: var(--ink); background: rgb(255 255 255 / 0.85); text-align: center; }
+@media (max-width: 30rem) { .wd-card-icon svg { width: 40px; height: 40px; } .wd-strip-label { font-size: 0.75rem; } }
+.wd-market-inner { display: grid; gap: var(--space-6); grid-template-columns: minmax(0, 1fr); align-items: start; }
+@media (min-width: 56rem) { .wd-market-inner { grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); } }
+.wd-vendors { list-style: none; padding: 0; margin: 0; display: grid; gap: var(--space-2) var(--space-5); grid-template-columns: minmax(0, 1fr); font-size: 1.1rem; }
+@media (min-width: 40rem) { .wd-vendors { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.wd-vendors li { padding-left: 1.4rem; position: relative; }
+.wd-vendors li::before { content: ""; position: absolute; left: 0; top: 0.5em; width: 0.6rem; height: 0.6rem; border-radius: 50%; background: var(--wd-gold); }
+.wd-market-rules { margin: 0 0 var(--space-5); padding: var(--space-4) var(--space-5); list-style: none; background: rgb(0 0 0 / 0.18); border-radius: var(--radius); border-left: 5px solid var(--wd-gold); display: grid; gap: var(--space-2); font-size: 1.05rem; }
 
 /* Details */
 .wd-details-band { background: var(--surface-alt); }
@@ -358,7 +381,6 @@ section[id], div[id] { scroll-margin-top: 7rem; }
 .wd-panel-card + .wd-panel-card { border-top-color: var(--wd-clay); }
 .wd-panel-card h2 { font-size: 1.7rem; }
 .wd-panel-card p { margin: 0; font-size: 1.1rem; }
-.wd-when { margin-top: 0; }
 
 /* Lineup */
 .wd-lineup { list-style: none; padding: 0; margin: 0; display: grid; gap: var(--space-3); grid-template-columns: repeat(auto-fill, minmax(min(16rem, 100%), 1fr)); }
@@ -412,13 +434,12 @@ section[id], div[id] { scroll-margin-top: 7rem; }
 :root[data-contrast="high"] .wd-card, :root[data-contrast="high"] .wd-panel-card,
 :root[data-contrast="high"] .wd-reveal { border: 2px solid #000; box-shadow: none; }
 :root[data-contrast="high"] .wd-market { background: #000; }
-:root[data-contrast="high"] .wd-step { --line-c: #000; }
-:root[data-contrast="high"] .wd-step:nth-child(3) .wd-step-num { background: #000; color: #fff; }
+:root[data-contrast="high"] .wd-area, :root[data-contrast="high"] .wd-about { border: 2px solid #000; }
+:root[data-contrast="high"] .wd-basics, :root[data-contrast="high"] .wd-market-rules { background: #000; }
 :root[data-contrast="high"] .wd-tab { background: #fff; color: #000; border-color: #000; }
 :root[data-contrast="high"] .wd-tab[aria-selected="true"] { background: #000; color: #fff; text-decoration: underline; text-underline-offset: 0.25em; }
 :root[data-contrast="high"] .wd-tab[aria-selected="true"]::after { background: #ffd400; }
-:root[data-contrast="high"] .wd-note { color: #000; border-left-color: #000; }
-
+:root[data-contrast="high"] 
 /* Large, easy forms (many visitors are older adults or family helping them). */
 .form-large { font-size: 1.15rem; }
 .form-large .field label, .form-large fieldset legend { font-size: 1.15rem; }

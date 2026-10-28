@@ -215,19 +215,25 @@ def research_interest_received(ri):
 # Senior Wellness Day
 # ---------------------------------------------------------------------------
 WELLNESS_ACTIVITY_LABELS = {
-    "tai_chi_baguazhang": "Tai Chi and Baguazhang", "chair_yoga_meditation": "Chair yoga and meditation",
-    "chair_massage": "Chair massage", "acupuncture": "Acupuncture", "acupressure": "Acupressure",
-    "strength_balance": "Strength and balance", "painting_sewing": "Painting and sewing",
-    "wellness_education": "Wellness education", "marketplace": "Marketplace", "food_social": "Food and social time"}
+    "tai_chi_baguazhang": "Tai Chi, Baguazhang and Qigong", "chair_yoga_meditation": "Chair yoga, meditation and breathing",
+    "chair_hip_hop": "Chair hip-hop", "fall_prevention_balance": "Fall prevention and balance exercises",
+    "self_massage": "Self-massage", "sound_healing": "Sound healing", "chair_massage": "Chair massage",
+    "acupuncture": "Acupuncture", "painting": "Painting and creative expression", "marketplace": "Artists and vendors marketplace",
+    "resources": "Community resource tables", "food_social": "Healthy snacks and social time"}
 WELLNESS_PARTICIPATION_LABELS = {
-    "practitioner_massage": "Practitioner (massage)", "practitioner_acupuncture": "Practitioner (acupuncture)",
-    "practitioner_bodywork": "Practitioner (acupressure or other bodywork)", "instructor": "Instructor",
-    "arts_crafts": "Arts and crafts", "vendor": "Vendor (sell products)", "food_vendor": "Food vendor",
+    "practitioner_massage": "Licensed massage therapist", "practitioner_acupuncture": "Licensed acupuncturist",
+    "practitioner_bodywork": "Other licensed bodywork practitioner", "sound_healing": "Sound healing",
+    "instructor_chair_yoga": "Chair yoga instructor", "instructor_chair_hip_hop": "Chair hip-hop instructor",
+    "instructor_meditation": "Meditation and breathing instructor", "instructor": "Other movement instructor",
+    "painting": "Painting and creative expression", "vendor": "Vendor (sell products)", "food_vendor": "Food vendor",
     "resource_table": "Community resource table", "volunteer": "Volunteer", "sponsor": "Sponsor"}
 WELLNESS_VENDOR_CATEGORY_LABELS = {
-    "crafts": "Crafts", "art": "Art", "clothing": "Clothing and accessories", "jewelry": "Jewelry",
-    "wellness_products": "Wellness products", "food": "Food and drinks", "books_media": "Books and media",
-    "other": "Other"}
+    "visual_art": "Painting and visual art", "jewelry": "Handmade jewelry", "baskets": "Basket weaving",
+    "clothing": "Handmade clothing and accessories", "quilts_textiles": "Quilts and textile art",
+    "pottery": "Pottery and ceramics", "greeting_cards": "Handmade greeting cards", "books": "Local author or bookseller",
+    "skincare_wellness": "Natural skincare and wellness products", "sea_moss": "Sea moss", "food": "Food and drinks",
+    "insurance_financial": "Insurance, Medicare or financial services (approval required)",
+    "other": "Other community artisan"}
 CONTACT_METHOD_LABELS = {"email": "Email", "phone": "Phone call", "text": "Text message"}
 
 
@@ -251,7 +257,8 @@ def wellness_interest_received(row):
             f"Hi {row.name},",
             ["Thank you for joining the interest list for Senior Wellness Day, a free day of movement, care, "
              "creativity, and community for older adults in Boston.",
-             "We're planning it for spring 2027. We'll be in touch when the date and location are set.",
+             "We're planning it for May 2027, from 10 AM to 2 PM, at a BCYF site to be confirmed. We'll be in touch "
+             "when the date and location are set.",
              "You can ask us to remove your information at any time by replying to this email."],
             [("Activities you're interested in", activities),
          ("Senior Makers Market", f"You'd like to sell: {row.sell_items}" if row.wants_to_sell else None)])

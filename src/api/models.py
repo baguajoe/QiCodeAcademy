@@ -39,25 +39,29 @@ PARTNER_TYPES = ("sponsor", "community", "research")
 STOCK_ALLOWED_SLOTS = ("hero-home", "youth-banner", "seniors-banner", "intergenerational-banner", "research-banner",
                        "donate", "home-card-youth", "home-card-seniors", "home-card-research",
                        # Senior Wellness Day activity/marketplace photos (no event photos of ours exist yet)
-                       "wellness-day-yoga", "wellness-day-acupuncture", "wellness-day-acupressure", "wellness-day-strength",
-                       "wellness-day-crafts", "wellness-day-education", "wellness-day-marketplace", "wellness-day-market-baskets",
-                       "wellness-day-market-painting", "wellness-day-market-sewing", "wellness-day-social")
+                       "wellness-day-chair-yoga", "wellness-day-chair-hip-hop", "wellness-day-breathing",
+                       "wellness-day-self-massage", "wellness-day-sound", "wellness-day-acupuncture", "wellness-day-painting",
+                       "wellness-day-market-baskets", "wellness-day-market-jewelry", "wellness-day-market-natural",
+                       "wellness-day-resources", "wellness-day-social")
 WELLNESS_DAY_STOCK_SLOTS = STOCK_ALLOWED_SLOTS[9:]
 CURRICULUM_DIVISIONS = ("youth", "senior", "research")
 CURRICULUM_STATUSES = ("available", "in_development")
 # Senior Wellness Day (interest list + partners/vendors/volunteers)
 WELLNESS_NEIGHBORHOODS = ("Dorchester", "Roxbury", "Mattapan", "Hyde Park", "South End", "Other")
-WELLNESS_ACTIVITIES = ("tai_chi_baguazhang", "chair_yoga_meditation", "chair_massage", "acupuncture", "acupressure",
-                       "strength_balance", "painting_sewing", "wellness_education", "marketplace", "food_social")
+WELLNESS_ACTIVITIES = ("tai_chi_baguazhang", "chair_yoga_meditation", "chair_hip_hop", "fall_prevention_balance",
+                       "self_massage", "sound_healing", "chair_massage", "acupuncture", "painting", "marketplace",
+                       "resources", "food_social")
 WELLNESS_CONTACT_METHODS = ("email", "phone", "text")
 WELLNESS_SIGNUP_FOR = ("myself", "someone_else")
-WELLNESS_PARTICIPATION = ("practitioner_massage", "practitioner_acupuncture", "practitioner_bodywork", "instructor",
-                          "arts_crafts", "vendor", "food_vendor", "resource_table", "volunteer", "sponsor")
+WELLNESS_PARTICIPATION = ("practitioner_massage", "practitioner_acupuncture", "practitioner_bodywork", "sound_healing",
+                          "instructor_chair_yoga", "instructor_chair_hip_hop", "instructor_meditation", "instructor",
+                          "painting", "vendor", "food_vendor", "resource_table", "volunteer", "sponsor")
 # Any of these needs a license type + number (Massachusetts license for massage and acupuncture).
 WELLNESS_PRACTITIONER_TYPES = ("practitioner_massage", "practitioner_acupuncture", "practitioner_bodywork")
 # Any of these sells at the marketplace: "what do you sell?" is required.
 WELLNESS_VENDOR_TYPES = ("vendor", "food_vendor")
-WELLNESS_VENDOR_CATEGORIES = ("crafts", "art", "clothing", "jewelry", "wellness_products", "food", "books_media", "other")
+WELLNESS_VENDOR_CATEGORIES = ("visual_art", "jewelry", "baskets", "clothing", "quilts_textiles", "pottery", "greeting_cards",
+                              "books", "skincare_wellness", "sea_moss", "food", "insurance_financial", "other")
 WELLNESS_YES_NO = ("yes", "no")
 WELLNESS_INSURANCE = ("yes", "no", "not_applicable")
 WELLNESS_COMPENSATION = ("volunteer", "paid", "open")

@@ -11,7 +11,7 @@ from .test_flask_admin import _login
 ROOT = Path(__file__).resolve().parents[1]
 
 INTEREST = {"name": "Rose Brown", "email": "rose@example.org", "neighborhood": "Dorchester",
-            "activities": ["tai_chi_baguazhang", "painting_sewing"], "contact_method": "email",
+            "activities": ["tai_chi_baguazhang", "painting"], "contact_method": "email",
             "signing_up_for": "myself", "consent_to_contact": True}
 
 AGREEMENTS = {"agrees_not_confirmed": True, "agrees_respectful": True, "agrees_permits": True,
@@ -43,7 +43,7 @@ def test_interest_signup_stores_and_emails(client, db, outbox, app):
     assert res.status_code == 201
     assert res.get_json() == {"ok": True, "message": "Thank you! We'll be in touch when the date is set."}
     row = db.session.query(WellnessDayInterest).one()
-    assert row.activities == ["tai_chi_baguazhang", "painting_sewing"] and row.consent_to_contact is True
+    assert row.activities == ["tai_chi_baguazhang", "painting"] and row.consent_to_contact is True
     assert {m.to[0] for m in outbox} == {"rose@example.org", "staff@example.org"}
     admin_mail = next(m for m in outbox if m.to == ["staff@example.org"])
     assert "rose@example.org" not in admin_mail.text  # contact details stay in the admin panel
@@ -133,7 +133,7 @@ def test_partner_submission_defaults_private(client, db, outbox, app):
 
 
 def test_partner_paid_rate_kept_and_none_setup_dropped(client, db):
-    payload = {**PARTNER, "participation_types": ["arts_crafts"], "license_type": "", "license_number": "",
+    payload = {**PARTNER, "participation_types": ["painting"], "license_type": "", "license_number": "",
                "compensation": "paid", "typical_rate": "Open to discussion", "setup_needs": ["none", "table"]}
     assert client.post("/api/wellness-day/partners", json=payload).status_code == 201
     p = db.session.query(WellnessDayPartner).one()
@@ -196,7 +196,7 @@ def test_vendor_submission_stores_vendor_fields(client, db, outbox, app):
     assert p.setup_needs == ["table", "tent"] and p.license_number is None
     assert p.agrees_respectful and p.agrees_permits and p.agrees_restricted_products and p.agrees_not_confirmed
     admin_mail = next(m for m in outbox if m.to == ["staff@example.org"])
-    assert "Beaded necklaces" in admin_mail.text and "Jewelry" in admin_mail.text
+    assert "Beaded necklaces" in admin_mail.text and "Handmade jewelry" in admin_mail.text
 
 
 @pytest.mark.parametrize("ptype", ["vendor", "food_vendor"])
@@ -267,12 +267,12 @@ def test_admin_interest_list_filters_summary_and_csv(client, db, auth_headers):
     client.post("/api/wellness-day/interest", json={**INTEREST, "name": "Lee", "neighborhood": "Roxbury",
                                                     "activities": ["food_social"]})
     client.post("/api/wellness-day/interest", json={**INTEREST, "name": "Kim", "neighborhood": None,
-                                                    "activities": ["painting_sewing"], "wants_to_sell": True,
+                                                    "activities": ["painting"], "wants_to_sell": True,
                                                     "sell_items": "Watercolors", "needs_table": "no"})
     assert client.get("/api/admin/wellness-day-interest").status_code == 401
     res = client.get("/api/admin/wellness-day-interest?neighborhood=Roxbury", headers=auth_headers).get_json()
     assert [r["name"] for r in res["items"]] == ["Lee"]
-    res = client.get("/api/admin/wellness-day-interest?activity=painting_sewing", headers=auth_headers).get_json()
+    res = client.get("/api/admin/wellness-day-interest?activity=painting", headers=auth_headers).get_json()
     assert sorted(r["name"] for r in res["items"]) == ["Kim", "Rose Brown"]
     assert client.get("/api/admin/wellness-day-interest?activity=%25", headers=auth_headers).status_code == 400
     res = client.get("/api/admin/wellness-day-interest?wants_to_sell=true", headers=auth_headers).get_json()
@@ -280,7 +280,7 @@ def test_admin_interest_list_filters_summary_and_csv(client, db, auth_headers):
 
     s = client.get("/api/admin/wellness-day/summary", headers=auth_headers).get_json()
     assert s["interest_total"] == 3
-    assert s["interest_by_activity"]["painting_sewing"] == 2 and s["interest_by_activity"]["food_social"] == 1
+    assert s["interest_by_activity"]["painting"] == 2 and s["interest_by_activity"]["food_social"] == 1
     assert s["interest_by_neighborhood"]["Dorchester"] == 1 and s["interest_by_neighborhood"]["not_given"] == 1
     assert s["senior_makers_total"] == 1
 
@@ -356,7 +356,7 @@ def test_flask_admin_views(client, db, admin_user):
     _partner(db, organization="New Co", status="new")
     _login(client)
     page = client.get("/flask-admin/fa_wellness_day_interest/").get_data(as_text=True)
-    assert "Total sign-ups: 1" in page and "Painting and sewing" in page
+    assert "Total sign-ups: 1" in page and "Painting and creative expression" in page
     assert client.get("/flask-admin/fa_wellness_day_interest/export/csv/").status_code == 200
     assert client.get("/flask-admin/fa_wellness_day_partners/").status_code == 200
     assert client.get("/flask-admin/fa_wellness_day_partners/new/").status_code == 200
@@ -388,8 +388,21 @@ def test_settings_seeded(client, db):
     seed_settings()
     db.session.commit()
     s = client.get("/api/settings").get_json()
-    assert s["wellness_day_status"] == "Coming spring 2027"
-    assert s["wellness_day_date"] == "" and s["wellness_day_location"] == ""
+    assert s["wellness_day_status"] == "Coming May 2027"
+    assert s["wellness_day_date"] == "May 2027" and s["wellness_day_location"] == "BCYF site to be confirmed"
+
+
+def test_old_wellness_day_setting_defaults_are_upgraded(db):
+    from api.commands import upgrade_founder_text
+    from api.models import SiteSetting
+    db.session.add_all([SiteSetting(key="wellness_day_status", value="Coming spring 2027", is_public=True),
+                        SiteSetting(key="wellness_day_date", value="", is_public=True),
+                        SiteSetting(key="wellness_day_location", value="Grove Hall", is_public=True)])
+    db.session.commit()
+    upgrade_founder_text()
+    values = {r.key: r.value for r in db.session.query(SiteSetting)}
+    assert values["wellness_day_status"] == "Coming May 2027" and values["wellness_day_date"] == "May 2027"
+    assert values["wellness_day_location"] == "Grove Hall"  # staff edits are kept
 
 
 def test_wellness_page_has_no_donations_or_dollar_amounts():
@@ -447,6 +460,45 @@ def test_migration_remaps_old_keys():
     assert types == ["practitioner_bodywork", "food_vendor", "volunteer"]
 
 
+def test_final_plan_migration_renames_keys():
+    import importlib.util
+
+    import sqlalchemy as sa
+    from alembic.migration import MigrationContext
+    from alembic.operations import Operations
+
+    path = next((ROOT / "migrations/versions").glob("b7e4d2a9c1f3_*.py"))
+    spec = importlib.util.spec_from_file_location("wd_final_plan_migration", path)
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+
+    engine = sa.create_engine("sqlite://")
+    meta = sa.MetaData()
+    interest = sa.Table("wellness_day_interest", meta, sa.Column("id", sa.Integer, primary_key=True),
+                        sa.Column("activities", sa.JSON))
+    partners = sa.Table("wellness_day_partners", meta, sa.Column("id", sa.Integer, primary_key=True),
+                        sa.Column("participation_types", sa.JSON), sa.Column("vendor_category", sa.String(30)))
+    meta.create_all(engine)
+    with engine.begin() as conn:
+        conn.execute(interest.insert(), [{"id": 1, "activities": ["painting_sewing", "strength_balance", "acupressure",
+                                                                  "wellness_education", "food_social"]}])
+        conn.execute(partners.insert(), [{"id": 1, "participation_types": ["arts_crafts", "vendor"], "vendor_category": "art"},
+                                         {"id": 2, "participation_types": ["vendor"], "vendor_category": "crafts"},
+                                         {"id": 3, "participation_types": ["volunteer"], "vendor_category": None}])
+        with Operations.context(MigrationContext.configure(conn)):
+            mod.upgrade()
+        acts = conn.execute(sa.select(interest.c.activities)).scalar_one()
+        rows = conn.execute(sa.select(partners.c.participation_types, partners.c.vendor_category).order_by(partners.c.id)).all()
+    assert acts == ["painting", "fall_prevention_balance", "resources", "food_social"]
+    assert [tuple(r) for r in rows] == [(["painting", "vendor"], "visual_art"), (["vendor"], "other"), (["volunteer"], None)]
+
+
+def test_no_sewing_anywhere():
+    paths = [*ROOT.glob("src/front/locales/*.json"), *ROOT.glob("src/front/js/**/*.js"), *ROOT.glob("src/api/**/*.py"),
+             ROOT / "src/front/img/site/credits.json", ROOT / "IMAGE_CREDITS.md", ROOT / "IMAGE_GUIDE.md", ROOT / "API.md"]
+    assert not [p for p in paths if re.search(r"sewing|strength (and|&) balance", p.read_text(), re.I)]
+
+
 # ---------------------------------------------------------------------------
 # Page: event first, forms behind accessible tabs; photos follow the photo rules
 # ---------------------------------------------------------------------------
@@ -466,7 +518,8 @@ def test_page_forms_are_behind_keyboard_operable_tabs():
     # Smooth scrolling only when the visitor hasn't asked for reduced motion.
     assert "prefers-reduced-motion: reduce" in js
     # The event content comes before the sign-up section.
-    assert js.index('className="wd-hero"') < js.index("wd-glance") < js.index("wd-offer") < js.index("wd-market") \
+    assert js.index('className="wd-hero"') < js.index("wd-mission") < js.index("wd-basics") < js.index("wd-areas") < js.index("wd-offer") \
+        < js.index("wd-services") < js.index("wd-market") < js.index("wd-community") < js.index("wd-about") \
         < js.index("<SignupTabs")
 
 
@@ -481,7 +534,10 @@ def test_page_lists_every_activity_and_type_the_api_accepts():
     assert js_list("VENDOR_CATEGORIES") == list(WELLNESS_VENDOR_CATEGORIES)
     import json
     en = json.loads((ROOT / "src/front/locales/en.json").read_text())["wellnessDay"]
-    assert set(en["interest"]["activityLabels"]) == set(WELLNESS_ACTIVITIES) == set(en["offerings"])
+    assert set(en["interest"]["activityLabels"]) == set(WELLNESS_ACTIVITIES)
+    cards = re.findall(r'key: "([a-z_]+)", slot:', js)
+    assert set(cards) == set(en["offerings"]) and len(en["areas"]) == 7
+    assert set(en["partner"]["vendorCategories"]) == set(WELLNESS_VENDOR_CATEGORIES) and "sea_moss" in WELLNESS_VENDOR_CATEGORIES
     assert set(en["partner"]["typeOptions"]) == set(WELLNESS_PARTICIPATION) == set(en["types"])
     assert en["partner"]["licenseNote"] == ("Massage and acupuncture must be provided by Massachusetts-licensed "
                                            "practitioners.")
@@ -499,8 +555,18 @@ def test_wellness_day_photo_slots():
     for slot in used:
         assert slot in SITE_IMAGE_SLOTS, slot
     # Our own photos where we have them.
-    for ours in ("seniors-banner", "seniors-join", "research-banner", "seniors-chair-massage"):
+    for ours in ("seniors-banner", "seniors-join", "research-banner", "seniors-baguazhang", "seniors-chair-massage"):
         assert ours in used and credits[ours]["type"] == "founder-owned"
+    # No photo appears twice on the page; fall prevention takes our own photo only (never stock).
+    slots = re.findall(r'slot(?:=|: )"([a-z-]+)"', js)
+    assert len(slots) == len(set(slots)), slots
+    assert "wellness-day-balance" not in STOCK_ALLOWED_SLOTS
+    # Photos in the repo stay under 200 KB.
+    site = ROOT / "src/front/img/site"
+    for slot in used:
+        f = site / f"{slot}.jpg"
+        if f.exists():
+            assert f.stat().st_size < 200_000, slot
     # Each stock photo is credited with its source page and license.
     for slot in WELLNESS_DAY_STOCK_SLOTS:
         if slot in credits:

@@ -168,11 +168,11 @@
     "allNews": "All news",
     "historyLine": "Building on more than 18 years of community teaching in Boston.",
     "wellnessDayTitle": "Senior Wellness Day",
-    "wellnessDayText": "A free day of movement, care, creativity, and community for older adults in Boston. Join the interest list, or find out how to take part as a practitioner, vendor, or volunteer.",
+    "wellnessDayText": "A free day of movement, bodywork, creativity, and community for older adults in Boston, 10 AM – 2 PM. Join the interest list, or find out how to take part as a practitioner, vendor, or volunteer.",
     "wellnessDayCta": "Learn more and join the list",
-    "wellnessDayChipMovement": "Tai Chi & Bagua",
-    "wellnessDayChipCare": "Acupuncture & massage",
-    "wellnessDayChipMarket": "Vendors & food"
+    "wellnessDayChipMovement": "Tai Chi, Bagua & Qigong",
+    "wellnessDayChipCare": "Massage & acupuncture",
+    "wellnessDayChipMarket": "Artists & vendors"
   },
   "about": {
     "title": "About Qi Code Academy",
@@ -399,7 +399,7 @@
     "signatureBadge": "Signature program",
     "signatureLink": "Part of our Baguazhang for Healthy Aging program",
     "wellnessDayTitle": "Senior Wellness Day",
-    "wellnessDayText": "A free day of movement, care, creativity, and community for older adults, planned for spring 2027. Join the interest list to hear first.",
+    "wellnessDayText": "A free day of movement, bodywork, creativity, and community for older adults, planned for May 2027. Join the interest list to hear first.",
     "wellnessDayLink": "About Senior Wellness Day"
   },
   "inter": {
@@ -717,115 +717,205 @@
   },
   "wellnessDay": {
     "title": "Senior Wellness Day",
-    "lead": "Movement, care, creativity, and community for older adults in Boston.",
-    "statusDefault": "Coming spring 2027",
-    "intro": "A free day of movement, care, creativity, and community for older adults in Boston. Experienced instructors and licensed practitioners, a marketplace of local vendors and senior makers, and plenty of time to relax, connect, and share a meal.",
+    "lead": "Movement, bodywork, creativity, and community for older adults in Boston.",
+    "statusDefault": "Coming May 2027",
+    "intro": "A free day for older adults in Boston. Try Tai Chi, Qigong, chair yoga, chair massage, acupuncture, sound healing, and painting, browse a marketplace of local artists and vendors, and find community resources.",
     "jumpInterest": "Join the interest list",
     "jumpPartner": "Vendors, practitioners & volunteers",
-    "glanceTitle": "A day at a glance",
-    "glanceLead": "About four hours together. Come for part of the day or all of it.",
-    "stepLabel": "Part {{n}}",
-    "glance": {
-      "welcome": {
-        "title": "Welcome and Tai Chi",
-        "body": "Arrive, settle in, and start the day together with gentle, flowing movement. Chairs available."
+    "whyTitle": "Why this day",
+    "whyBody": "Senior Community Wellness Day brings movement, relaxation, creative expression, and community resources together in one accessible place. Older adults can try new activities that may support well-being, connect with neighbors and local organizations, and find practices they can keep doing long after the event.",
+    "hopesTitle": "What we hope the day brings",
+    "hopes": [
+      "Easy, low-barrier wellness experiences for older adults",
+      "Social connection and time with neighbors",
+      "Connections to local services and senior resources",
+      "Sales opportunities for Boston artists and small businesses"
+    ],
+    "basicsTitle": "Event basics",
+    "basics": {
+      "whenLabel": "When",
+      "whenDefault": "May 2027",
+      "time": "10 AM – 2 PM",
+      "whereLabel": "Where",
+      "whereDefault": "BCYF site to be confirmed",
+      "costLabel": "Cost",
+      "cost": "Free for seniors",
+      "whoLabel": "Who",
+      "who": "About 100–200 older adults"
+    },
+    "areasTitle": "How the day works",
+    "areasLead": "Seven areas run at the same time, all day. Join whatever you like, in any order, for as long as you like.",
+    "areas": {
+      "main": {
+        "title": "Main Wellness",
+        "body": "Tai Chi, Baguazhang, Qigong, chair yoga, chair hip-hop, breathing, balance, and self-massage"
       },
-      "choose": {
-        "title": "Choose your activities",
-        "body": "Massage, acupuncture, yoga, art, and more. Try one or several, at your own pace."
+      "bodywork": {
+        "title": "Bodywork",
+        "body": "Chair massage and acupuncture with licensed practitioners"
+      },
+      "creative": {
+        "title": "Creative",
+        "body": "Guided painting and creative expression; drop in anytime"
+      },
+      "sound": {
+        "title": "Sound Healing",
+        "body": "A quiet room with singing bowls and gentle instruments"
       },
       "marketplace": {
         "title": "Marketplace",
-        "body": "Browse local vendors and handmade goods from the Senior Makers Market."
+        "body": "Local artists, makers, and wellness businesses"
       },
-      "lunch": {
-        "title": "Lunch and social time",
-        "body": "Share a meal, meet neighbors, and enjoy good conversation."
+      "resources": {
+        "title": "Resources",
+        "body": "Free tables from senior-serving nonprofits"
+      },
+      "refreshments": {
+        "title": "Refreshments",
+        "body": "Healthy snacks and water"
       }
     },
-    "offerTitle": "What we plan to offer",
-    "offerLead": "Pick what interests you. Every activity can be done seated or standing.",
+    "movementTitle": "Mind, body & movement",
+    "movementLead": "Short guided sessions throughout the day. Most can be done seated or standing, and no experience is needed.",
+    "servicesTitle": "Bodywork and creative time",
+    "servicesLead": "One-on-one care from licensed practitioners, and a creative space you can drop into anytime.",
+    "communityTitle": "Resources and refreshments",
+    "communityLead": "Take a break, get information, and connect with neighbors.",
+    "durationLabel": "Length",
     "categories": {
       "movement": "Movement",
-      "care": "Care",
-      "creativity": "Creativity",
+      "care": "Bodywork",
+      "creativity": "Creative",
       "community": "Community"
     },
     "offerings": {
-      "tai_chi_baguazhang": {
-        "title": "Tai Chi and Baguazhang",
-        "body": "Gentle, flowing movement and circle walking, with chair options."
+      "tai_chi": {
+        "title": "Tai Chi",
+        "duration": "20 min",
+        "body": "Slow, flowing movement, standing or seated. A gentle practice that may support relaxation and steadiness."
       },
-      "chair_yoga_meditation": {
-        "title": "Chair yoga and meditation",
-        "body": "Stretching, breathing, and relaxation."
+      "baguazhang": {
+        "title": "Baguazhang",
+        "duration": "20 min",
+        "body": "The art of walking the circle, with simple steps and chair options. Our signature practice."
+      },
+      "qigong": {
+        "title": "Qigong",
+        "duration": "20 min",
+        "body": "Easy standing or seated movements paired with slow, relaxed breathing."
+      },
+      "chair_yoga": {
+        "title": "Chair yoga",
+        "duration": "25 min",
+        "body": "Gentle stretches and poses from a chair, with time to breathe and rest."
+      },
+      "chair_hip_hop": {
+        "title": "Chair hip-hop",
+        "duration": "",
+        "body": "Upbeat, music-driven moves done from a chair. Go at your own pace and have fun."
+      },
+      "meditation_breathing": {
+        "title": "Guided meditation & breathing",
+        "duration": "20 min",
+        "body": "Quiet sitting and simple breathing, guided step by step. May support a sense of calm."
+      },
+      "fall_prevention_balance": {
+        "title": "Fall prevention & balance exercises",
+        "duration": "20 min",
+        "body": "Simple balance exercises with a chair nearby for support, plus everyday safety tips. May support steadiness and confidence."
+      },
+      "self_massage": {
+        "title": "Self-massage instruction",
+        "duration": "15 min",
+        "body": "Learn gentle massage for your own hands, neck, and shoulders that you can use at home."
+      },
+      "sound_healing": {
+        "title": "Sound healing",
+        "duration": "20–30 min",
+        "body": "Relax in a quiet room as singing bowls and gentle instruments are played."
       },
       "chair_massage": {
         "title": "Chair massage",
-        "body": "Offered by licensed, insured massage therapists."
+        "duration": "About 10 min per person",
+        "body": "Four licensed massage therapists offer short chair massages. You stay fully clothed."
       },
       "acupuncture": {
         "title": "Acupuncture",
-        "body": "Offered by licensed acupuncturists in a calm, private space."
+        "duration": "Format and capacity set with practitioners",
+        "body": "Two licensed acupuncturists, working in a private area and following infection-control procedures."
       },
-      "acupressure": {
-        "title": "Acupressure",
-        "body": "Gentle pressure-point work by trained practitioners."
+      "painting": {
+        "title": "Guided painting & creative expression",
+        "duration": "30–45 min · drop in anytime",
+        "body": "Paint and create with a friendly guide. No art experience needed."
       },
-      "strength_balance": {
-        "title": "Strength and balance",
-        "body": "Gentle exercises led by a certified trainer."
+      "resources": {
+        "title": "Resource tables",
+        "duration": "",
+        "body": "Free tables from senior-serving nonprofits. Any health screenings are offered only by qualified partner organizations; we collect no health information."
       },
-      "painting_sewing": {
-        "title": "Painting and sewing",
-        "body": "Creative circles to make something and share it."
-      },
-      "wellness_education": {
-        "title": "Wellness education",
-        "body": "Short talks and community resources."
-      },
-      "marketplace": {
-        "title": "Vendor marketplace and Senior Makers Market",
-        "body": "Shop local vendors and handmade goods made by seniors."
-      },
-      "food_social": {
-        "title": "Food and social time",
-        "body": "Refreshments and conversation."
+      "refreshments": {
+        "title": "Healthy snacks & water",
+        "duration": "",
+        "body": "Take a break, have a snack, and catch up with neighbors."
       }
     },
-    "offerNote": "Plans depend on funding and may change. Participants should consult their healthcare provider before starting a new exercise program. Massage, acupressure, and acupuncture are optional and offered only by licensed practitioners.",
-    "marketTitle": "Marketplace",
-    "marketBody": "Senior Wellness Day includes a marketplace where local vendors and senior makers can sell their goods, from crafts, art, and clothing to wellness products and food. Seniors are welcome to sell their own handmade work at the Senior Makers Market.",
+    "marketTitle": "Artists & vendors marketplace",
+    "marketHours": "Open 10 AM – 2 PM",
+    "marketBody": "Browse and shop work from local artists, makers, and wellness businesses.",
+    "marketPhotosLabel": "From the marketplace",
+    "marketNatural": "Natural skincare and sea moss",
+    "marketVendorsTitle": "Who you'll find",
+    "marketVendors": [
+      "Local painters and visual artists",
+      "Handmade jewelry",
+      "Basket weavers",
+      "Handmade clothing and accessories",
+      "Quilters and textile artists",
+      "Pottery and ceramics",
+      "Handmade greeting cards",
+      "Local authors and booksellers",
+      "Natural skincare and wellness businesses",
+      "Sea moss vendor",
+      "Other community artisans"
+    ],
+    "marketRules": [
+      "Seniors are welcome to sell their own work too.",
+      "Vendors follow venue rules, food-safety requirements, and any permits that apply.",
+      "Insurance, Medicare, and financial vendors by approval only."
+    ],
     "marketSell": "Sell at the marketplace",
     "marketMaker": "I'm a senior maker",
-    "photosTitle": "From our classes",
-    "photosLead": "Senior Wellness Day grows out of the classes we already teach around Boston.",
-    "photoCaptions": {
-      "seniors-banner": "A seated movement class",
-      "seniors-join": "Tai Chi practice together",
-      "research-banner": "Baguazhang circle walking",
-      "seniors-baguazhang": "Guidance during class",
-      "seniors-chair-massage": "Chair massage at a senior program"
-    },
     "expectTitle": "What to expect",
     "expect": [
-      "A free event of about four hours",
+      "Free for seniors, 10 AM to 2 PM",
       "Come for part of the day or all of it",
+      "Join any area, in any order",
       "Activities adapted for all comfort levels, seated or standing",
       "No experience needed"
     ],
-    "whenTitle": "When and where",
-    "when": "Planned for spring 2027 in Dorchester/Roxbury. Date and location will be announced. Join the interest list and we'll let you know first.",
-    "dateLabel": "Date",
-    "locationLabel": "Location",
+    "goodTitle": "Good to know",
+    "good": [
+      "We never collect health information. Any health screenings are offered only by qualified partner organizations.",
+      "Massage and acupuncture are optional and offered only by licensed practitioners.",
+      "Participants should consult their healthcare provider before starting a new exercise program.",
+      "Plans may change as we confirm the site and partners."
+    ],
     "lineupTitle": "Who's joining us",
     "lineupLead": "Practitioners, instructors, vendors, and community partners confirmed so far.",
+    "aboutTitle": "About Qi Code Academy",
+    "aboutBody": "Qi Code Academy, Inc. is a Boston nonprofit recognized by the IRS as a 501(c)(3) public charity. Our mission includes promoting wellness and healthy aging for older adults and expanding access to coding and technology education for young people.",
+    "aboutLink": "Learn more about us",
     "types": {
-      "practitioner_massage": "Massage",
+      "practitioner_massage": "Massage therapy",
       "practitioner_acupuncture": "Acupuncture",
-      "practitioner_bodywork": "Acupressure and bodywork",
+      "practitioner_bodywork": "Bodywork",
+      "sound_healing": "Sound healing",
+      "instructor_chair_yoga": "Chair yoga",
+      "instructor_chair_hip_hop": "Chair hip-hop",
+      "instructor_meditation": "Meditation and breathing",
       "instructor": "Instructor",
-      "arts_crafts": "Arts and crafts",
+      "painting": "Painting and creative expression",
       "vendor": "Vendor",
       "food_vendor": "Food vendor",
       "resource_table": "Community resource table",
@@ -851,16 +941,18 @@
       "activities": "Which activities interest you?",
       "activitiesHint": "Choose as many as you like.",
       "activityLabels": {
-        "tai_chi_baguazhang": "Tai Chi and Baguazhang",
-        "chair_yoga_meditation": "Chair yoga and meditation",
+        "tai_chi_baguazhang": "Tai Chi, Baguazhang & Qigong",
+        "chair_yoga_meditation": "Chair yoga, meditation & breathing",
+        "chair_hip_hop": "Chair hip-hop",
+        "fall_prevention_balance": "Fall prevention & balance exercises",
+        "self_massage": "Self-massage",
+        "sound_healing": "Sound healing",
         "chair_massage": "Chair massage",
         "acupuncture": "Acupuncture",
-        "acupressure": "Acupressure",
-        "strength_balance": "Strength and balance",
-        "painting_sewing": "Painting and sewing",
-        "wellness_education": "Wellness education",
-        "marketplace": "Marketplace",
-        "food_social": "Food and social time"
+        "painting": "Guided painting & creative expression",
+        "marketplace": "Artists & vendors marketplace",
+        "resources": "Community resource tables",
+        "food_social": "Healthy snacks & social time"
       },
       "contactMethod": "How would you like us to contact you?",
       "methods": {
@@ -873,11 +965,11 @@
         "myself": "Myself",
         "someone_else": "A family member or friend"
       },
-      "sellTitle": "Senior Makers Market",
-      "wantsToSell": "I'd like to sell my own crafts or goods at the Senior Makers Market.",
-      "wantsToSellShort": "Senior Makers Market",
+      "sellTitle": "Sell your own work",
+      "wantsToSell": "I'd like to sell my own handmade work or goods at the marketplace.",
+      "wantsToSellShort": "Sell at the marketplace",
       "sellItems": "What would you sell?",
-      "sellItemsHint": "For example: quilts, jewelry, paintings, baked goods.",
+      "sellItemsHint": "For example: paintings, jewelry, quilts, greeting cards.",
       "needsTable": "Do you need a table?",
       "yesNo": {
         "yes": "Yes",
@@ -895,7 +987,7 @@
     },
     "partner": {
       "title": "Be part of Senior Wellness Day",
-      "lead": "We're looking for licensed practitioners, instructors, artists, marketplace and food vendors, community resource tables, volunteers, and sponsors.",
+      "lead": "We're looking for licensed massage therapists and acupuncturists, instructors, artists, marketplace and food vendors, community resource tables, volunteers, and sponsors.",
       "name": "Your name",
       "organization": "Organization or business name",
       "email": "Email",
@@ -904,14 +996,18 @@
       "types": "I'd like to participate as",
       "typesHint": "Choose one or more.",
       "typeOptions": {
-        "practitioner_massage": "Practitioner (massage)",
-        "practitioner_acupuncture": "Practitioner (acupuncture)",
-        "practitioner_bodywork": "Practitioner (acupressure or other bodywork)",
-        "instructor": "Instructor: yoga, meditation, strength and balance, Tai Chi, etc.",
-        "arts_crafts": "Arts and crafts: lead a painting, sewing, or other creative activity",
-        "vendor": "Vendor (sell products)",
+        "practitioner_massage": "Licensed massage therapist (chair massage)",
+        "practitioner_acupuncture": "Licensed acupuncturist",
+        "practitioner_bodywork": "Other licensed bodywork practitioner",
+        "sound_healing": "Sound healing (singing bowls, gentle instruments)",
+        "instructor_chair_yoga": "Chair yoga instructor",
+        "instructor_chair_hip_hop": "Chair hip-hop instructor",
+        "instructor_meditation": "Guided meditation and breathing instructor",
+        "instructor": "Other movement instructor: Tai Chi, Qigong, fall prevention & balance, self-massage, etc.",
+        "painting": "Guided painting and creative expression",
+        "vendor": "Artist or vendor (sell at the marketplace)",
         "food_vendor": "Food vendor",
-        "resource_table": "Community resource table: health, senior services, housing, benefits, library, etc.",
+        "resource_table": "Community resource table: senior services, housing, benefits, library, etc.",
         "volunteer": "Volunteer",
         "sponsor": "Sponsor"
       },
@@ -925,16 +1021,21 @@
       "licenseNumber": "License number",
       "vendorTitle": "About what you sell",
       "vendorProducts": "What do you sell?",
-      "vendorCategory": "Category",
+      "vendorCategory": "Type of vendor",
       "vendorCategories": {
-        "crafts": "Crafts",
-        "art": "Art",
-        "clothing": "Clothing and accessories",
-        "jewelry": "Jewelry",
-        "wellness_products": "Wellness products",
+        "visual_art": "Painting and visual art",
+        "jewelry": "Handmade jewelry",
+        "baskets": "Basket weaving",
+        "clothing": "Handmade clothing and accessories",
+        "quilts_textiles": "Quilts and textile art",
+        "pottery": "Pottery and ceramics",
+        "greeting_cards": "Handmade greeting cards",
+        "books": "Local author or bookseller",
+        "skincare_wellness": "Natural skincare and wellness products",
+        "sea_moss": "Sea moss",
         "food": "Food and drinks",
-        "books_media": "Books and media",
-        "other": "Other"
+        "insurance_financial": "Insurance, Medicare, or financial services (approval required)",
+        "other": "Other community artisan"
       },
       "priceRange": "Price range",
       "priceRangeHint": "A rough range is fine.",
@@ -961,7 +1062,7 @@
         "quiet_space": "Private or quiet space",
         "none": "None"
       },
-      "availability": "Availability in spring 2027",
+      "availability": "Availability in May 2027",
       "availabilityOptions": {
         "weekdays": "Weekdays",
         "saturdays": "Saturdays",
@@ -971,11 +1072,11 @@
       "agreementsTitle": "Please read and agree",
       "agreeNotConfirmed": "I understand that submitting this form does not confirm my participation.",
       "agreeRespectful": "I'll treat participants with respect: no high-pressure sales.",
-      "agreePermits": "I'm responsible for any permits, licenses, and sales tax that apply to what I sell. Food vendors need a City of Boston food permit.",
+      "agreePermits": "I'll follow venue rules and food-safety requirements, and I'm responsible for any permits, licenses, and sales tax that apply to what I sell. Food vendors need a City of Boston food permit.",
       "agreeRestricted": "Vendors selling insurance, Medicare plans, or financial products need approval from Qi Code Academy in advance.",
       "agreeNotConfirmedShort": "Participation not yet confirmed",
       "agreeRespectfulShort": "Respect, no high-pressure sales",
-      "agreePermitsShort": "Permits, licenses, and sales tax",
+      "agreePermitsShort": "Venue rules, food safety, permits, and sales tax",
       "agreeRestrictedShort": "Insurance, Medicare, and financial products",
       "needAgree": "Please check this box to continue.",
       "needLicense": "Required for practitioners.",

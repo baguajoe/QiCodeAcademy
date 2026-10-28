@@ -69,7 +69,7 @@ function Divisions() {
 // Senior Wellness Day band: text left, photo right (alternates with the Baguazhang band above,
 // whose photo is on the left); on phones the photo comes first. Uses the Wellness Day page's hero
 // photo slot, so an admin upload (with its alt text and credit) carries over. Badge = wellness_day_status;
-// the date line appears only once wellness_day_date is set.
+// date line = wellness_day_date (May 2027 until staff set the exact day) and the 10 AM – 2 PM hours.
 const WD_CHIPS = [
   { key: "wellnessDayChipMovement", icon: "M12 3a9 9 0 1 0 0 18 4.5 4.5 0 0 1 0-9 4.5 4.5 0 0 0 0-9Zm0 4.5a1.2 1.2 0 1 1 0 2.4 1.2 1.2 0 0 1 0-2.4Zm0 9a1.2 1.2 0 1 1 0 2.4 1.2 1.2 0 0 1 0-2.4Z" },
   { key: "wellnessDayChipCare", icon: "M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10Z" },
@@ -80,14 +80,14 @@ function WellnessDayCard() {
   const { t } = useTranslation();
   const { actions } = useStore();
   const status = useSettingText()("wellness_day_status", "wellnessDay.statusDefault");
-  const date = actions.setting("wellness_day_date").trim();
+  const date = actions.setting("wellness_day_date").trim() || t("wellnessDay.basics.whenDefault");
   return (
     <section className="section wd-home theme-senior" aria-labelledby="wd-home-title">
       <div className="container wd-home-inner">
         <div className="wd-home-body">
           <span className="badge badge-solid">{status}</span>
           <h2 id="wd-home-title">{t("home.wellnessDayTitle")}</h2>
-          {date && <p className="wd-home-date">{date}</p>}
+          <p className="wd-home-date">{date} · {t("wellnessDay.basics.time")}</p>
           <p>{t("home.wellnessDayText")}</p>
           <ul className="wd-home-chips">
             {WD_CHIPS.map((c) => (
