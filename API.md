@@ -238,7 +238,7 @@ Required: `name`, `email_or_phone` (a valid email or phone), `consent_to_contact
 - `neighborhood`: `Dorchester | Roxbury | Mattapan | Hyde Park | South End | Other`. `activities` (list): `tai_chi_baguazhang, chair_yoga_meditation, chair_massage, acupuncture, acupressure, strength_balance, painting_sewing, wellness_education, marketplace, food_social`. `contact_method`: `email | phone | text`. `signing_up_for`: `myself | someone_else`.
 - **Senior Makers Market (optional):** `wants_to_sell` (bool, default `false`). When `true`, `sell_items` ("What would you sell?", max 300) is required and `needs_table` is `yes | no` (optional). When `false`, `sell_items` and `needs_table` are discarded.
 - **No age, date of birth, health, medication, or medical information is collected**; unknown keys are ignored.
-- → `201 {"ok": true, "message": "Thank you! We'll be in touch when the date is set."}`. Sends a confirmation email when an email was given, and notifies `ADMIN_NOTIFY_EMAIL` (name, neighborhood, activities only).
+- → `201 {"ok": true, "message": "Thank you! We'll be in touch when the date is set."}`. Sends a confirmation email when an email was given, and notifies `ADMIN_NOTIFY_EMAIL` (name, neighborhood, activities only; `Reply-To` = their email when given).
 
 #### `POST /api/wellness-day/partners` (partners, vendors, volunteers)
 ```json
@@ -352,6 +352,10 @@ Special behavior:
 - A duplicate `slug` or user `email` returns `409`.
 - Admins can't delete their own account or set their own `is_active` to false (`400`).
 - Examples: mark a message read with `PATCH /api/admin/contact-messages/5 {"is_read": true}`; list the waitlist for a program with `GET /api/admin/registrations?program_id=3&status=waitlist`.
+
+### `POST /api/admin/email/test`
+Sends a test email to `ADMIN_NOTIFY_EMAIL` immediately (not on the background thread) and reports the real result.
+- → `200 {"ok": true|false, "message": "...", "error": null|"SMTPAuthenticationError: SMTP 535 ...", "settings": {"provider", "to", "from", "smtp_host", "smtp_port", "smtp_security", "smtp_username", "smtp_password_set"}}`. The password itself is never returned.
 
 ### `GET /api/admin/dashboard`
 ```json

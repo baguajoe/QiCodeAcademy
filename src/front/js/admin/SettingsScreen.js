@@ -81,6 +81,47 @@ const GROUPS = [
   },
 ];
 
+// Sends a real email to ADMIN_NOTIFY_EMAIL (API: POST /api/admin/email/test) and shows the server's exact result.
+function EmailTestPanel() {
+  const [sending, setSending] = useState(false);
+  const [result, setResult] = useState(null);
+
+  const send = async () => {
+    setSending(true);
+    setResult(null);
+    try {
+      setResult(await adminApi.post("/admin/email/test", {}));
+    } catch (err) {
+      setResult({ ok: false, message: `Couldn't reach the server: ${err.message}` });
+    } finally {
+      setSending(false);
+    }
+  };
+
+  const s = result && result.settings;
+  return (
+    <section className="panel settings-group" aria-labelledby="email-test-title">
+      <h2 id="email-test-title" style={{ marginTop: 0 }}>Email</h2>
+      <p className="muted">
+        Website forms email the notification address set on the server (ADMIN_NOTIFY_EMAIL), with Reply-To set to the
+        person who filled out the form. Use this button to check that email is working.
+      </p>
+      <button type="button" className="btn" onClick={send} disabled={sending}>{sending ? "Sending…" : "Send test email"}</button>
+      {result && (
+        <div className={`alert ${result.ok ? "alert-success" : "alert-error"}`} role={result.ok ? "status" : "alert"} style={{ marginTop: "1rem" }}>
+          <p><strong>{result.ok ? "Sent." : "Not sent."}</strong> {result.message}</p>
+          {s && (
+            <p className="muted" style={{ marginBottom: 0 }}>
+              Provider: {s.provider} · To: {s.to.length ? s.to.join(", ") : "(not set)"} · From: {s.from || "(not set)"}
+              {s.provider === "smtp" && <> · Server: {s.smtp_host}:{s.smtp_port} ({s.smtp_security}) · Login: {s.smtp_username || "(not set)"} · Password set: {s.smtp_password_set ? "yes" : "no"}</>}
+            </p>
+          )}
+        </div>
+      )}
+    </section>
+  );
+}
+
 export function SettingsScreen() {
   useTitle("Site settings");
   const { actions } = useStore();
@@ -127,6 +168,7 @@ export function SettingsScreen() {
     <>
       <h1>Site settings &amp; text</h1>
       <p className="admin-help">These values appear on the public website. Blank links are hidden automatically.</p>
+      <EmailTestPanel />
       {status && <div className="alert alert-info" role="status"><p>{status}</p></div>}
       <form onSubmit={save} className="admin-form">
         {GROUPS.map((g) => (

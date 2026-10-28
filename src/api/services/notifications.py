@@ -3,6 +3,8 @@
 Every user-supplied value is HTML-escaped in the HTML part. Admin notifications
 contain only what's needed to triage; full details live in the admin panel.
 """
+from functools import wraps
+
 from flask import current_app
 from markupsafe import escape
 from sqlalchemy import select
@@ -66,9 +68,22 @@ def _render(greeting, paragraphs, details=None, footer=None):
     return text, html
 
 
+def _form_notification(fn):
+    """Form handlers call these after the submission is saved; an error here is logged, never raised."""
+    @wraps(fn)
+    def wrapper(*args, **kwargs):
+        try:
+            return fn(*args, **kwargs)
+        except Exception:  # noqa: BLE001
+            current_app.logger.exception("Form notification %s failed (submission was saved)", fn.__name__)
+            return False
+    return wrapper
+
+
 def _notify_admin(subject, lines, reply_to=None):
     to = _admin_recipients()
     if not to:
+        current_app.logger.warning("ADMIN_NOTIFY_EMAIL is not set; admin notification skipped: %s", subject)
         return False
     text, html = _render("New submission on the website:", [], lines,
                          footer=f"Review it in the admin panel: {_site()}/admin")
@@ -89,6 +104,7 @@ def _program_details(program):
             ("Cost", program.cost)]
 
 
+@_form_notification
 def registration_received(reg):
     program = reg.program
     to = reg.contact_email
@@ -113,7 +129,7 @@ def registration_received(reg):
         ("Program", program.title), ("Type", reg.type), ("Status", reg.status),
         ("Participant", reg.participant_name),
         ("Seats left", "unlimited" if program.capacity is None else program.seats_left),
-    ])
+    ], reply_to=to)
 
 
 def registration_confirmed(reg):
@@ -133,6 +149,7 @@ def registration_confirmed(reg):
 # ---------------------------------------------------------------------------
 # Other forms
 # ---------------------------------------------------------------------------
+@_form_notification
 def volunteer_received(vol):
     roles = ", ".join(ROLE_LABELS.get(r, r) for r in vol.roles or [])
     text, html = _render(
@@ -150,6 +167,7 @@ CONTACT_SUBJECTS = {"general": "Contact message", "guest_instructor": "Guest ins
                     "partner": "Partner / sponsor inquiry"}
 
 
+@_form_notification
 def contact_received(msg):
     kind = CONTACT_SUBJECTS.get(msg.type, "Contact message")
     text, html = _render(
@@ -163,6 +181,7 @@ def contact_received(msg):
         reply_to=msg.email)
 
 
+@_form_notification
 def research_inquiry_received(inq):
     text, html = _render(
         f"Hi {inq.name},",
@@ -176,6 +195,7 @@ def research_inquiry_received(inq):
         ("Message", inq.message)], reply_to=inq.email)
 
 
+@_form_notification
 def research_interest_received(ri):
     if "@" in ri.email_or_phone:
         text, html = _render(
@@ -186,7 +206,8 @@ def research_interest_received(ri):
              "any time by replying to this email."])
         send_email(ri.email_or_phone, f"Thanks for your interest — {_org()}", text, html)
     _notify_admin("New research interest sign-up", [
-        ("Name", ri.name), ("Neighborhood", ri.neighborhood)])
+        ("Name", ri.name), ("Neighborhood", ri.neighborhood)],
+        reply_to=ri.email_or_phone if "@" in ri.email_or_phone else None)
 
 
 # ---------------------------------------------------------------------------
@@ -213,6 +234,7 @@ def _labels(values, mapping):
     return ", ".join(mapping.get(v, v) for v in values or [])
 
 
+@_form_notification
 def wellness_interest_received(row):
     activities = _labels(row.activities, WELLNESS_ACTIVITY_LABELS)
     if row.email:
@@ -226,16 +248,17 @@ def wellness_interest_received(row):
          ("Senior Makers Market", f"You'd like to sell: {row.sell_items}" if row.wants_to_sell else None)])
         send_email(row.email, f"You're on the Senior Wellness Day interest list — {_org()}", text, html,
                    reply_to=current_app.config.get("MAIL_REPLY_TO"))
-    # Like research interest: no contact details in email; they're in the admin panel.
+    # Like research interest: no contact details in the body (they're in the admin panel); Reply-To reaches them.
     _notify_admin("Senior Wellness Day: new interest sign-up", [
         ("Name", row.name), ("Neighborhood", row.neighborhood), ("Activities", activities),
         ("Signing up for", "A family member or friend" if row.signing_up_for == "someone_else" else
          "Themselves" if row.signing_up_for == "myself" else None),
         ("Preferred contact", CONTACT_METHOD_LABELS.get(row.contact_method)),
         ("Senior maker (wants to sell)", f"{row.sell_items} (table: {row.needs_table or 'not given'})"
-         if row.wants_to_sell else None)])
+         if row.wants_to_sell else None)], reply_to=row.email)
 
 
+@_form_notification
 def wellness_partner_received(row):
     types = _labels(row.participation_types, WELLNESS_PARTICIPATION_LABELS)
     text, html = _render(

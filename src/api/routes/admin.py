@@ -1,7 +1,7 @@
 """Admin API (JWT required): CRUD for every model, CSV exports, dashboard."""
 from datetime import timedelta
 
-from flask import Blueprint, g, jsonify, request
+from flask import Blueprint, current_app, g, jsonify, request
 from sqlalchemy import Boolean, Integer, String, cast, func, or_, select
 
 from ..extensions import db
@@ -16,6 +16,7 @@ from ..schemas import (ContactMessageSchema, CurriculumModuleSchema, DonationSch
                        ResearchReferenceSchema, SiteImageSchema, SiteSettingSchema,
                        TeamMemberSchema, UserSchema, VolunteerSchema, WellnessDayInterestSchema,
                        WellnessDayPartnerSchema)
+from ..services import email as email_service
 from ..services import notifications
 from ..utils import APIError, csv_response, get_json, load, paginate, parse_bool
 from .auth import admin_required
@@ -382,6 +383,36 @@ def wellness_day_summary():
                   "show_publicly", "license_type", "license_number", "has_insurance", "vendor_category", "setup_needs",
                   "availability")).dump(confirmed, many=True),
     })
+
+
+# ---------------------------------------------------------------------------
+# Email check
+# ---------------------------------------------------------------------------
+@bp.post("/email/test")
+def send_test_email():
+    """Send a test email to ADMIN_NOTIFY_EMAIL right now and report the real result."""
+    cfg = current_app.config
+    to = [a.strip() for a in (cfg.get("ADMIN_NOTIFY_EMAIL") or "").split(",") if a.strip()]
+    provider = email_service.provider_name(cfg)
+    settings = {
+        "provider": provider, "to": to, "from": email_service.sender_address(cfg),
+        "smtp_host": cfg.get("SMTP_HOST") or None, "smtp_port": cfg.get("SMTP_PORT"),
+        "smtp_security": "SSL" if cfg.get("SMTP_USE_SSL") or cfg.get("SMTP_PORT") == 465
+        else ("STARTTLS" if cfg.get("SMTP_USE_TLS", True) else "none"),
+        "smtp_username": cfg.get("SMTP_USERNAME") or None,
+        "smtp_password_set": bool(cfg.get("SMTP_PASSWORD")),
+    }
+    who = getattr(g, "current_user", None)
+    ok, _, error = email_service.send_test_email(
+        to, f"[{cfg.get('ORG_NAME', 'Qi Code Academy')}] Test email from the website",
+        "This is a test email sent from Admin > Settings on the website.\n\n"
+        f"Sent by: {getattr(who, 'email', 'an admin')}\n"
+        "If you received this, website form notifications will reach this inbox.")
+    if ok and provider == "console":
+        ok, error = False, ("No email provider is configured (SMTP_HOST is not set). "
+                            "In development the email was only printed to the server console.")
+    message = f"Test email sent to {', '.join(to)}. Check that inbox (and its spam folder)." if ok else error
+    return jsonify({"ok": ok, "message": message, "error": None if ok else error, "settings": settings})
 
 
 # ---------------------------------------------------------------------------

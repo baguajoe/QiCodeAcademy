@@ -45,13 +45,17 @@ Decisions made while building the backend without stopping to ask. Each can be r
 - The upload endpoint returns URLs only; the admin then saves the URL onto the record (program image, gallery photo, site image slot, etc.). Uploads don't create DB rows.
 
 ## Phase 5 — Email
-- **Provider order:** SendGrid (`SENDGRID_API_KEY`) → SMTP (`SMTP_HOST`) → console print (dev only; in production with no provider it logs a warning and sends nothing). Email failures are logged and never fail the request.
+- **Provider order:** SendGrid (`SENDGRID_API_KEY`) → SMTP (`SMTP_HOST`) → console print (dev only; in production with no provider it logs a warning and sends nothing). Email failures are logged with the real provider error (never the password) and never fail the request; the submission is saved before any email is attempted, and a bug in a notification can't turn a saved submission into an error response.
+- **SMTP (production: Network Solutions Professional Email):** port 587 = STARTTLS, port 465 = implicit SSL (automatic). Login is the full mailbox address. The From address is always the SMTP mailbox (MAIL_FROM's display name is kept) because mailbox hosts reject mail from other addresses — the old `no-reply@` default would have been refused.
+- **Admin → Site settings → "Send test email"** (`POST /api/admin/email/test`) sends synchronously to `ADMIN_NOTIFY_EMAIL` and shows success or the exact error, plus the non-secret settings in use.
 - **Async in production** (`EMAIL_ASYNC`, default on when `APP_ENV=production`): emails go out on a background thread so forms respond quickly.
 - **Who gets what:**
-  - Registration → confirmation to the guardian (youth) or participant email (senior; skipped if they gave only a phone), with a waitlist variant. Admin notified.
+  - Registration → confirmation to the guardian (youth) or participant email (senior; skipped if they gave only a phone), with a waitlist variant. Admin notified (`Reply-To` = the family/participant).
   - Admin changes a registration to `confirmed` → "You're confirmed" email (once).
   - Volunteer, contact (all three types), research inquiry → acknowledgment to the sender + admin notification with `Reply-To` set to the sender.
-  - Research interest → acknowledgment only if they gave an email; admin notification contains name + neighborhood only (no contact details in email).
+  - Research interest and Senior Wellness Day interest → acknowledgment only if they gave an email; admin notification body has no contact details, but `Reply-To` is their email when given.
+  - Senior Wellness Day partners/vendors/instructors/volunteers → acknowledgment + admin notification with `Reply-To` = sender.
+  - Every admin notification sets `Reply-To` to the person who filled out the form (when they gave an email).
   - Completed donation → thank-you/receipt including the `tax_status` SiteSetting text verbatim (now the IRS-approved 501(c)(3) wording; see "501(c)(3) approval" below).
 - `ADMIN_NOTIFY_EMAIL` accepts a comma-separated list; if blank, no admin notifications are sent.
 - All user-supplied values are HTML-escaped in HTML emails; subjects are stripped of newlines (header-injection safe).

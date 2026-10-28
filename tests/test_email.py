@@ -113,3 +113,104 @@ def test_smtp_used_when_configured(app):
         server.starttls.assert_called_once()
         server.login.assert_called_once_with("u", "p")
         assert server.send_message.call_args[0][0]["To"] == "a@example.org"
+
+
+def _smtp_app(app, **kw):
+    app.config.update({"SMTP_HOST": "netsol-smtp-oxcs.hostingplatform.com", "SMTP_PORT": 587,
+                       "SMTP_USERNAME": "info@qicodeacademy.org", "SMTP_PASSWORD": "secret-pw",
+                       "SMTP_USE_TLS": True, "SMTP_USE_SSL": False,
+                       "MAIL_FROM": "Qi Code Academy <no-reply@qicodeacademy.org>", **kw})
+
+
+def test_smtp_587_starttls_full_address_login_and_mailbox_sender(app):
+    _smtp_app(app)
+    with mock.patch("smtplib.SMTP") as smtp, mock.patch("smtplib.SMTP_SSL") as smtp_ssl:
+        assert email_service.send_email("admin@example.org", "Hi", "text", reply_to="person@example.org") is True
+        smtp.assert_called_once()
+        assert smtp.call_args[0][:2] == ("netsol-smtp-oxcs.hostingplatform.com", 587)
+        smtp_ssl.assert_not_called()
+        server = smtp.return_value.__enter__.return_value
+        server.starttls.assert_called_once()
+        server.login.assert_called_once_with("info@qicodeacademy.org", "secret-pw")
+        sent = server.send_message.call_args
+        assert sent.kwargs["from_addr"] == "info@qicodeacademy.org"
+        assert sent[0][0]["From"] == "Qi Code Academy <info@qicodeacademy.org>"
+        assert sent[0][0]["Reply-To"] == "person@example.org"
+
+
+def test_smtp_465_uses_ssl(app):
+    _smtp_app(app, SMTP_PORT=465)
+    with mock.patch("smtplib.SMTP") as smtp, mock.patch("smtplib.SMTP_SSL") as smtp_ssl:
+        assert email_service.send_email("a@example.org", "Hi", "text") is True
+        smtp.assert_not_called()
+        assert smtp_ssl.call_args[0][:2] == ("netsol-smtp-oxcs.hostingplatform.com", 465)
+        server = smtp_ssl.return_value.__enter__.return_value
+        server.starttls.assert_not_called()
+        server.login.assert_called_once_with("info@qicodeacademy.org", "secret-pw")
+
+
+def test_smtp_failure_logs_real_error_without_password(app, caplog):
+    import smtplib
+    _smtp_app(app)
+    with mock.patch("smtplib.SMTP") as smtp:
+        server = smtp.return_value.__enter__.return_value
+        server.login.side_effect = smtplib.SMTPAuthenticationError(535, b"5.7.8 Authentication failed")
+        assert email_service.send_email("a@example.org", "Hi", "text") is False
+    assert "SMTP 535 5.7.8 Authentication failed" in caplog.text
+    assert "secret-pw" not in caplog.text
+
+
+def test_failed_email_still_saves_every_form(client, db, monkeypatch, make_program):
+    from api.models import ContactMessage, Volunteer, WellnessDayInterest, WellnessDayPartner
+
+    def boom(msg):
+        raise OSError("connection refused")
+    monkeypatch.setattr(email_service, "_deliver", boom)
+    assert client.post("/api/contact", json={"name": "a", "email": "a@x.org", "message": "m"}).status_code == 201
+    assert client.post("/api/volunteers", json={"name": "V", "email": "v@x.org", "roles": ["event_help"]}).status_code == 201
+    assert client.post("/api/wellness-day/interest", json={"name": "S", "email": "s@x.org", "consent_to_contact": True,
+                                                           "activities": ["acupuncture"]}).status_code == 201
+    assert db.session.query(ContactMessage).count() == 1
+    assert db.session.query(Volunteer).count() == 1
+    assert db.session.query(WellnessDayInterest).count() == 1
+    assert db.session.query(WellnessDayPartner).count() == 0
+
+
+def test_notification_bug_still_returns_201(client, monkeypatch):
+    monkeypatch.setattr(notifications, "_render", mock.Mock(side_effect=ValueError("bad template")))
+    assert client.post("/api/contact", json={"name": "a", "email": "a@x.org", "message": "m"}).status_code == 201
+
+
+def test_admin_notifications_reply_to_submitter(client, outbox, make_program):
+    client.post("/api/volunteers", json={"name": "V", "email": "v@example.org", "roles": ["event_help"]})
+    client.post("/api/wellness-day/interest", json={"name": "S", "email": "s@example.org", "consent_to_contact": True,
+                                                    "activities": ["acupuncture"]})
+    p = make_program(division="senior")
+    client.post("/api/registrations", json={**SENIOR, "program_id": p.id})
+    admin = [m for m in outbox if m.to == ["admin-notify@example.org"]]
+    assert [m.reply_to for m in admin] == ["v@example.org", "s@example.org", SENIOR["email"]]
+
+
+def test_admin_send_test_email_success(app, client, auth_headers, outbox):
+    _smtp_app(app)
+    res = client.post("/api/admin/email/test", headers=auth_headers, json={})
+    body = res.get_json()
+    assert res.status_code == 200 and body["ok"] is True, body
+    assert outbox[-1].to == ["admin-notify@example.org"] and "Test email" in outbox[-1].subject
+
+
+def test_admin_send_test_email_shows_exact_error(app, client, auth_headers):
+    import smtplib
+    _smtp_app(app, EMAIL_ASYNC=True)  # the test button always sends inline
+    with mock.patch("smtplib.SMTP") as smtp:
+        smtp.return_value.__enter__.return_value.login.side_effect = smtplib.SMTPAuthenticationError(
+            535, b"5.7.8 Authentication failed")
+        body = client.post("/api/admin/email/test", headers=auth_headers, json={}).get_json()
+    assert body["ok"] is False
+    assert "SMTP 535 5.7.8 Authentication failed" in body["error"]
+    assert body["settings"]["smtp_security"] == "STARTTLS" and body["settings"]["smtp_password_set"] is True
+    assert "secret-pw" not in str(body)
+
+
+def test_admin_send_test_email_requires_admin(client):
+    assert client.post("/api/admin/email/test", json={}).status_code == 401

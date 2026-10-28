@@ -165,8 +165,8 @@ The repo is ready for [Railway](https://railway.com). The Render files (`render.
 
 | Feature | Variables | If not set |
 |---|---|---|
-| Email (SendGrid) | `SENDGRID_API_KEY`, `MAIL_FROM`, `MAIL_REPLY_TO`, `ADMIN_NOTIFY_EMAIL` | No emails are sent (forms still work and save to the admin) |
-| Email (any SMTP instead) | `SMTP_HOST`, `SMTP_PORT`, `SMTP_USERNAME`, `SMTP_PASSWORD`, `SMTP_USE_TLS` | — |
+| Email (SMTP — what we use: Network Solutions Professional Email) | `SMTP_HOST` (`netsol-smtp-oxcs.hostingplatform.com`), `SMTP_PORT` (`587`), `SMTP_USERNAME` (full address, `info@qicodeacademy.org`), `SMTP_PASSWORD`, `MAIL_FROM`, `MAIL_REPLY_TO`, `ADMIN_NOTIFY_EMAIL` | No emails are sent (forms still work and save to the admin) |
+| Email (SendGrid instead, not used) | `SENDGRID_API_KEY` (takes priority over SMTP when set) | — |
 | Donations (Stripe) | `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`, `STRIPE_SUCCESS_URL` (`<site>/donate/thank-you`), `STRIPE_CANCEL_URL` (`<site>/donate/cancelled`) | **Donations stay off.** The Donate page says online giving isn't available yet |
 | Photo uploads (Cloudflare R2) | `R2_ACCOUNT_ID`, `R2_ACCESS_KEY_ID`, `R2_SECRET_ACCESS_KEY`, `R2_BUCKET`, `R2_PUBLIC_URL` | Uploads save to the server's disk and **disappear on the next deploy** |
 | Performance | `WEB_CONCURRENCY` (gunicorn workers, default 2) | — |
@@ -181,7 +181,7 @@ The repo is ready for [Railway](https://railway.com). The Render files (`render.
 3. Each deploy runs `render_build.sh`: pip install → `npm ci` + `npm run build` → `flask db upgrade` → `flask seed`. Gunicorn then serves the API and the built site, with server-side SEO tags, `/sitemap.xml`, `/robots.txt`, gzip/Brotli, and long-lived caching for hashed assets.
 4. **Stripe:** add a webhook to `https://<domain>/api/stripe/webhook` with the events `checkout.session.completed`, `checkout.session.async_payment_succeeded`, `checkout.session.async_payment_failed`, `checkout.session.expired`, `invoice.paid`, `customer.subscription.updated`, `customer.subscription.deleted`, `charge.refunded`. Put its signing secret in `STRIPE_WEBHOOK_SECRET`.
 5. **R2:** create a bucket, enable public access (r2.dev or a custom domain) and set `R2_PUBLIC_URL` to it; create an API token with Object Read & Write.
-6. **SendGrid:** verify the `MAIL_FROM` sender or domain.
+6. **Email:** after setting the `SMTP_*` variables and `ADMIN_NOTIFY_EMAIL`, open **Admin → Site settings & text** and click **Send test email**. It shows either success or the exact SMTP error (e.g. `SMTP 535 … Authentication failed` = wrong password/username). Send failures are also logged as `Email delivery failed via smtp …` in the Render logs.
 
 ### Testing Stripe locally
 ```bash

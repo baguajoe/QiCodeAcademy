@@ -102,16 +102,21 @@ class Config:
     R2_PUBLIC_URL = (os.getenv("R2_PUBLIC_URL") or "").rstrip("/")
 
     # --- Email --------------------------------------------------------------
-    MAIL_FROM = (os.getenv("MAIL_FROM") or "Qi Code Academy <no-reply@qicodeacademy.org>")
+    # SMTP: port 587 = STARTTLS, port 465 = SSL. Log in with the full mailbox address.
+    SMTP_HOST = (os.getenv("SMTP_HOST") or "").strip()
+    SMTP_PORT = _int("SMTP_PORT", 587)
+    SMTP_USERNAME = (os.getenv("SMTP_USERNAME") or "").strip()
+    # Trailing newlines from pasting into a dashboard would break login; nothing else is altered.
+    SMTP_PASSWORD = (os.getenv("SMTP_PASSWORD") or "").strip("\r\n")
+    SMTP_USE_TLS = _bool("SMTP_USE_TLS", True)
+    SMTP_USE_SSL = _bool("SMTP_USE_SSL", SMTP_PORT == 465)
+    # Default sender is the SMTP mailbox itself (mailbox hosts reject other From addresses).
+    MAIL_FROM = (os.getenv("MAIL_FROM")
+                 or (f"Qi Code Academy <{SMTP_USERNAME}>" if "@" in SMTP_USERNAME else "")
+                 or "Qi Code Academy <no-reply@qicodeacademy.org>")
     MAIL_REPLY_TO = (os.getenv("MAIL_REPLY_TO") or "")
     ADMIN_NOTIFY_EMAIL = (os.getenv("ADMIN_NOTIFY_EMAIL") or "")
     SENDGRID_API_KEY = (os.getenv("SENDGRID_API_KEY") or "")
-    SMTP_HOST = (os.getenv("SMTP_HOST") or "")
-    SMTP_PORT = _int("SMTP_PORT", 587)
-    SMTP_USERNAME = (os.getenv("SMTP_USERNAME") or "")
-    SMTP_PASSWORD = (os.getenv("SMTP_PASSWORD") or "")
-    SMTP_USE_TLS = _bool("SMTP_USE_TLS", True)
-    SMTP_USE_SSL = _bool("SMTP_USE_SSL", False)
     # Send on a background thread so form requests stay fast (default on in production).
     EMAIL_ASYNC = _bool("EMAIL_ASYNC", IS_PRODUCTION)
 

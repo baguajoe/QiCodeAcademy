@@ -34,12 +34,19 @@ services:
         sync: false
       - key: ADMIN_NOTIFY_EMAIL
         sync: false
+      # Email: Network Solutions Professional Email over SMTP (no SendGrid).
+      - key: SMTP_HOST
+        value: netsol-smtp-oxcs.hostingplatform.com
+      - key: SMTP_PORT
+        value: "587"           # STARTTLS. Use 465 for SSL.
+      - key: SMTP_USERNAME
+        value: info@qicodeacademy.org   # the full mailbox address
+      - key: SMTP_PASSWORD
+        sync: false            # the mailbox password; set it in the Render dashboard only
       - key: MAIL_FROM
-        sync: false            # e.g. Qi Code Academy <hello@qicodeacademy.org>
+        value: Qi Code Academy <info@qicodeacademy.org>
       - key: MAIL_REPLY_TO
-        sync: false
-      - key: SENDGRID_API_KEY
-        sync: false
+        value: info@qicodeacademy.org
       - key: STRIPE_SECRET_KEY
         sync: false
       - key: STRIPE_WEBHOOK_SECRET
