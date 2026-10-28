@@ -107,6 +107,7 @@ export default function Layout() {
           <Route path="/programs/youth" element={<YouthPrograms />} />
           <Route path="/programs/seniors" element={<SeniorPrograms />} />
           <Route path="/programs/seniors/wellness-day" element={<WellnessDay />} />
+          <Route path="/wellness-day" element={<Navigate to="/programs/seniors/wellness-day" replace />} />
           <Route path="/programs/intergenerational" element={<IntergenerationalPrograms />} />
           <Route path="/research" element={<Research />} />
           <Route path="/events" element={<Events />} />

@@ -54,6 +54,12 @@ module.exports = {
         // Unhashed copies so Flask can use them as Open Graph share images.
         { from: "src/front/img/site", to: "img/site", globOptions: { ignore: ["**/*.md", "**/.gitkeep"] }, noErrorOnMissing: true },
         { from: "src/front/img/og-default.png", to: "img/og-default.png" },
+        // Link-preview images (1200x630, built by scripts/make_social_images.py), served at /img/social/*.jpg
+        { from: "src/front/img/social", to: "img/social" },
+        // Favicon set at the site root (/favicon.ico, /favicon-32x32.png, /apple-touch-icon.png)
+        { from: "src/front/img/icons/favicon.ico", to: "favicon.ico" },
+        { from: "src/front/img/icons/favicon-32x32.png", to: "favicon-32x32.png" },
+        { from: "src/front/img/icons/apple-touch-icon.png", to: "apple-touch-icon.png" },
         // Public documents (IRS determination letter), served unhashed at /docs/...
         { from: "src/front/docs", to: "docs" },
       ],

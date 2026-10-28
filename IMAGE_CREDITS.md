@@ -48,3 +48,18 @@ slots (wellness-day-*).
 
 Nappy's license (CC0): https://nappy.co/license — free for commercial and personal use; credit appreciated but not required;
 don't resell the photos unmodified or use them to degrade their subjects.
+
+## Link-preview images and favicons
+
+`src/front/img/social/*.jpg` (1200×630, served at `/img/social/`) are derivatives of founder-owned photos
+(permission obtained from the people shown). No stock photos are used, so no extra credit line is needed:
+
+| File | Source slot | Credit |
+|---|---|---|
+| default.jpg | seniors-baguazhang | Joseph Gallop — owned by founder |
+| wellness-day.jpg | seniors-banner | Joseph Gallop — owned by founder |
+| baguazhang.jpg | research-banner | Joseph Gallop — owned by founder |
+| youth.jpg | youth-movement (faces blurred) | Joseph Gallop — owned by founder |
+
+Favicons (`src/front/img/icons/`) are rendered from the logo (`favicon.svg`). Rebuild everything with
+`.venv/bin/python scripts/make_social_images.py`; it refuses any source that isn't founder-owned.

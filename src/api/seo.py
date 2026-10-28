@@ -20,7 +20,7 @@ from sqlalchemy import select
 
 from .commands import EIN
 from .extensions import db
-from .models import Event, NewsPost, Program, SiteImage, SiteSetting, TeamMember, utcnow
+from .models import Event, NewsPost, Program, SiteSetting, TeamMember, utcnow
 from .founder_content import FOUNDER_NAME, FOUNDER_ROLE, FOUNDER_SHORT_BIO
 
 SITE = "Qi Code Academy"
@@ -29,40 +29,62 @@ MISSION = ("Qi Code Academy empowers youth and older adults in Boston's inner-ci
            "technology education, workforce development, wellness, community engagement, and research.")
 NEIGHBORHOODS = ["Dorchester", "Roxbury", "Mattapan", "Hyde Park", "South End"]
 
-# path -> (title or None for the home page, description, share-image slot, indexable)
+# Link-preview images: 1200x630 JPGs in src/front/img/social/ (scripts/make_social_images.py),
+# built from founder-owned, consented site photos. name -> og:image:alt
+SOCIAL_IMAGES = {
+    "default": "Qi Code Academy logo and the words Learn. Move. Create. Connect. over a photo of a "
+               "movement class practicing together.",
+    "wellness-day": "Older adults seated in a circle during a movement class, with the words Senior Wellness Day, "
+                    "Spring 2027.",
+    "baguazhang": "Older adults practicing Baguazhang circle walking in a gym, with the words Baguazhang for "
+                  "Healthy Aging.",
+    "youth": "Young people in a movement exercise, faces blurred, with the words Youth Tech, Grades 9–12.",
+}
+SOCIAL_SIZE = (1200, 630)
+
+WELLNESS_DAY_PATH = "/programs/seniors/wellness-day"
+# Short links: served with the target page's tags (canonical = target); the app redirects visitors.
+ALIASES = {"/wellness-day": WELLNESS_DAY_PATH}
+
+# path -> (title or None for the home page, description, social image name, indexable)
+# Descriptions: one or two plain sentences, no health claims.
 STATIC_PAGES = {
-    "/": (None, MISSION, "hero-home", True),
-    "/about": ("About", MISSION, "about-banner", True),
-    "/about/founder": (f"{FOUNDER_NAME}, {FOUNDER_ROLE}", FOUNDER_SHORT_BIO.split("\n\n")[0], "founder-portrait", True),
+    "/": (None, MISSION, "default", True),
+    "/about": ("About", "A Boston nonprofit where people of all ages can learn, move, create, and connect, building on "
+               "more than 18 years of community teaching.", "default", True),
+    "/about/founder": (f"{FOUNDER_NAME}, {FOUNDER_ROLE}", FOUNDER_SHORT_BIO.split("\n\n")[0], "default", True),
+    "/programs": ("Programs", "Technology education for teens, traditional movement and wellness for older adults, and "
+                  "intergenerational programs that bring them together in Boston.", "default", False),
     "/programs/youth": ("Youth Technology & Workforce Development",
                         "Python, game development, web and intelligent applications, and career preparation for "
-                        "teens ages 14–18 in Boston's neighborhoods.", "youth-banner", True),
+                        "high school students (grades 9–12) in Boston's neighborhoods.", "youth", True),
     "/programs/seniors": ("Senior Wellness & Healthy Aging",
                           "Traditional Tai Chi, Baguazhang, yoga, wellness education, and social time for older "
-                          "adults, designed to encourage healthy and active aging.", "seniors-banner", True),
-    "/programs/seniors/wellness-day": ("Senior Wellness Day",
-                                       "A free day of movement, care, creativity, and community for older adults "
-                                       "in Boston, with a marketplace for local vendors and senior makers. Planned "
-                                       "for spring 2027. Join the interest list.", "seniors-banner", True),
+                          "adults in Boston.", "baguazhang", True),
+    WELLNESS_DAY_PATH: ("Senior Wellness Day",
+                        "A free day of movement, care, creativity, and community for older adults in Boston, with a "
+                        "marketplace for local vendors and senior makers. Planned for spring 2027; join the interest "
+                        "list.", "wellness-day", True),
     "/programs/intergenerational": ("Intergenerational Programs",
                                     "Youth help older adults learn technology: young people gain leadership "
-                                    "experience, and seniors gain digital skills.", "intergenerational-banner", True),
+                                    "experience, and seniors gain digital skills.", "default", True),
     "/research": ("Research & Community Health",
-                  "Building toward community-based research into traditional movement and mind-body practices, "
-                  "especially Baguazhang.", "research-banner", True),
-    "/events": ("Events", "Classes, open houses, workshops, and community gatherings.", "events-banner", True),
-    "/news": ("News", "Updates from our programs and community.", None, True),
-    "/gallery": ("Gallery", "Photos from our classes and events, shared with the permission of everyone pictured.", None, True),
-    "/get-involved": ("Get Involved", "Volunteer, teach, partner, or sponsor — there are many ways to help.", "volunteer-banner", True),
-    "/contact": ("Contact us", "Questions about programs, volunteering, or partnerships? Send us a note.", None, True),
-    "/donate": ("Donate", "Support technology education for young people and wellness programs for older adults in Boston.", "donate", True),
+                  "Building toward community-based research into Baguazhang and other traditional movement "
+                  "practices, and whether they may support healthy aging.", "baguazhang", True),
+    "/events": ("Events", "Classes, open houses, workshops, and community gatherings from Qi Code Academy in "
+                "Boston.", "default", True),
+    "/news": ("News", "Updates from our programs and community.", "default", True),
+    "/gallery": ("Gallery", "Photos from our classes and events, shared with the permission of everyone pictured.", "default", True),
+    "/get-involved": ("Get Involved", "Volunteer, teach, partner, or sponsor. There are many ways to help Qi Code "
+                      "Academy serve young people and older adults in Boston.", "default", True),
+    "/contact": ("Contact us", "Questions about programs, volunteering, or partnerships? Send us a note.", "default", True),
+    "/donate": ("Donate", "Support technology education for young people and wellness programs for older adults in Boston.", "default", True),
     "/donate/thank-you": ("Thank you for your gift!", MISSION, None, False),
     "/donate/cancelled": ("Your donation was cancelled", MISSION, None, False),
     "/privacy": ("Privacy Policy", MISSION, None, False),
     "/terms": ("Terms of Use", MISSION, None, False),
     "/photo-credits": ("Photo credits", "Where the photos on this website come from.", None, True),
     "/register": ("Register", "Choose a program to begin registration.", None, False),
-    "/programs": (None, MISSION, "hero-home", False),  # redirects client-side
 }
 SITEMAP_PATHS = [p for p, v in STATIC_PAGES.items() if v[3]]
 NOINDEX_PREFIXES = ("/register/", "/admin")
@@ -85,15 +107,10 @@ def _settings():
     return {r.key: r.value for r in rows}
 
 
-def share_image(slot, dist):
-    if slot:
-        row = db.session.scalar(select(SiteImage).where(SiteImage.slot_key == slot))
-        if row and row.image_url:
-            return _abs(row.image_url)
-        for ext in ("jpg", "jpeg", "png", "webp"):
-            if (dist / "img" / "site" / f"{slot}.{ext}").is_file():
-                return f"{_site_url()}/img/site/{slot}.{ext}"
-    return f"{_site_url()}/img/og-default.png"
+def social_image(name):
+    """(absolute URL, alt, (width, height)) for a 1200x630 link-preview image."""
+    name = name if name in SOCIAL_IMAGES else "default"
+    return f"{_site_url()}/img/social/{name}.jpg", SOCIAL_IMAGES[name], SOCIAL_SIZE
 
 
 def org_jsonld(settings):
@@ -104,7 +121,7 @@ def org_jsonld(settings):
         "name": SITE,
         "legalName": "Qi Code Academy, Inc.",
         "url": _site_url(),
-        "logo": f"{_site_url()}/img/og-default.png",
+        "logo": f"{_site_url()}/apple-touch-icon.png",
         "slogan": TAGLINE,
         "description": MISSION,
         "areaServed": [{"@type": "Place", "name": f"{n}, Boston, MA"} for n in NEIGHBORHOODS],
@@ -174,14 +191,17 @@ def _clip(text, n=300):
 def page_meta(path, dist):
     """Return (meta dict, http_status)."""
     path = path.rstrip("/") or "/"
+    path = ALIASES.get(path, path)
     settings = _settings()
-    meta = {"title": None, "description": MISSION, "image": None, "type": "website", "noindex": False,
-            "jsonld": [org_jsonld(settings)]}
+    meta = {"title": None, "description": MISSION, "image": None, "image_alt": None, "image_size": None,
+            "type": "website", "noindex": False, "jsonld": [org_jsonld(settings)], "path": path}
     status = 200
 
     if path in STATIC_PAGES:
-        title, desc, slot, indexable = STATIC_PAGES[path]
-        meta.update(title=title, description=_clip(desc), image=share_image(slot, dist), noindex=not indexable)
+        title, desc, social, indexable = STATIC_PAGES[path]
+        meta.update(title=title, description=_clip(desc), noindex=not indexable)
+        if social:
+            meta["image"], meta["image_alt"], meta["image_size"] = social_image(social)
         if path == "/about/founder":
             meta["type"] = "profile"
             meta["jsonld"].append(person_jsonld())
@@ -190,7 +210,7 @@ def page_meta(path, dist):
         if ev:
             when = ev.start_datetime.strftime("%A, %B %-d, %Y, %-I:%M %p")
             meta.update(title=ev.title, description=_clip(f"{when}. {ev.description or ''}"),
-                        image=_abs(ev.image_url) or share_image("events-banner", dist))
+                        image=_abs(ev.image_url), image_alt=ev.title if ev.image_url else None)
             meta["jsonld"].append(event_jsonld(ev, _site_url() + path))
         else:
             status = 404
@@ -200,7 +220,7 @@ def page_meta(path, dist):
         if post:
             text = re.sub(r"<[^>]+>", " ", post.body or "")
             meta.update(title=post.title, description=_clip(text), type="article",
-                        image=_abs(post.cover_image_url) or share_image(None, dist))
+                        image=_abs(post.cover_image_url), image_alt=post.title if post.cover_image_url else None)
         else:
             status = 404
     elif m := re.fullmatch(r"/register/([\w-]+)", path):
@@ -217,13 +237,14 @@ def page_meta(path, dist):
     if status == 404:
         meta.update(title="Page not found", noindex=True)
     if not meta["image"]:
-        meta["image"] = share_image(None, dist)
+        meta["image"], meta["image_alt"], meta["image_size"] = social_image("default")
     return meta, status
 
 
 def render_head(meta, path):
     full_title = f"{meta['title']} | {SITE}" if meta["title"] else f"{SITE} — {TAGLINE}"
-    url = _site_url() + (path.rstrip("/") or "/")
+    # Canonical/og:url use the resolved page path, so short links point at the real page.
+    url = _site_url() + meta.get("path", path.rstrip("/") or "/")
     e = lambda v: escape(v or "", quote=True)  # noqa: E731
     tags = [
         f"<title>{e(full_title)}</title>",
@@ -235,12 +256,23 @@ def render_head(meta, path):
         f'<meta property="og:description" content="{e(meta["description"])}" data-seo="1" />',
         f'<meta property="og:url" content="{e(url)}" data-seo="1" />',
         f'<meta property="og:image" content="{e(meta["image"])}" data-seo="1" />',
+    ]
+    if meta.get("image_size"):
+        w, h = meta["image_size"]
+        tags += [f'<meta property="og:image:type" content="image/jpeg" data-seo="1" />',
+                 f'<meta property="og:image:width" content="{w}" data-seo="1" />',
+                 f'<meta property="og:image:height" content="{h}" data-seo="1" />']
+    if meta.get("image_alt"):
+        tags.append(f'<meta property="og:image:alt" content="{e(meta["image_alt"])}" data-seo="1" />')
+    tags += [
         '<meta property="og:locale" content="en_US" data-seo="1" />',
         '<meta name="twitter:card" content="summary_large_image" data-seo="1" />',
         f'<meta name="twitter:title" content="{e(full_title)}" data-seo="1" />',
         f'<meta name="twitter:description" content="{e(meta["description"])}" data-seo="1" />',
         f'<meta name="twitter:image" content="{e(meta["image"])}" data-seo="1" />',
     ]
+    if meta.get("image_alt"):
+        tags.append(f'<meta name="twitter:image:alt" content="{e(meta["image_alt"])}" data-seo="1" />')
     if meta["noindex"]:
         tags.append('<meta name="robots" content="noindex, nofollow" data-seo="1" />')
     for block in meta["jsonld"]:

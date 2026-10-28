@@ -62,10 +62,12 @@ class Config:
     SQLALCHEMY_ENGINE_OPTIONS = {"pool_pre_ping": True}
 
     # --- URLs / CORS --------------------------------------------------------
-    # SITE_URL falls back to Railway's auto-provided public domain, then localhost.
+    # Public address used in link previews (og:image, canonical), emails and sitemaps.
+    # SITE_URL falls back to Railway's auto-provided public domain, then the live site.
+    # For local email/Stripe testing set SITE_URL=http://localhost:3001 in .env.
     SITE_URL = (os.getenv("SITE_URL")
                 or (f"https://{os.getenv('RAILWAY_PUBLIC_DOMAIN')}" if os.getenv("RAILWAY_PUBLIC_DOMAIN") else "")
-                or "http://localhost:3001").rstrip("/")
+                or "https://qicodeacademy.org").rstrip("/")
     CORS_ORIGINS = _list("CORS_ORIGINS")
     # Regexes allowed in development only (Codespaces forwarded ports + localhost).
     DEV_CORS_ORIGIN_PATTERNS = [
@@ -158,6 +160,7 @@ class TestingConfig(Config):
     JWT_SECRET_KEY = "test-jwt-secret-key-not-for-production-000000"
     SQLALCHEMY_DATABASE_URI = "sqlite://"
     SQLALCHEMY_ENGINE_OPTIONS = {}
+    SITE_URL = "http://localhost:3001"
     RATELIMIT_ENABLED = False
     RATELIMIT_STORAGE_URI = "memory://"
     SENDGRID_API_KEY = ""
