@@ -16,6 +16,8 @@ export function Dashboard({ data }) {
     { label: "New research inquiries", value: data.new_research_inquiries, to: "/admin/research-inquiries?is_read=false" },
     { label: "New volunteers (30 days)", value: data.volunteers_last_30_days, to: "/admin/volunteers" },
     { label: "Research interest sign-ups", value: data.research_interest_total, to: "/admin/research-interest" },
+    { label: "Senior Wellness Day interest list", value: data.wellness_interest_total, to: "/admin/wellness-day" },
+    { label: "New Wellness Day partner submissions", value: data.wellness_partners_new, to: "/admin/wellness-day-partners?status=new" },
   ];
   return (
     <>

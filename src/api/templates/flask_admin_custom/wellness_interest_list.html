@@ -1,0 +1,23 @@
+{% extends 'admin/model/list.html' %}
+{% block model_list_table %}
+{% if wellness_summary %}
+<div class="card mb-3"><div class="card-body">
+  <div class="h4 mb-2">Total sign-ups: {{ wellness_summary.total }}</div>
+  <div class="row">
+    <div class="col-md-6">
+      <h6 class="text-muted">By activity</h6>
+      <table class="table table-sm mb-0"><tbody>
+      {% for label, n in wellness_summary.by_activity %}<tr><td>{{ label }}</td><td class="text-right">{{ n }}</td></tr>{% endfor %}
+      </tbody></table>
+    </div>
+    <div class="col-md-6">
+      <h6 class="text-muted">By neighborhood</h6>
+      <table class="table table-sm mb-0"><tbody>
+      {% for label, n in wellness_summary.by_neighborhood %}<tr><td>{{ label }}</td><td class="text-right">{{ n }}</td></tr>{% endfor %}
+      </tbody></table>
+    </div>
+  </div>
+</div></div>
+{% endif %}
+{{ super() }}
+{% endblock %}

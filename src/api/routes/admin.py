@@ -2,18 +2,20 @@
 from datetime import timedelta
 
 from flask import Blueprint, g, jsonify, request
-from sqlalchemy import Boolean, Integer, func, or_, select
+from sqlalchemy import Boolean, Integer, String, cast, func, or_, select
 
 from ..extensions import db
-from ..models import (REGISTRATION_STATUSES, ContactMessage, CurriculumModule, Donation, Event, GalleryPhoto,
+from ..models import (REGISTRATION_STATUSES, WELLNESS_ACTIVITIES, WELLNESS_NEIGHBORHOODS, WELLNESS_PARTICIPATION,
+                      WELLNESS_PARTNER_STATUSES, ContactMessage, CurriculumModule, Donation, Event, GalleryPhoto,
                       ImpactStat, NewsPost, Partner, Program, Registration, ResearchInterest,
                       ResearchPartnerInquiry, ResearchReference, SiteImage, SiteSetting,
-                      TeamMember, User, Volunteer, utcnow)
+                      TeamMember, User, Volunteer, WellnessDayInterest, WellnessDayPartner, utcnow)
 from ..schemas import (ContactMessageSchema, CurriculumModuleSchema, DonationSchema, EventSchema, GalleryPhotoSchema,
                        ImpactStatSchema, NewsPostSchema, PartnerSchema, ProgramSchema,
                        RegistrationSchema, ResearchInterestSchema, ResearchPartnerInquirySchema,
                        ResearchReferenceSchema, SiteImageSchema, SiteSettingSchema,
-                       TeamMemberSchema, UserSchema, VolunteerSchema)
+                       TeamMemberSchema, UserSchema, VolunteerSchema, WellnessDayInterestSchema,
+                       WellnessDayPartnerSchema)
 from ..services import notifications
 from ..utils import APIError, csv_response, get_json, load, paginate, parse_bool
 from .auth import admin_required
@@ -36,9 +38,12 @@ def _require_admin():
 # ---------------------------------------------------------------------------
 class Resource:
     def __init__(self, name, model, schema_cls, search=(), filters=(), default_sort="-created_at",
-                 before_create=None, before_save=None, before_delete=None, after_update=None):
+                 before_create=None, before_save=None, before_delete=None, after_update=None,
+                 list_filters=None):
         self.name, self.model, self.schema_cls = name, model, schema_cls
         self.search, self.filters, self.default_sort = search, filters, default_sort
+        # {query arg: (JSON list column, allowed values)} -> rows whose list contains that value
+        self.list_filters = list_filters or {}
         self.before_create, self.before_save = before_create, before_save
         self.before_delete, self.after_update = before_delete, after_update
 
@@ -69,6 +74,10 @@ class Resource:
                     raise APIError(f"`{name}` must be an integer.", 400)
             else:
                 q = q.where(col.in_([v for v in raw.split(",") if v]))
+        for arg, (col_name, allowed) in self.list_filters.items():
+            raw = request.args.get(arg)
+            if raw:
+                q = q.where(json_list_contains(self.model.__table__.columns[col_name], raw, allowed))
         term = (request.args.get("q") or "").strip()
         if term and self.search:
             like = f"%{term.lower()}%"
@@ -125,6 +134,14 @@ class Resource:
             data = self.before_save(obj, data) or data
         for k, v in data.items():
             setattr(obj, k, v)
+
+
+def json_list_contains(col, value, allowed):
+    """Portable "JSON list contains value" (SQLite + Postgres): match the quoted value in the
+    serialized list. Values are checked against a fixed choice list, so no LIKE wildcards get in."""
+    if value not in allowed:
+        raise APIError(f"Unknown value `{value}`.", 400)
+    return cast(col, String).like(f'%"{value}"%')
 
 
 RESOURCES = {}
@@ -227,6 +244,12 @@ for _r in [
              search=("name", "institution", "email"), filters=("is_read",)),
     Resource("research-interest", ResearchInterest, ResearchInterestSchema,
              search=("name", "email_or_phone", "neighborhood")),
+    Resource("wellness-day-interest", WellnessDayInterest, WellnessDayInterestSchema,
+             search=("name", "email", "phone"), filters=("neighborhood", "contact_method", "signing_up_for"),
+             list_filters={"activity": ("activities", WELLNESS_ACTIVITIES)}),
+    Resource("wellness-day-partners", WellnessDayPartner, WellnessDayPartnerSchema,
+             search=("name", "organization", "email"), filters=("status", "show_publicly", "compensation"),
+             list_filters={"participation_type": ("participation_types", WELLNESS_PARTICIPATION)}),
 ]:
     register(_r)
 
@@ -271,6 +294,81 @@ def export_research_interest():
     rows = ([r.id, r.created_at.isoformat(timespec="seconds"), r.name, r.email_or_phone,
              r.neighborhood, r.consent_to_contact] for r in db.session.scalars(q))
     return csv_response("research-interest.csv", header, rows)
+
+
+def _wellness_interest_query():
+    q = select(WellnessDayInterest).order_by(WellnessDayInterest.created_at.desc())
+    if request.args.get("neighborhood"):
+        q = q.where(WellnessDayInterest.neighborhood.in_(request.args["neighborhood"].split(",")))
+    if request.args.get("activity"):
+        q = q.where(json_list_contains(WellnessDayInterest.activities, request.args["activity"], WELLNESS_ACTIVITIES))
+    return q
+
+
+@bp.get("/wellness-day-interest/export.csv")
+def export_wellness_interest():
+    header = ["id", "created_at_utc", "name", "email", "phone", "neighborhood", "activities",
+              "contact_method", "signing_up_for", "consent_to_contact"]
+    rows = ([r.id, r.created_at.isoformat(timespec="seconds"), r.name, r.email, r.phone, r.neighborhood,
+             r.activities or [], r.contact_method, r.signing_up_for, r.consent_to_contact]
+            for r in db.session.scalars(_wellness_interest_query()))
+    return csv_response("wellness-day-interest.csv", header, rows)
+
+
+@bp.get("/wellness-day-partners/export.csv")
+def export_wellness_partners():
+    q = select(WellnessDayPartner).order_by(WellnessDayPartner.created_at.desc())
+    if request.args.get("status"):
+        q = q.where(WellnessDayPartner.status.in_(request.args["status"].split(",")))
+    if request.args.get("participation_type"):
+        q = q.where(json_list_contains(WellnessDayPartner.participation_types,
+                                       request.args["participation_type"], WELLNESS_PARTICIPATION))
+    header = ["id", "created_at_utc", "status", "show_publicly", "name", "organization", "email", "phone",
+              "website_or_social", "participation_types", "offer_description", "license_type", "license_number",
+              "has_insurance", "compensation", "typical_rate", "setup_needs", "availability", "referral_source",
+              "agrees_no_sales", "agrees_not_confirmed", "admin_notes"]
+    rows = ([p.id, p.created_at.isoformat(timespec="seconds"), p.status, p.show_publicly, p.name, p.organization,
+             p.email, p.phone, p.website_or_social, p.participation_types or [], p.offer_description, p.license_type,
+             p.license_number, p.has_insurance, p.compensation, p.typical_rate, p.setup_needs or [],
+             p.availability or [], p.referral_source, p.agrees_no_sales, p.agrees_not_confirmed, p.admin_notes]
+            for p in db.session.scalars(q))
+    return csv_response("wellness-day-partners.csv", header, rows)
+
+
+@bp.get("/wellness-day/summary")
+def wellness_day_summary():
+    """Interest-list totals and breakdowns, partner counts, and the confirmed lineup."""
+    interest = db.session.scalars(select(WellnessDayInterest)).all()
+    by_activity = {a: 0 for a in WELLNESS_ACTIVITIES}
+    by_hood = {h: 0 for h in WELLNESS_NEIGHBORHOODS}
+    not_given = 0
+    for r in interest:
+        for a in r.activities or []:
+            if a in by_activity:
+                by_activity[a] += 1
+        if r.neighborhood in by_hood:
+            by_hood[r.neighborhood] += 1
+        else:
+            not_given += 1
+    partners = db.session.scalars(select(WellnessDayPartner)).all()
+    by_type = {t: 0 for t in WELLNESS_PARTICIPATION}
+    for p in partners:
+        for t in p.participation_types or []:
+            if t in by_type:
+                by_type[t] += 1
+    confirmed = sorted((p for p in partners if p.status == "confirmed"), key=lambda p: p.display_name.lower())
+    return jsonify({
+        "interest_total": len(interest),
+        "interest_by_activity": by_activity,
+        "interest_by_neighborhood": {**by_hood, "not_given": not_given},
+        "partners_total": len(partners),
+        "partners_by_status": {s: sum(p.status == s for p in partners) for s in WELLNESS_PARTNER_STATUSES},
+        "partners_by_type": by_type,
+        "confirmed_lineup": WellnessDayPartnerSchema(
+            only=("id", "name", "organization", "display_name", "email", "phone", "participation_types",
+                  "show_publicly", "license_type", "license_number", "has_insurance", "setup_needs",
+                  "availability")).dump(confirmed, many=True),
+    })
 
 
 # ---------------------------------------------------------------------------
@@ -333,4 +431,6 @@ def dashboard():
                                         ResearchPartnerInquiry.is_read.is_(False)),
         "research_interest_total": count(ResearchInterest),
         "volunteers_last_30_days": count(Volunteer, Volunteer.created_at >= since),
+        "wellness_interest_total": count(WellnessDayInterest),
+        "wellness_partners_new": count(WellnessDayPartner, WellnessDayPartner.status == "new"),
     })

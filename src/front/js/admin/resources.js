@@ -1,6 +1,6 @@
 // Admin resource definitions: one entry per /api/admin/<key> resource (see API.md).
 // Field types: text, email, tel, url, textarea, richtext, select, bool, number, money,
-//              date, datetime, image, roles, program, password, readonly
+//              date, datetime, image, roles, multi (checkboxes from `options`), program, password, readonly
 // `showIf(values)` hides a field unless it applies (e.g. youth-only fields).
 
 export const DIVISIONS = [
@@ -18,6 +18,20 @@ export const NEWS_CATEGORIES = [["community", "Community"], ["youth", "Youth"], 
 export const TEAM_GROUPS = [["staff", "Staff"], ["board", "Board of Directors"], ["instructor", "Instructor"], ["advisor", "Advisor"]];
 export const CURRICULUM_DIVISIONS = [["youth", "Youth"], ["senior", "Seniors"], ["research", "Research"]];
 export const CURRICULUM_STATUS = [["available", "Available now"], ["in_development", "In development"]];
+// Senior Wellness Day
+export const WD_NEIGHBORHOODS = [...NEIGHBORHOODS, "Other"].map((n) => [n, n]);
+export const WD_ACTIVITIES = [["tai_chi_baguazhang", "Tai Chi and Baguazhang"], ["chair_yoga_meditation", "Chair yoga and meditation"],
+  ["massage_acupressure", "Chair massage and acupressure"], ["strength_balance", "Strength and balance"],
+  ["painting_sewing", "Painting and sewing"], ["wellness_education", "Wellness education"], ["food_social", "Food and social time"]];
+export const WD_CONTACT = [["email", "Email"], ["phone", "Phone call"], ["text", "Text message"]];
+export const WD_FOR = [["myself", "Themselves"], ["someone_else", "A family member or friend"]];
+export const WD_TYPES = [["practitioner", "Practitioner"], ["instructor", "Instructor"], ["arts_crafts", "Arts and crafts"],
+  ["resource_table", "Community resource table"], ["food", "Food or refreshments"], ["volunteer", "Volunteer"], ["sponsor", "Sponsor"]];
+export const WD_STATUS = [["new", "New"], ["contacted", "Contacted"], ["confirmed", "Confirmed"], ["declined", "Declined"]];
+export const WD_INSURANCE = [["yes", "Yes"], ["no", "No"], ["not_applicable", "Not applicable"]];
+export const WD_COMPENSATION = [["volunteer", "Volunteer"], ["paid", "Paid"], ["open", "Open to discussion"]];
+export const WD_SETUP = [["table", "Table"], ["chairs", "Chairs"], ["electricity", "Electricity"], ["quiet_space", "Private or quiet space"], ["none", "None"]];
+export const WD_AVAILABILITY = [["weekdays", "Weekdays"], ["saturdays", "Saturdays"], ["sundays", "Sundays"]];
 export const PARTNER_TYPES = [["community", "Community"], ["sponsor", "Sponsor"], ["research", "Research"]];
 
 const label = (opts) => (v) => (opts.find((o) => o[0] === v) || [v, v])[1];
@@ -25,6 +39,7 @@ const yesNo = (v) => (v ? "Yes" : "No");
 const dateOnly = (v) => (v ? new Date(v).toLocaleDateString() : "");
 const money = (c) => `$${((c || 0) / 100).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 
+const labels = (opts) => (list) => (list || []).map(label(opts)).join(", ");
 const isYouth = (v) => v.type === "youth";
 const isSenior = (v) => v.type === "senior";
 
@@ -149,6 +164,74 @@ export const RESOURCES = {
       { key: "email_or_phone", label: "Email or phone", required: true },
       { key: "neighborhood", label: "Neighborhood" },
       { key: "consent_to_contact", label: "Agreed to be contacted", type: "bool", required: true },
+    ],
+  },
+  "wellness-day-interest": {
+    label: "Wellness Day interest list", singular: "sign-up", group: "Senior Wellness Day",
+    help: "Seniors (or family and friends on their behalf) who want to hear about Senior Wellness Day. We never collect age, health, or medical information.",
+    columns: [
+      { key: "created_at", label: "Signed up", format: dateOnly },
+      { key: "name", label: "Name" },
+      { key: "neighborhood", label: "Neighborhood" },
+      { key: "activities", label: "Activities", format: labels(WD_ACTIVITIES) },
+      { key: "contact_method", label: "Contact by", format: (v) => (v ? label(WD_CONTACT)(v) : "") },
+    ],
+    filters: [
+      { key: "neighborhood", label: "Neighborhood", options: WD_NEIGHBORHOODS },
+      { key: "activity", label: "Activity", options: WD_ACTIVITIES },
+    ],
+    search: "Search name, email, phone",
+    exportCsv: { path: "/admin/wellness-day-interest/export.csv", filename: "wellness-day-interest.csv", params: ["neighborhood", "activity"] },
+    fields: [
+      { key: "name", label: "Name", required: true },
+      { key: "email", label: "Email", type: "email", hint: "Email or phone (at least one)." },
+      { key: "phone", label: "Phone", type: "tel" },
+      { key: "neighborhood", label: "Neighborhood", type: "select", options: WD_NEIGHBORHOODS },
+      { key: "activities", label: "Activities of interest", type: "multi", options: WD_ACTIVITIES },
+      { key: "contact_method", label: "Preferred contact", type: "select", options: WD_CONTACT },
+      { key: "signing_up_for", label: "Signed up for", type: "select", options: WD_FOR },
+      { key: "consent_to_contact", label: "Agreed to be contacted about Senior Wellness Day", type: "bool", required: true },
+    ],
+  },
+  "wellness-day-partners": {
+    label: "Partners, vendors & volunteers", singular: "submission", group: "Senior Wellness Day",
+    help: "Offers to take part in Senior Wellness Day. Nothing here is public. A row appears in \"Who's joining us\" on the website ONLY when its status is Confirmed AND \"Show publicly\" is checked, and then only the organization (or name) and participation type are shown.",
+    columns: [
+      { key: "created_at", label: "Received", format: dateOnly },
+      { key: "display_name", label: "Organization / name" },
+      { key: "participation_types", label: "Participating as", format: labels(WD_TYPES) },
+      { key: "status", label: "Status", format: label(WD_STATUS) },
+      { key: "show_publicly", label: "Public?", format: yesNo },
+    ],
+    filters: [
+      { key: "participation_type", label: "Participating as", options: WD_TYPES },
+      { key: "status", label: "Status", options: WD_STATUS },
+      { key: "show_publicly", label: "Public?", options: [["true", "Yes"], ["false", "No"]] },
+    ],
+    search: "Search name, organization, email",
+    exportCsv: { path: "/admin/wellness-day-partners/export.csv", filename: "wellness-day-partners.csv", params: ["participation_type", "status"] },
+    fields: [
+      { key: "status", label: "Status", type: "select", options: WD_STATUS },
+      { key: "show_publicly", label: "Show publicly in \"Who's joining us\" (only when Confirmed)", type: "bool" },
+      { key: "admin_notes", label: "Staff notes (private)", type: "textarea" },
+      { key: "name", label: "Name", required: true },
+      { key: "organization", label: "Organization or business" },
+      { key: "email", label: "Email", type: "email", required: true },
+      { key: "phone", label: "Phone", type: "tel" },
+      { key: "website_or_social", label: "Website or social link" },
+      { key: "participation_types", label: "Participating as", type: "multi", options: WD_TYPES, required: true },
+      { key: "offer_description", label: "What they would offer", type: "textarea", required: true, hint: "Up to 600 characters." },
+      { key: "license_type", label: "License type", showIf: (v) => (v.participation_types || []).includes("practitioner"), required: true },
+      { key: "license_number", label: "License number", showIf: (v) => (v.participation_types || []).includes("practitioner"), required: true,
+        hint: "Massage and bodywork must be provided by Massachusetts-licensed practitioners." },
+      { key: "has_insurance", label: "Liability insurance", type: "select", options: WD_INSURANCE },
+      { key: "compensation", label: "Volunteer or fee", type: "select", options: WD_COMPENSATION },
+      { key: "typical_rate", label: "Typical rate", showIf: (v) => v.compensation === "paid" },
+      { key: "setup_needs", label: "Setup needs", type: "multi", options: WD_SETUP },
+      { key: "availability", label: "Availability in spring 2027", type: "multi", options: WD_AVAILABILITY },
+      { key: "referral_source", label: "How they heard about us" },
+      { key: "agrees_no_sales", label: "Agreed: no product sales or sales pitches without approval", type: "bool" },
+      { key: "agrees_not_confirmed", label: "Agreed: submitting doesn't confirm participation", type: "bool" },
     ],
   },
   donations: {
@@ -375,7 +458,7 @@ export const RESOURCES = {
   },
 };
 
-export const NAV_GROUPS = ["People & forms", "Programs & events", "Content", "Research", "Settings"];
+export const NAV_GROUPS = ["People & forms", "Senior Wellness Day", "Programs & events", "Content", "Research", "Settings"];
 
 export function newRecordDefaults(key) {
   const defaults = {
@@ -392,6 +475,9 @@ export function newRecordDefaults(key) {
     users: { is_active: true },
     "contact-messages": { type: "general" },
     "research-interest": { consent_to_contact: true },
+    "wellness-day-interest": { consent_to_contact: true, activities: [] },
+    "wellness-day-partners": { status: "new", show_publicly: false, participation_types: [], setup_needs: [], availability: [],
+      agrees_no_sales: true, agrees_not_confirmed: true },
   };
   return defaults[key] || {};
 }

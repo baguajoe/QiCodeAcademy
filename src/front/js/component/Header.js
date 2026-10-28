@@ -136,7 +136,8 @@ export function Header() {
               </button>
               <ul id="programs-submenu" className="submenu" hidden={!programsOpen}>
                 <li><NavLink to="/programs/youth">{t("nav.youth")}</NavLink></li>
-                <li><NavLink to="/programs/seniors">{t("nav.seniors")}</NavLink></li>
+                <li><NavLink to="/programs/seniors" end>{t("nav.seniors")}</NavLink></li>
+                <li className="submenu-sub"><NavLink to="/programs/seniors/wellness-day">{t("nav.wellnessDay")}</NavLink></li>
                 <li><NavLink to="/programs/intergenerational">{t("nav.intergenerational")}</NavLink></li>
               </ul>
             </li>

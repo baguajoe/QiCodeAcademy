@@ -225,6 +225,38 @@ Required: `name`, `institution`, `email`. → `201 {"ok": true, "message": "…"
 ```
 Required: `name`, `email_or_phone` (a valid email or phone), `consent_to_contact: true`. No health information is collected. Don't add such fields to the form. → `201 {"ok": true, "message": "…"}`
 
+### Senior Wellness Day
+
+#### `POST /api/wellness-day/interest` (senior interest list)
+```json
+{"name": "Rose Brown", "email": "rose@example.org", "phone": "617-555-0100", "neighborhood": "Dorchester",
+ "activities": ["tai_chi_baguazhang", "painting_sewing"], "contact_method": "email",
+ "signing_up_for": "myself", "consent_to_contact": true, "website": ""}
+```
+- Required: `name`, at least one of `email`/`phone`, `consent_to_contact: true`. If `contact_method` is `email` the email is required; if `phone` or `text`, the phone is required.
+- `neighborhood`: `Dorchester | Roxbury | Mattapan | Hyde Park | South End | Other`. `activities` (list): `tai_chi_baguazhang, chair_yoga_meditation, massage_acupressure, strength_balance, painting_sewing, wellness_education, food_social`. `contact_method`: `email | phone | text`. `signing_up_for`: `myself | someone_else`.
+- **No age, date of birth, health, medication, or medical information is collected**; unknown keys are ignored.
+- → `201 {"ok": true, "message": "Thank you! We'll be in touch when the date is set."}`. Sends a confirmation email when an email was given, and notifies `ADMIN_NOTIFY_EMAIL` (name, neighborhood, activities only).
+
+#### `POST /api/wellness-day/partners` (partners, vendors, volunteers)
+```json
+{"name": "Ana Silva", "organization": "Silva Bodywork", "email": "ana@example.org", "phone": "",
+ "website_or_social": "instagram.com/silvabodywork", "participation_types": ["practitioner"],
+ "offer_description": "Seated chair massage…", "license_type": "MA massage therapist", "license_number": "MT-12345",
+ "has_insurance": "yes", "compensation": "paid", "typical_rate": "…", "setup_needs": ["chairs", "quiet_space"],
+ "availability": ["saturdays"], "referral_source": "", "agrees_no_sales": true, "agrees_not_confirmed": true,
+ "website": ""}
+```
+- Required: `name`, `email`, `participation_types` (1+ of `practitioner, instructor, arts_crafts, resource_table, food, volunteer, sponsor`), `offer_description` (max 600 chars), `agrees_no_sales: true`, `agrees_not_confirmed: true`. `license_type` + `license_number` are required when `practitioner` is chosen.
+- The real link field is **`website_or_social`**; `website` is the honeypot, as on every form.
+- `has_insurance`: `yes | no | not_applicable`. `compensation`: `volunteer | paid | open`; `typical_rate` is kept only when `paid`. `setup_needs`: `table, chairs, electricity, quiet_space, none` (`none` is dropped if combined with others). `availability`: `weekdays, saturdays, sundays`.
+- New rows get `status: "new"`, `show_publicly: false`. → `201 {"ok": true, "message": "Thank you! We'll review your submission and be in touch as plans come together."}`. Sends an acknowledgment to the submitter and notifies `ADMIN_NOTIFY_EMAIL` (`Reply-To` = submitter).
+
+#### `GET /api/wellness-day/lineup`
+→ `{"items": [{"name": "Silva Bodywork", "participation_types": ["practitioner"]}]}`. ONLY partners with `status == "confirmed"` AND `show_publicly == true`; `name` is the organization, or the person's name if there is none. No other field is ever exposed. Empty list → the page hides "Who's joining us".
+
+Settings (public, `GET /api/settings`): `wellness_day_status` (badge, default "Coming spring 2027"), `wellness_day_date`, `wellness_day_location` (shown only when filled).
+
 ### Donations
 
 #### `POST /api/donations/create-checkout-session`
@@ -340,6 +372,11 @@ Special behavior:
 ```
 Donation totals include `completed` donations only.
 
+### Senior Wellness Day (admin)
+- CRUD resources: `/api/admin/wellness-day-interest` (filters: `neighborhood`, `contact_method`, `signing_up_for`, `activity` = list contains) and `/api/admin/wellness-day-partners` (filters: `status`, `show_publicly`, `compensation`, `participation_type` = list contains). Partner records also have `status` (`new | contacted | confirmed | declined`), `show_publicly`, `admin_notes`, and dump-only `display_name`.
+- `GET /api/admin/wellness-day/summary` → `{"interest_total", "interest_by_activity": {activity: n}, "interest_by_neighborhood": {hood: n, "not_given": n}, "partners_total", "partners_by_status", "partners_by_type", "confirmed_lineup": [partner…]}`. `confirmed_lineup` = every confirmed partner (public or not), sorted by display name.
+- The dashboard also returns `wellness_interest_total` and `wellness_partners_new`.
+
 ### CSV exports
 Each returns `text/csv` (UTF-8 with BOM, opens cleanly in Excel) as an attachment:
 
@@ -348,6 +385,8 @@ Each returns `text/csv` (UTF-8 with BOM, opens cleanly in Excel) as an attachmen
 | `GET /api/admin/registrations/export.csv` | `program_id`, `status` (comma list) |
 | `GET /api/admin/volunteers/export.csv` | none |
 | `GET /api/admin/research-interest/export.csv` | none |
+| `GET /api/admin/wellness-day-interest/export.csv` | `neighborhood` (comma list), `activity` |
+| `GET /api/admin/wellness-day-partners/export.csv` | `status` (comma list), `participation_type` |
 
 The endpoints need the Bearer header, so download with fetch and a Blob:
 ```js

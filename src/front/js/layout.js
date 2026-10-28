@@ -14,6 +14,7 @@ const programs = () => import(/* webpackChunkName: "programs" */ "./pages/Progra
 const YouthPrograms = lazy(() => programs().then((m) => ({ default: m.YouthPrograms })));
 const SeniorPrograms = lazy(() => programs().then((m) => ({ default: m.SeniorPrograms })));
 const IntergenerationalPrograms = lazy(() => programs().then((m) => ({ default: m.IntergenerationalPrograms })));
+const WellnessDay = lazy(() => import(/* webpackChunkName: "wellness-day" */ "./pages/WellnessDay"));
 const Research = lazy(() => import(/* webpackChunkName: "research" */ "./pages/Research"));
 const events = () => import(/* webpackChunkName: "events" */ "./pages/Events");
 const Events = lazy(events);
@@ -105,6 +106,7 @@ export default function Layout() {
           <Route path="/programs" element={<Navigate to="/#divisions" replace />} />
           <Route path="/programs/youth" element={<YouthPrograms />} />
           <Route path="/programs/seniors" element={<SeniorPrograms />} />
+          <Route path="/programs/seniors/wellness-day" element={<WellnessDay />} />
           <Route path="/programs/intergenerational" element={<IntergenerationalPrograms />} />
           <Route path="/research" element={<Research />} />
           <Route path="/events" element={<Events />} />

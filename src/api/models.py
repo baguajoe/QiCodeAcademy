@@ -40,6 +40,19 @@ STOCK_ALLOWED_SLOTS = ("hero-home", "youth-banner", "seniors-banner", "intergene
                        "donate", "home-card-youth", "home-card-seniors", "home-card-research")
 CURRICULUM_DIVISIONS = ("youth", "senior", "research")
 CURRICULUM_STATUSES = ("available", "in_development")
+# Senior Wellness Day (interest list + partners/vendors/volunteers)
+WELLNESS_NEIGHBORHOODS = ("Dorchester", "Roxbury", "Mattapan", "Hyde Park", "South End", "Other")
+WELLNESS_ACTIVITIES = ("tai_chi_baguazhang", "chair_yoga_meditation", "massage_acupressure", "strength_balance",
+                       "painting_sewing", "wellness_education", "food_social")
+WELLNESS_CONTACT_METHODS = ("email", "phone", "text")
+WELLNESS_SIGNUP_FOR = ("myself", "someone_else")
+WELLNESS_PARTICIPATION = ("practitioner", "instructor", "arts_crafts", "resource_table", "food", "volunteer",
+                          "sponsor")
+WELLNESS_INSURANCE = ("yes", "no", "not_applicable")
+WELLNESS_COMPENSATION = ("volunteer", "paid", "open")
+WELLNESS_SETUP_NEEDS = ("table", "chairs", "electricity", "quiet_space", "none")
+WELLNESS_AVAILABILITY = ("weekdays", "saturdays", "sundays")
+WELLNESS_PARTNER_STATUSES = ("new", "contacted", "confirmed", "declined")
 
 # Which program divisions accept which registration type.
 REGISTRATION_TYPE_DIVISIONS = {
@@ -421,6 +434,59 @@ class ResearchInterest(TimestampMixin, db.Model):
     email_or_phone = db.Column(db.String(255), nullable=False)
     neighborhood = db.Column(db.String(100))
     consent_to_contact = db.Column(db.Boolean, nullable=False, default=False)
+
+
+# ---------------------------------------------------------------------------
+# Senior Wellness Day
+# ---------------------------------------------------------------------------
+class WellnessDayInterest(TimestampMixin, db.Model):
+    """Senior interest list. Contact info and activity preferences only — deliberately
+    NO age, date of birth, health conditions, medications, or other medical fields."""
+    __tablename__ = "wellness_day_interest"
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(120), nullable=False)
+    email = db.Column(db.String(255))
+    phone = db.Column(db.String(40))
+    neighborhood = db.Column(db.String(40), index=True)
+    activities = db.Column(db.JSON, nullable=False, default=list)
+    contact_method = db.Column(db.String(10))     # email | phone | text
+    signing_up_for = db.Column(db.String(20))     # myself | someone_else
+    consent_to_contact = db.Column(db.Boolean, nullable=False, default=False)
+
+
+class WellnessDayPartner(TimestampMixin, db.Model):
+    """Practitioners, instructors, vendors, volunteers and sponsors offering to take part.
+    Never shown publicly, except name/organization + participation types once an admin
+    marks the row confirmed AND show_publicly (the "Who's joining us" lineup)."""
+    __tablename__ = "wellness_day_partners"
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(120), nullable=False)
+    organization = db.Column(db.String(200))
+    email = db.Column(db.String(255), nullable=False)
+    phone = db.Column(db.String(40))
+    website_or_social = db.Column(db.String(500))  # not "website": that name is the forms' honeypot
+    participation_types = db.Column(db.JSON, nullable=False, default=list)
+    offer_description = db.Column(db.String(600), nullable=False)
+    license_type = db.Column(db.String(120))      # required for practitioners
+    license_number = db.Column(db.String(80))     # required for practitioners
+    has_insurance = db.Column(db.String(20))      # yes | no | not_applicable
+    compensation = db.Column(db.String(20))       # volunteer | paid | open
+    typical_rate = db.Column(db.String(100))      # only when paid
+    setup_needs = db.Column(db.JSON, nullable=False, default=list)
+    availability = db.Column(db.JSON, nullable=False, default=list)
+    referral_source = db.Column(db.String(300))
+    agrees_no_sales = db.Column(db.Boolean, nullable=False, default=False)
+    agrees_not_confirmed = db.Column(db.Boolean, nullable=False, default=False)
+    status = db.Column(db.String(20), nullable=False, default="new", index=True)
+    show_publicly = db.Column(db.Boolean, nullable=False, default=False, index=True)
+    admin_notes = db.Column(db.Text)
+
+    @property
+    def display_name(self):
+        return self.organization or self.name
+
+    def __str__(self):
+        return self.display_name
 
 
 # ---------------------------------------------------------------------------

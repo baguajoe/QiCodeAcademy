@@ -59,6 +59,8 @@ main:focus { outline: none; }
 .nav-list a[aria-current="page"] { color: var(--link); text-decoration: underline; text-decoration-thickness: 3px; }
 .nav-list .submenu { list-style: none; margin: 0; padding: 0 0 var(--space-2) var(--space-4); }
 .nav-list .submenu a { font-weight: 600; font-size: 1.05rem; }
+.nav-list .submenu .submenu-sub a { padding-left: var(--space-5); font-weight: 500; }
+.nav-list .submenu .submenu-sub a::before { content: "↳ " / ""; }
 .nav-list .nav-donate { border-bottom: 0; padding-top: var(--space-4); }
 .nav-list .nav-donate a { justify-content: center; color: #fff; background: var(--donate); }
 .nav-list .nav-donate a:hover, .nav-list .nav-donate a[aria-current="page"] { background: var(--donate-strong); color: #fff; text-decoration: none; }

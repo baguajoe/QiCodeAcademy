@@ -12,10 +12,11 @@ from datetime import timedelta
 from flask import current_app, flash, redirect, request, session, url_for
 from flask_admin import Admin, AdminIndexView, expose
 from flask_admin.contrib.sqla import ModelView
+from flask_admin.contrib.sqla.filters import BaseSQLAFilter, FilterEqual
 from flask_admin.form import SecureForm
 from flask_admin.menu import MenuLink
 from flask_admin.theme import Bootstrap4Theme
-from sqlalchemy import func, select
+from sqlalchemy import String, cast, func, select
 from wtforms import PasswordField, SelectField, SelectMultipleField
 from wtforms.validators import Length, Optional
 
@@ -117,6 +118,125 @@ class ProgramAdminView(SecureModelView):
             raise ValueError("This program has registrations — deactivate it instead.")
 
 
+# --- Senior Wellness Day ----------------------------------------------------
+from .services.notifications import WELLNESS_ACTIVITY_LABELS, WELLNESS_PARTICIPATION_LABELS  # noqa: E402
+
+PARTNER_STATUS_CHOICES = [(s, s.title()) for s in m.WELLNESS_PARTNER_STATUSES]
+
+
+class JsonListContainsFilter(BaseSQLAFilter):
+    """Rows whose JSON list column contains the chosen value (portable: matches the quoted value)."""
+
+    def apply(self, query, value, alias=None):
+        allowed = {v for v, _ in self.options}
+        if value not in allowed:
+            return query
+        return query.filter(cast(self.get_column(alias), String).like(f'%"{value}"%'))
+
+    def operation(self):
+        return "includes"
+
+
+def _labels(values, mapping):
+    return ", ".join(mapping.get(v, v) for v in values or [])
+
+
+class WellnessInterestAdminView(SecureModelView):
+    list_template = "flask_admin_custom/wellness_interest_list.html"
+    can_export = True
+    column_list = ("name", "email", "phone", "neighborhood", "activities", "contact_method", "signing_up_for",
+                   "created_at")
+    column_searchable_list = ("name", "email", "phone")
+    column_filters = (
+        FilterEqual(m.WellnessDayInterest.neighborhood, "Neighborhood",
+                    options=[(h, h) for h in m.WELLNESS_NEIGHBORHOODS]),
+        JsonListContainsFilter(m.WellnessDayInterest.activities, "Activity",
+                               options=list(WELLNESS_ACTIVITY_LABELS.items())),
+    )
+    column_formatters = {"activities": lambda v, c, mdl, n: _labels(mdl.activities, WELLNESS_ACTIVITY_LABELS)}
+    form_overrides = {"activities": SelectMultipleField, "neighborhood": SelectField,
+                      "contact_method": SelectField, "signing_up_for": SelectField}
+    form_args = {"activities": {"choices": list(WELLNESS_ACTIVITY_LABELS.items())},
+                 "neighborhood": {"choices": [("", "—")] + [(h, h) for h in m.WELLNESS_NEIGHBORHOODS]},
+                 "contact_method": {"choices": [("", "—")] + _choices(m.WELLNESS_CONTACT_METHODS)},
+                 "signing_up_for": {"choices": [("", "—")] + _choices(m.WELLNESS_SIGNUP_FOR)}}
+    column_descriptions = {"name": "No age, birth date, or health information is collected — by design."}
+
+    @expose("/")
+    def index_view(self):
+        rows = db.session.scalars(select(m.WellnessDayInterest)).all()
+        acts = {k: 0 for k in WELLNESS_ACTIVITY_LABELS}
+        hoods = {h: 0 for h in m.WELLNESS_NEIGHBORHOODS}
+        for r in rows:
+            for a in r.activities or []:
+                if a in acts:
+                    acts[a] += 1
+            if r.neighborhood in hoods:
+                hoods[r.neighborhood] += 1
+        self._template_args["wellness_summary"] = {
+            "total": len(rows),
+            "by_activity": [(WELLNESS_ACTIVITY_LABELS[k], n) for k, n in acts.items()],
+            "by_neighborhood": list(hoods.items()) + [("Not given", len(rows) - sum(hoods.values()))],
+        }
+        return super().index_view()
+
+    def on_model_change(self, form, model, is_created):
+        model.neighborhood = model.neighborhood or None
+        model.contact_method = model.contact_method or None
+        model.signing_up_for = model.signing_up_for or None
+        if not model.email and not model.phone:
+            raise ValueError("Enter an email address or a phone number.")
+
+
+class WellnessPartnerAdminView(SecureModelView):
+    can_export = True
+    column_list = ("name", "organization", "participation_types", "status", "show_publicly", "email", "created_at")
+    column_searchable_list = ("name", "organization", "email")
+    column_filters = (
+        FilterEqual(m.WellnessDayPartner.status, "Status", options=PARTNER_STATUS_CHOICES),
+        JsonListContainsFilter(m.WellnessDayPartner.participation_types, "Participation type",
+                               options=list(WELLNESS_PARTICIPATION_LABELS.items())),
+        "show_publicly",
+    )
+    column_formatters = {"participation_types": lambda v, c, mdl, n: _labels(mdl.participation_types,
+                                                                             WELLNESS_PARTICIPATION_LABELS)}
+    column_formatters_export = {}
+    form_overrides = {"participation_types": SelectMultipleField, "setup_needs": SelectMultipleField,
+                      "availability": SelectMultipleField, "status": SelectField, "has_insurance": SelectField,
+                      "compensation": SelectField}
+    form_args = {"participation_types": {"choices": list(WELLNESS_PARTICIPATION_LABELS.items())},
+                 "setup_needs": {"choices": _choices(m.WELLNESS_SETUP_NEEDS)},
+                 "availability": {"choices": _choices(m.WELLNESS_AVAILABILITY)},
+                 "status": {"choices": PARTNER_STATUS_CHOICES},
+                 "has_insurance": {"choices": [("", "—")] + _choices(m.WELLNESS_INSURANCE)},
+                 "compensation": {"choices": [("", "—")] + _choices(m.WELLNESS_COMPENSATION)}}
+    column_descriptions = {
+        "show_publicly": "Listed in \"Who's joining us\" on the public page ONLY when status is Confirmed too "
+                         "(organization or name + participation type only).",
+        "license_number": "Required for practitioners (Massachusetts license for massage/bodywork)."}
+
+    def on_model_change(self, form, model, is_created):
+        model.has_insurance = model.has_insurance or None
+        model.compensation = model.compensation or None
+        if "practitioner" in (model.participation_types or []) and not (model.license_type and model.license_number):
+            raise ValueError("Practitioners need a license type and number.")
+
+
+class WellnessLineupAdminView(WellnessPartnerAdminView):
+    """Confirmed partners only (the working lineup; "show publicly" controls the public list)."""
+    can_create = False
+    column_list = ("display_name", "participation_types", "show_publicly", "email", "phone", "license_number",
+                   "has_insurance", "setup_needs")
+    column_labels = {"display_name": "Organization / name"}
+    column_default_sort = None
+
+    def get_query(self):
+        return super().get_query().filter(m.WellnessDayPartner.status == "confirmed")
+
+    def get_count_query(self):
+        return super().get_count_query().filter(m.WellnessDayPartner.status == "confirmed")
+
+
 class SecureIndexView(AdminIndexView):
     def is_visible(self):
         return True
@@ -132,6 +252,9 @@ class SecureIndexView(AdminIndexView):
                 select(func.count(m.ContactMessage.id)).where(m.ContactMessage.is_read.is_(False))),
             "New research inquiries": db.session.scalar(
                 select(func.count(m.ResearchPartnerInquiry.id)).where(m.ResearchPartnerInquiry.is_read.is_(False))),
+            "Senior Wellness Day interest sign-ups": db.session.scalar(select(func.count(m.WellnessDayInterest.id))),
+            "New Senior Wellness Day partner submissions": db.session.scalar(
+                select(func.count(m.WellnessDayPartner.id)).where(m.WellnessDayPartner.status == "new")),
         }
         return self.render("flask_admin_custom/index.html", user=current_admin(), counts=counts)
 
@@ -261,6 +384,14 @@ def init_admin_panel(app):
     admin.add_view(make_view(m.ResearchInterest, "Interest sign-ups", research,
                              column_list=("name", "email_or_phone", "neighborhood",
                                           "consent_to_contact", "created_at")))
+
+    wellness = "Senior Wellness Day"
+    admin.add_view(WellnessInterestAdminView(m.WellnessDayInterest, db.session, name="Interest list",
+                                             category=wellness, endpoint="fa_wellness_day_interest"))
+    admin.add_view(WellnessPartnerAdminView(m.WellnessDayPartner, db.session, name="Partners, vendors & volunteers",
+                                            category=wellness, endpoint="fa_wellness_day_partners"))
+    admin.add_view(WellnessLineupAdminView(m.WellnessDayPartner, db.session, name="Confirmed lineup",
+                                           category=wellness, endpoint="fa_wellness_day_lineup"))
 
     admin.add_view(UserAdminView(m.User, db.session, name="Admin users", category="Settings",
                                  endpoint="fa_users"))

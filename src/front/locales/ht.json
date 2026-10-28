@@ -70,7 +70,8 @@
     "terms": "TODO: Terms",
     "menu": "TODO: Menu",
     "close": "TODO: Close menu",
-    "photoCredits": "TODO: Photo credits"
+    "photoCredits": "TODO: Photo credits",
+    "wellnessDay": "TODO: Senior Wellness Day"
   },
   "footer": {
     "blurb": "TODO: A Boston nonprofit bringing technology education to young people and traditional movement and wellness to older adults, in Dorchester, Roxbury, Mattapan, Hyde Park, the South End, and beyond.",
@@ -165,7 +166,10 @@
     "donateCta": "TODO: Donate",
     "newsTitle": "TODO: Latest news",
     "allNews": "TODO: All news",
-    "historyLine": "TODO: Building on more than 18 years of community teaching in Boston."
+    "historyLine": "TODO: Building on more than 18 years of community teaching in Boston.",
+    "wellnessDayTitle": "TODO: Senior Wellness Day",
+    "wellnessDayText": "TODO: A free day of movement, care, creativity, and community for older adults in Boston. Join the interest list, or find out how to take part as a practitioner, vendor, or volunteer.",
+    "wellnessDayCta": "TODO: Learn more and join the list"
   },
   "about": {
     "title": "TODO: About Qi Code Academy",
@@ -390,7 +394,10 @@
     "researchNote": "TODO: Tai Chi has been widely studied for balance in older adults, though results vary by person and program. Research on Baguazhang specifically is more limited — which is part of why we hope to study it.",
     "researchLink": "TODO: Learn about our research plans",
     "signatureBadge": "TODO: Signature program",
-    "signatureLink": "TODO: Part of our Baguazhang for Healthy Aging program"
+    "signatureLink": "TODO: Part of our Baguazhang for Healthy Aging program",
+    "wellnessDayTitle": "TODO: Senior Wellness Day",
+    "wellnessDayText": "TODO: A free day of movement, care, creativity, and community for older adults, planned for spring 2027. Join the interest list to hear first.",
+    "wellnessDayLink": "TODO: About Senior Wellness Day"
   },
   "inter": {
     "title": "TODO: Intergenerational Programs",
@@ -704,5 +711,172 @@
     "own": "TODO: Qi Code Academy / founder",
     "none": "TODO: No photo credits yet.",
     "note": "TODO: Stock photos show models, not Qi Code Academy participants. We'll replace them with photos from our own programs over time."
+  },
+  "wellnessDay": {
+    "title": "TODO: Senior Wellness Day",
+    "lead": "TODO: Movement, care, creativity, and community for older adults in Boston.",
+    "statusDefault": "TODO: Coming spring 2027",
+    "intro": "TODO: A free day of movement, care, creativity, and community for older adults in Boston. Senior Wellness Day brings together experienced instructors and licensed practitioners in one welcoming place, with plenty of time to relax, connect, and enjoy a meal together.",
+    "jumpInterest": "TODO: Join the interest list",
+    "jumpPartner": "TODO: Partners, vendors & volunteers",
+    "offerTitle": "TODO: What we plan to offer",
+    "offerings": [
+      {
+        "key": "TODO: tai_chi_baguazhang",
+        "title": "TODO: Tai Chi and Baguazhang",
+        "body": "TODO: Gentle, flowing movement and circle walking, with chair options."
+      },
+      {
+        "key": "TODO: chair_yoga_meditation",
+        "title": "TODO: Chair yoga and meditation",
+        "body": "TODO: Stretching, breathing, and relaxation."
+      },
+      {
+        "key": "TODO: massage_acupressure",
+        "title": "TODO: Chair massage and acupressure",
+        "body": "TODO: Offered by licensed, insured practitioners."
+      },
+      {
+        "key": "TODO: strength_balance",
+        "title": "TODO: Strength and balance",
+        "body": "TODO: Gentle exercises led by a certified trainer."
+      },
+      {
+        "key": "TODO: painting_sewing",
+        "title": "TODO: Painting and sewing",
+        "body": "TODO: Creative circles to make something and share it."
+      },
+      {
+        "key": "TODO: wellness_education",
+        "title": "TODO: Wellness education",
+        "body": "TODO: Short talks and community resources."
+      },
+      {
+        "key": "TODO: food_social",
+        "title": "TODO: Food and social time",
+        "body": "TODO: Refreshments and conversation."
+      }
+    ],
+    "offerNote": "TODO: Plans depend on funding and may change. Participants should consult their healthcare provider before starting a new exercise program. Massage and acupressure are optional and offered only by licensed practitioners.",
+    "expectTitle": "TODO: What to expect",
+    "expect": [
+      "TODO: A free event of about four hours",
+      "TODO: Come for part of the day or all of it",
+      "TODO: Activities adapted for all comfort levels, seated or standing",
+      "TODO: No experience needed"
+    ],
+    "whenTitle": "TODO: When and where",
+    "when": "TODO: Planned for spring 2027 in Dorchester/Roxbury. Date and location will be announced. Join the interest list and we'll let you know first.",
+    "dateLabel": "TODO: Date",
+    "locationLabel": "TODO: Location",
+    "lineupTitle": "TODO: Who's joining us",
+    "lineupLead": "TODO: Practitioners, instructors, and community partners confirmed so far.",
+    "types": {
+      "practitioner": "TODO: Practitioner",
+      "instructor": "TODO: Instructor",
+      "arts_crafts": "TODO: Arts and crafts",
+      "resource_table": "TODO: Community resource table",
+      "food": "TODO: Food or refreshments",
+      "volunteer": "TODO: Volunteer",
+      "sponsor": "TODO: Sponsor"
+    },
+    "interest": {
+      "title": "TODO: Join the interest list",
+      "lead": "TODO: Tell us how to reach you and we'll let you know when the date and place are set. Family members and friends are welcome to sign up on someone's behalf.",
+      "privacy": "TODO: We only ask for contact details. We never ask for your age, health, or medications.",
+      "name": "TODO: Name",
+      "email": "TODO: Email",
+      "phone": "TODO: Phone",
+      "contactHint": "TODO: Please give an email or a phone number (or both).",
+      "neighborhood": "TODO: Neighborhood",
+      "choose": "TODO: Choose one",
+      "otherNeighborhood": "TODO: Other",
+      "activities": "TODO: Which activities interest you?",
+      "activitiesHint": "TODO: Choose as many as you like.",
+      "contactMethod": "TODO: How would you like us to contact you?",
+      "methods": {
+        "email": "TODO: Email",
+        "phone": "TODO: Phone call",
+        "text": "TODO: Text message"
+      },
+      "signingUpFor": "TODO: Are you signing up for yourself or someone else?",
+      "forOptions": {
+        "myself": "TODO: Myself",
+        "someone_else": "TODO: A family member or friend"
+      },
+      "consent": "TODO: Yes, Qi Code Academy may contact me about Senior Wellness Day.",
+      "needContact": "TODO: Please give an email address or a phone number.",
+      "needEmail": "TODO: Add an email address so we can email you.",
+      "needPhone": "TODO: Add a phone number so we can call or text you.",
+      "needConsent": "TODO: Please check this box so we can contact you.",
+      "submit": "TODO: Join the interest list",
+      "successTitle": "TODO: You're on the list!",
+      "consentShort": "TODO: Permission to contact you"
+    },
+    "partner": {
+      "title": "TODO: Want to be part of Senior Wellness Day?",
+      "lead": "TODO: We're looking for licensed practitioners, instructors, artists, community resource tables, food and refreshments, volunteers, and sponsors.",
+      "name": "TODO: Your name",
+      "organization": "TODO: Organization or business name",
+      "email": "TODO: Email",
+      "phone": "TODO: Phone",
+      "link": "TODO: Website or social link",
+      "types": "TODO: I'd like to participate as",
+      "typesHint": "TODO: Choose one or more.",
+      "typeOptions": {
+        "practitioner": "TODO: Practitioner: massage, acupressure, or other bodywork",
+        "instructor": "TODO: Instructor: yoga, meditation, strength and balance, Tai Chi, etc.",
+        "arts_crafts": "TODO: Arts and crafts: painting, sewing, or other creative activity",
+        "resource_table": "TODO: Community resource table: health, senior services, housing, benefits, library, etc.",
+        "food": "TODO: Food or refreshments",
+        "volunteer": "TODO: Volunteer",
+        "sponsor": "TODO: Sponsor"
+      },
+      "offer": "TODO: Briefly describe what you would offer",
+      "offerHint": "TODO: Up to 600 characters.",
+      "charsLeft": "TODO: {{count}} characters left",
+      "licenseTitle": "TODO: License or certification",
+      "licenseNote": "TODO: Massage and bodywork must be provided by Massachusetts-licensed practitioners.",
+      "licenseType": "TODO: License type",
+      "licenseTypeHint": "TODO: Example: Massachusetts massage therapist license",
+      "licenseNumber": "TODO: License number",
+      "insurance": "TODO: Do you carry liability insurance?",
+      "insuranceOptions": {
+        "yes": "TODO: Yes",
+        "no": "TODO: No",
+        "not_applicable": "TODO: Not applicable"
+      },
+      "compensation": "TODO: Volunteer or fee?",
+      "compensationOptions": {
+        "volunteer": "TODO: Volunteer",
+        "paid": "TODO: Paid",
+        "open": "TODO: Open to discussion"
+      },
+      "rate": "TODO: Typical rate",
+      "setup": "TODO: Setup needs",
+      "setupOptions": {
+        "table": "TODO: Table",
+        "chairs": "TODO: Chairs",
+        "electricity": "TODO: Electricity",
+        "quiet_space": "TODO: Private or quiet space",
+        "none": "TODO: None"
+      },
+      "availability": "TODO: Availability in spring 2027",
+      "availabilityOptions": {
+        "weekdays": "TODO: Weekdays",
+        "saturdays": "TODO: Saturdays",
+        "sundays": "TODO: Sundays"
+      },
+      "referral": "TODO: How did you hear about us?",
+      "agreeNoSales": "TODO: I understand this is a free event for seniors. Product sales or sales pitches to participants are not permitted unless approved in advance by Qi Code Academy.",
+      "agreeNotConfirmed": "TODO: I understand that submitting this form does not confirm my participation.",
+      "needAgree": "TODO: Please check this box to continue.",
+      "needLicense": "TODO: Required for practitioners.",
+      "submit": "TODO: Send my submission",
+      "successTitle": "TODO: Thank you!",
+      "questions": "TODO: Questions? Email",
+      "agreeNoSalesShort": "TODO: Free event, no sales agreement",
+      "agreeNotConfirmedShort": "TODO: Participation not yet confirmed"
+    }
   }
 }

@@ -74,6 +74,10 @@ DEFAULT_SETTINGS = [
     # Home page feature band for the signature program (describe the program, never promise outcomes)
     ("featured_program_title", FEATURED_PROGRAM_TITLE, True),
     ("featured_program_text", FEATURED_PROGRAM_TEXT, True),
+    # Senior Wellness Day page: badge text, and date/location (each shown only when filled in)
+    ("wellness_day_status", "Coming spring 2027", True),
+    ("wellness_day_date", "", True),
+    ("wellness_day_location", "", True),
 ]
 
 # Keep in sync with SLOTS in src/front/js/siteImages.js and IMAGE_GUIDE.md.

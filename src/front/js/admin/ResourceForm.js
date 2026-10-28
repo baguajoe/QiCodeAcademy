@@ -47,13 +47,14 @@ function Field({ f, values, set, errors, programs, formId, isNew }) {
       </div>
     );
   }
-  if (f.type === "roles") {
+  if (f.type === "roles" || f.type === "multi") {
     const list = value || [];
     return (
       <fieldset className="field">
         <legend>{f.label}{required && <span className="required-mark" aria-hidden="true">*</span>}</legend>
+        {f.hint && <span className="hint">{f.hint}</span>}
         <div className="choice-grid">
-          {ROLES.map(([v, l]) => (
+          {(f.options || ROLES).map(([v, l]) => (
             <label key={v} className="check choice-card">
               <input type="checkbox" checked={list.includes(v)} onChange={() => set(f.key, list.includes(v) ? list.filter((x) => x !== v) : [...list, v])} />
               <span>{l}</span>

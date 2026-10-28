@@ -70,7 +70,8 @@
     "terms": "Terms",
     "menu": "Menu",
     "close": "Close menu",
-    "photoCredits": "Photo credits"
+    "photoCredits": "Photo credits",
+    "wellnessDay": "Senior Wellness Day"
   },
   "footer": {
     "blurb": "A Boston nonprofit bringing technology education to young people and traditional movement and wellness to older adults, in Dorchester, Roxbury, Mattapan, Hyde Park, the South End, and beyond.",
@@ -165,7 +166,10 @@
     "donateCta": "Donate",
     "newsTitle": "Latest news",
     "allNews": "All news",
-    "historyLine": "Building on more than 18 years of community teaching in Boston."
+    "historyLine": "Building on more than 18 years of community teaching in Boston.",
+    "wellnessDayTitle": "Senior Wellness Day",
+    "wellnessDayText": "A free day of movement, care, creativity, and community for older adults in Boston. Join the interest list, or find out how to take part as a practitioner, vendor, or volunteer.",
+    "wellnessDayCta": "Learn more and join the list"
   },
   "about": {
     "title": "About Qi Code Academy",
@@ -390,7 +394,10 @@
     "researchNote": "Tai Chi has been widely studied for balance in older adults, though results vary by person and program. Research on Baguazhang specifically is more limited — which is part of why we hope to study it.",
     "researchLink": "Learn about our research plans",
     "signatureBadge": "Signature program",
-    "signatureLink": "Part of our Baguazhang for Healthy Aging program"
+    "signatureLink": "Part of our Baguazhang for Healthy Aging program",
+    "wellnessDayTitle": "Senior Wellness Day",
+    "wellnessDayText": "A free day of movement, care, creativity, and community for older adults, planned for spring 2027. Join the interest list to hear first.",
+    "wellnessDayLink": "About Senior Wellness Day"
   },
   "inter": {
     "title": "Intergenerational Programs",
@@ -704,5 +711,172 @@
     "own": "Qi Code Academy / founder",
     "none": "No photo credits yet.",
     "note": "Stock photos show models, not Qi Code Academy participants. We'll replace them with photos from our own programs over time."
+  },
+  "wellnessDay": {
+    "title": "Senior Wellness Day",
+    "lead": "Movement, care, creativity, and community for older adults in Boston.",
+    "statusDefault": "Coming spring 2027",
+    "intro": "A free day of movement, care, creativity, and community for older adults in Boston. Senior Wellness Day brings together experienced instructors and licensed practitioners in one welcoming place, with plenty of time to relax, connect, and enjoy a meal together.",
+    "jumpInterest": "Join the interest list",
+    "jumpPartner": "Partners, vendors & volunteers",
+    "offerTitle": "What we plan to offer",
+    "offerings": [
+      {
+        "key": "tai_chi_baguazhang",
+        "title": "Tai Chi and Baguazhang",
+        "body": "Gentle, flowing movement and circle walking, with chair options."
+      },
+      {
+        "key": "chair_yoga_meditation",
+        "title": "Chair yoga and meditation",
+        "body": "Stretching, breathing, and relaxation."
+      },
+      {
+        "key": "massage_acupressure",
+        "title": "Chair massage and acupressure",
+        "body": "Offered by licensed, insured practitioners."
+      },
+      {
+        "key": "strength_balance",
+        "title": "Strength and balance",
+        "body": "Gentle exercises led by a certified trainer."
+      },
+      {
+        "key": "painting_sewing",
+        "title": "Painting and sewing",
+        "body": "Creative circles to make something and share it."
+      },
+      {
+        "key": "wellness_education",
+        "title": "Wellness education",
+        "body": "Short talks and community resources."
+      },
+      {
+        "key": "food_social",
+        "title": "Food and social time",
+        "body": "Refreshments and conversation."
+      }
+    ],
+    "offerNote": "Plans depend on funding and may change. Participants should consult their healthcare provider before starting a new exercise program. Massage and acupressure are optional and offered only by licensed practitioners.",
+    "expectTitle": "What to expect",
+    "expect": [
+      "A free event of about four hours",
+      "Come for part of the day or all of it",
+      "Activities adapted for all comfort levels, seated or standing",
+      "No experience needed"
+    ],
+    "whenTitle": "When and where",
+    "when": "Planned for spring 2027 in Dorchester/Roxbury. Date and location will be announced. Join the interest list and we'll let you know first.",
+    "dateLabel": "Date",
+    "locationLabel": "Location",
+    "lineupTitle": "Who's joining us",
+    "lineupLead": "Practitioners, instructors, and community partners confirmed so far.",
+    "types": {
+      "practitioner": "Practitioner",
+      "instructor": "Instructor",
+      "arts_crafts": "Arts and crafts",
+      "resource_table": "Community resource table",
+      "food": "Food or refreshments",
+      "volunteer": "Volunteer",
+      "sponsor": "Sponsor"
+    },
+    "interest": {
+      "title": "Join the interest list",
+      "lead": "Tell us how to reach you and we'll let you know when the date and place are set. Family members and friends are welcome to sign up on someone's behalf.",
+      "privacy": "We only ask for contact details. We never ask for your age, health, or medications.",
+      "name": "Name",
+      "email": "Email",
+      "phone": "Phone",
+      "contactHint": "Please give an email or a phone number (or both).",
+      "neighborhood": "Neighborhood",
+      "choose": "Choose one",
+      "otherNeighborhood": "Other",
+      "activities": "Which activities interest you?",
+      "activitiesHint": "Choose as many as you like.",
+      "contactMethod": "How would you like us to contact you?",
+      "methods": {
+        "email": "Email",
+        "phone": "Phone call",
+        "text": "Text message"
+      },
+      "signingUpFor": "Are you signing up for yourself or someone else?",
+      "forOptions": {
+        "myself": "Myself",
+        "someone_else": "A family member or friend"
+      },
+      "consent": "Yes, Qi Code Academy may contact me about Senior Wellness Day.",
+      "needContact": "Please give an email address or a phone number.",
+      "needEmail": "Add an email address so we can email you.",
+      "needPhone": "Add a phone number so we can call or text you.",
+      "needConsent": "Please check this box so we can contact you.",
+      "submit": "Join the interest list",
+      "successTitle": "You're on the list!",
+      "consentShort": "Permission to contact you"
+    },
+    "partner": {
+      "title": "Want to be part of Senior Wellness Day?",
+      "lead": "We're looking for licensed practitioners, instructors, artists, community resource tables, food and refreshments, volunteers, and sponsors.",
+      "name": "Your name",
+      "organization": "Organization or business name",
+      "email": "Email",
+      "phone": "Phone",
+      "link": "Website or social link",
+      "types": "I'd like to participate as",
+      "typesHint": "Choose one or more.",
+      "typeOptions": {
+        "practitioner": "Practitioner: massage, acupressure, or other bodywork",
+        "instructor": "Instructor: yoga, meditation, strength and balance, Tai Chi, etc.",
+        "arts_crafts": "Arts and crafts: painting, sewing, or other creative activity",
+        "resource_table": "Community resource table: health, senior services, housing, benefits, library, etc.",
+        "food": "Food or refreshments",
+        "volunteer": "Volunteer",
+        "sponsor": "Sponsor"
+      },
+      "offer": "Briefly describe what you would offer",
+      "offerHint": "Up to 600 characters.",
+      "charsLeft": "{{count}} characters left",
+      "licenseTitle": "License or certification",
+      "licenseNote": "Massage and bodywork must be provided by Massachusetts-licensed practitioners.",
+      "licenseType": "License type",
+      "licenseTypeHint": "Example: Massachusetts massage therapist license",
+      "licenseNumber": "License number",
+      "insurance": "Do you carry liability insurance?",
+      "insuranceOptions": {
+        "yes": "Yes",
+        "no": "No",
+        "not_applicable": "Not applicable"
+      },
+      "compensation": "Volunteer or fee?",
+      "compensationOptions": {
+        "volunteer": "Volunteer",
+        "paid": "Paid",
+        "open": "Open to discussion"
+      },
+      "rate": "Typical rate",
+      "setup": "Setup needs",
+      "setupOptions": {
+        "table": "Table",
+        "chairs": "Chairs",
+        "electricity": "Electricity",
+        "quiet_space": "Private or quiet space",
+        "none": "None"
+      },
+      "availability": "Availability in spring 2027",
+      "availabilityOptions": {
+        "weekdays": "Weekdays",
+        "saturdays": "Saturdays",
+        "sundays": "Sundays"
+      },
+      "referral": "How did you hear about us?",
+      "agreeNoSales": "I understand this is a free event for seniors. Product sales or sales pitches to participants are not permitted unless approved in advance by Qi Code Academy.",
+      "agreeNotConfirmed": "I understand that submitting this form does not confirm my participation.",
+      "needAgree": "Please check this box to continue.",
+      "needLicense": "Required for practitioners.",
+      "submit": "Send my submission",
+      "successTitle": "Thank you!",
+      "questions": "Questions? Email",
+      "agreeNoSalesShort": "Free event, no sales agreement",
+      "agreeNotConfirmedShort": "Participation not yet confirmed"
+    }
   }
 }

@@ -8,11 +8,12 @@ from ..extensions import db, limiter
 from ..models import (CURRICULUM_DIVISIONS, REGISTRATION_TYPE_DIVISIONS, ContactMessage, CurriculumModule, Event, GalleryPhoto,
                       ImpactStat, NewsPost, Partner, Program, Registration, ResearchInterest,
                       ResearchPartnerInquiry, ResearchReference, SiteImage, SiteSetting,
-                      TeamMember, Volunteer, utcnow)
+                      TeamMember, Volunteer, WellnessDayInterest, WellnessDayPartner, utcnow)
 from ..schemas import (ContactCreateSchema, CurriculumModuleSchema, EventSchema, GalleryPhotoSchema, ImpactStatSchema,
                        NewsPostSchema, PartnerSchema, ProgramSchema, RegistrationCreateSchema,
                        ResearchInquiryCreateSchema, ResearchInterestCreateSchema,
-                       ResearchReferenceSchema, TeamMemberSchema, VolunteerCreateSchema)
+                       ResearchReferenceSchema, TeamMemberSchema, VolunteerCreateSchema,
+                       WellnessDayInterestCreateSchema, WellnessDayPartnerCreateSchema)
 from ..services import notifications
 from ..services.ics import event_to_ics
 from ..utils import (APIError, get_json, honeypot, load, local_now, paginate, parse_bool,
@@ -317,3 +318,43 @@ def research_interest():
     db.session.commit()
     notifications.research_interest_received(ri)
     return jsonify({"ok": True, "message": INTEREST_OK}), 201
+
+
+# ---------------------------------------------------------------------------
+# Senior Wellness Day
+# ---------------------------------------------------------------------------
+WELLNESS_INTEREST_OK = "Thank you! We'll be in touch when the date is set."
+WELLNESS_PARTNER_OK = "Thank you! We'll review your submission and be in touch as plans come together."
+
+
+@bp.post("/wellness-day/interest")
+@limiter.limit(forms_limit)
+@honeypot({"ok": True, "message": WELLNESS_INTEREST_OK})
+def wellness_day_interest():
+    row = WellnessDayInterest(**load(WellnessDayInterestCreateSchema(), get_json()))
+    db.session.add(row)
+    db.session.commit()
+    notifications.wellness_interest_received(row)
+    return jsonify({"ok": True, "message": WELLNESS_INTEREST_OK}), 201
+
+
+@bp.post("/wellness-day/partners")
+@limiter.limit(forms_limit)
+@honeypot({"ok": True, "message": WELLNESS_PARTNER_OK})
+def wellness_day_partner():
+    row = WellnessDayPartner(**load(WellnessDayPartnerCreateSchema(), get_json()))
+    db.session.add(row)
+    db.session.commit()
+    notifications.wellness_partner_received(row)
+    return jsonify({"ok": True, "message": WELLNESS_PARTNER_OK}), 201
+
+
+@bp.get("/wellness-day/lineup")
+def wellness_day_lineup():
+    """Public "Who's joining us": ONLY partners an admin marked confirmed AND show_publicly,
+    and ONLY their organization (or name) and participation types."""
+    q = (select(WellnessDayPartner)
+         .where(WellnessDayPartner.status == "confirmed", WellnessDayPartner.show_publicly.is_(True))
+         .order_by(func.lower(func.coalesce(WellnessDayPartner.organization, WellnessDayPartner.name))))
+    return jsonify({"items": [{"name": p.display_name, "participation_types": p.participation_types or []}
+                              for p in db.session.scalars(q)]})

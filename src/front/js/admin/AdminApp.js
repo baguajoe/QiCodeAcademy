@@ -12,6 +12,7 @@ import { ResourceForm } from "./ResourceForm";
 import { SettingsScreen } from "./SettingsScreen";
 import { SiteImagesScreen } from "./SiteImagesScreen";
 import { Dashboard } from "./Dashboard";
+import { WellnessDayScreen } from "./WellnessDayScreen";
 
 function useTitle(title) {
   useEffect(() => {
@@ -79,7 +80,7 @@ function Login() {
 
 function Sidebar({ counts, onNavigate }) {
   const { store, actions } = useStore();
-  const badge = { registrations: counts.registrations_pending, "contact-messages": counts.unread_messages, "research-inquiries": counts.new_research_inquiries };
+  const badge = { "wellness-day-partners": counts.wellness_partners_new, registrations: counts.registrations_pending, "contact-messages": counts.unread_messages, "research-inquiries": counts.new_research_inquiries };
   return (
     <nav className="admin-nav" aria-label="Admin">
       <ul>
@@ -89,6 +90,7 @@ function Sidebar({ counts, onNavigate }) {
         <div key={g}>
           <h2>{g}</h2>
           <ul>
+            {g === "Senior Wellness Day" && <li><NavLink to="/admin/wellness-day" onClick={onNavigate}>Overview &amp; confirmed lineup</NavLink></li>}
             {Object.entries(RESOURCES).filter(([, r]) => r.group === g).map(([key, r]) => (
               <li key={key}>
                 <NavLink to={`/admin/${key}`} onClick={onNavigate}>
@@ -159,6 +161,7 @@ function Shell() {
             <Route index element={<Dashboard data={counts} />} />
             <Route path="settings" element={<SettingsScreen />} />
             <Route path="site-images" element={<SiteImagesScreen />} />
+            <Route path="wellness-day" element={<WellnessDayScreen />} />
             <Route path=":resource" element={<ResourceList />} />
             <Route path=":resource/new" element={<ResourceForm />} />
             <Route path=":resource/:id" element={<ResourceForm />} />

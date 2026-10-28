@@ -2,7 +2,7 @@
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useSeo } from "../seo";
-import { PageBanner, SectionHeader, WellnessDisclaimer } from "../component/common";
+import { PageBanner, SectionHeader, WellnessDisclaimer, useSettingText } from "../component/common";
 import { ProgramList, ProgramSection } from "../component/ProgramList";
 import { FeatureGrid, ModuleCard, ScheduleTable, StatusBadge, WeeklyProjects, useCurriculum } from "../component/Curriculum";
 import { SessionFlowDiagram, StepsDiagram } from "../component/Diagrams";
@@ -127,6 +127,7 @@ export function SeniorPrograms() {
   const { t } = useTranslation();
   const { modules } = useCurriculum("senior");
   useSeo({ title: t("seniors.title"), description: t("seniors.intro"), imageSlot: "seniors-banner" });
+  const wellnessStatus = useSettingText()("wellness_day_status", "wellnessDay.statusDefault");
   const detailed = modules.filter((m) => (m.learning_goals || []).length || (m.projects || []).length || m.adaptations);
   const simple = modules.filter((m) => !detailed.includes(m));
   // Traditional Baguazhang is the class side of our "Baguazhang for Healthy Aging" signature program.
@@ -151,6 +152,14 @@ export function SeniorPrograms() {
             <h3>{t("seniors.focusTitle")}</h3>
           </div>
           <FocusList items={t("seniors.focus", { returnObjects: true })} />
+          <aside className="wd-callout" aria-labelledby="wd-callout-title">
+            <div>
+              <span className="badge badge-solid">{wellnessStatus}</span>
+              <h3 id="wd-callout-title">{t("seniors.wellnessDayTitle")}</h3>
+              <p>{t("seniors.wellnessDayText")}</p>
+            </div>
+            <Link className="btn" to="/programs/seniors/wellness-day">{t("seniors.wellnessDayLink")}</Link>
+          </aside>
         </div>
       </section>
 

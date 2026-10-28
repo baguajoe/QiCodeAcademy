@@ -368,6 +368,123 @@ class ResearchInterestSchema(_ResearchInterestFields, AdminSchema):
     pass
 
 
+# ---------------------------------------------------------------------------
+# Senior Wellness Day
+# ---------------------------------------------------------------------------
+def ChoiceList(choices, **kw):
+    return fields.List(Choice(choices), load_default=list, validate=validate.Length(max=len(choices)), **kw)
+
+
+def _dedupe(data, *keys):
+    for k in keys:
+        if k in data and data[k] is not None:
+            data[k] = list(dict.fromkeys(data[k]))
+    return data
+
+
+class _WellnessInterestFields:
+    """Contact details + activity preferences only. NO age, birth date, or health information."""
+    name = Req(120)
+    email = Email()
+    phone = Phone()
+    neighborhood = fields.String(allow_none=True, validate=validate.OneOf(m.WELLNESS_NEIGHBORHOODS))
+    activities = ChoiceList(m.WELLNESS_ACTIVITIES)
+    contact_method = fields.String(allow_none=True, validate=validate.OneOf(m.WELLNESS_CONTACT_METHODS))
+    signing_up_for = fields.String(allow_none=True, validate=validate.OneOf(m.WELLNESS_SIGNUP_FOR))
+    consent_to_contact = fields.Boolean(required=True)
+
+    @validates_schema
+    def _check(self, data, **kwargs):
+        errors = {}
+        if not data.get("email") and not data.get("phone"):
+            errors["email"] = ["Please give an email address or a phone number (or both)."]
+        elif data.get("contact_method") == "email" and not data.get("email"):
+            errors["email"] = ["Add an email address so we can contact you by email."]
+        elif data.get("contact_method") in ("phone", "text") and not data.get("phone"):
+            errors["phone"] = ["Add a phone number so we can call or text you."]
+        if data.get("consent_to_contact") is not True:
+            errors["consent_to_contact"] = ["Please check the box so we can contact you about Senior Wellness Day."]
+        if errors:
+            raise ValidationError(errors)
+
+    @post_load
+    def _normalize(self, data, **kwargs):
+        return _dedupe(data, "activities")
+
+
+class WellnessDayInterestCreateSchema(_WellnessInterestFields, PublicFormSchema):
+    pass
+
+
+class WellnessDayInterestSchema(_WellnessInterestFields, AdminSchema):
+    pass
+
+
+class _WellnessPartnerFields:
+    name = Req(120)
+    organization = S(200)
+    email = Email(required=True)
+    phone = Phone()
+    website_or_social = S(500)
+    participation_types = fields.List(Choice(m.WELLNESS_PARTICIPATION), required=True, validate=validate.Length(
+        min=1, max=len(m.WELLNESS_PARTICIPATION), error="Choose at least one way you'd like to take part."))
+    offer_description = fields.String(required=True, validate=validate.Length(
+        min=1, max=600, error="Describe what you would offer in 600 characters or fewer."))
+    license_type = S(120)
+    license_number = S(80)
+    has_insurance = fields.String(allow_none=True, validate=validate.OneOf(m.WELLNESS_INSURANCE))
+    compensation = fields.String(allow_none=True, validate=validate.OneOf(m.WELLNESS_COMPENSATION))
+    typical_rate = S(100)
+    setup_needs = ChoiceList(m.WELLNESS_SETUP_NEEDS)
+    availability = ChoiceList(m.WELLNESS_AVAILABILITY)
+    referral_source = S(300)
+
+    @validates_schema
+    def _check(self, data, **kwargs):
+        errors = {}
+        if "practitioner" in (data.get("participation_types") or []):
+            msg = "Required for practitioners. Massage and bodywork must be provided by Massachusetts-licensed practitioners."
+            for f in ("license_type", "license_number"):
+                if not (data.get(f) or "").strip():
+                    errors[f] = [msg]
+        if errors:
+            raise ValidationError(errors)
+
+    @post_load
+    def _normalize(self, data, **kwargs):
+        _dedupe(data, "participation_types", "setup_needs", "availability")
+        if data.get("compensation") != "paid":
+            data["typical_rate"] = None
+        needs = data.get("setup_needs") or []
+        if "none" in needs and len(needs) > 1:
+            data["setup_needs"] = [n for n in needs if n != "none"]
+        return data
+
+
+class WellnessDayPartnerCreateSchema(_WellnessPartnerFields, PublicFormSchema):
+    agrees_no_sales = fields.Boolean(required=True)
+    agrees_not_confirmed = fields.Boolean(required=True)
+
+    @validates_schema
+    def _agreements(self, data, **kwargs):
+        errors = {}
+        if data.get("agrees_no_sales") is not True:
+            errors["agrees_no_sales"] = ["Please agree that product sales and sales pitches need advance approval."]
+        if data.get("agrees_not_confirmed") is not True:
+            errors["agrees_not_confirmed"] = ["Please confirm you understand this form doesn't confirm your participation."]
+        if errors:
+            raise ValidationError(errors)
+
+
+class WellnessDayPartnerSchema(_WellnessPartnerFields, AdminSchema):
+    agrees_no_sales = fields.Boolean(load_default=False)
+    agrees_not_confirmed = fields.Boolean(load_default=False)
+    status = Choice(m.WELLNESS_PARTNER_STATUSES, load_default="new")
+    show_publicly = fields.Boolean(load_default=False)
+    admin_notes = S(5000)
+    display_name = fields.String(dump_only=True)
+
+
 class DonationCheckoutSchema(PublicFormSchema):
     amount = fields.Decimal(required=True, places=2, as_string=True,
                             validate=validate.Range(min=0, min_inclusive=False))

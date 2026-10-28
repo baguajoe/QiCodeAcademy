@@ -42,6 +42,15 @@ const GROUPS = [
     ],
   },
   {
+    title: "Senior Wellness Day",
+    note: "Shown on the Senior Wellness Day page, the Seniors page, and the home page card. Date and location appear only when filled in.",
+    items: [
+      { key: "wellness_day_status", label: "Badge text", hint: "e.g. \"Coming spring 2027\". Leave blank to use the default." },
+      { key: "wellness_day_date", label: "Date", hint: "e.g. \"Saturday, May 15, 2027, 10 AM – 2 PM\". Leave blank until it's set." },
+      { key: "wellness_day_location", label: "Location", hint: "Venue name and neighborhood. Leave blank until it's set." },
+    ],
+  },
+  {
     title: "Research",
     items: [{ key: "research_status", label: "Current research status", hint: "Shown on the Research page, e.g. \"In development — no active studies.\"" }],
   },

@@ -66,6 +66,30 @@ function Divisions() {
   );
 }
 
+// Senior Wellness Day (spring 2027) card. Badge text is the wellness_day_status setting.
+function WellnessDayCard() {
+  const { t } = useTranslation();
+  const status = useSettingText()("wellness_day_status", "wellnessDay.statusDefault");
+  return (
+    <section className="section" aria-labelledby="wd-home-title">
+      <div className="container">
+        <article className="wd-band theme-senior">
+          <div>
+            <span className="badge badge-solid">{status}</span>
+            <h2 id="wd-home-title">{t("home.wellnessDayTitle")}</h2>
+            <p style={{ margin: 0 }}>{t("home.wellnessDayText")}</p>
+          </div>
+          <div>
+            <Link className="btn" to="/programs/seniors/wellness-day">
+              {t("home.wellnessDayCta")}<span className="sr-only">: {t("home.wellnessDayTitle")}</span>
+            </Link>
+          </div>
+        </article>
+      </div>
+    </section>
+  );
+}
+
 function Intergenerational() {
   const { t } = useTranslation();
   return (
@@ -241,6 +265,7 @@ export default function Home() {
       <Hero />
       <Divisions />
       <FeaturedProgram />
+      <WellnessDayCard />
       <Intergenerational />
       <Neighborhoods />
       <UpcomingEvents />

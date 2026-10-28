@@ -211,3 +211,48 @@ section[id], div[id] { scroll-margin-top: 7rem; }
   .photo-row { flex-direction: row; align-items: flex-start; }
   .photo-row-item { flex: var(--a) 1 0%; min-width: 0; }
 }
+
+/* --- Senior Wellness Day ---------------------------------------------------- */
+.wd-status { margin: var(--space-3) 0 0; }
+.wd-status .badge { font-size: 0.95rem; padding: 0.35rem 0.9rem; }
+.wd-offerings { list-style: none; padding: 0; margin: 0; display: grid; gap: var(--space-4); grid-template-columns: repeat(auto-fill, minmax(min(17rem, 100%), 1fr)); }
+.wd-offering { display: flex; gap: var(--space-4); align-items: flex-start; }
+.wd-offering h3 { font-size: 1.15rem; margin-bottom: var(--space-2); }
+.wd-offering p { margin: 0; }
+.wd-icon { flex: none; width: 3rem; height: 3rem; color: var(--accent-strong); }
+.wd-note { margin: var(--space-5) 0 0; }
+.wd-details { align-items: start; }
+.wd-details .gain h2 { font-size: 1.5rem; }
+.wd-when { margin-top: 0; }
+.wd-lineup { list-style: none; padding: 0; margin: 0; display: grid; gap: var(--space-3); grid-template-columns: repeat(auto-fill, minmax(min(16rem, 100%), 1fr)); }
+.wd-lineup li { display: grid; gap: var(--space-1); background: var(--surface); border: 1px solid var(--line); border-left: 5px solid var(--accent); border-radius: var(--radius-sm); padding: var(--space-3) var(--space-4); }
+.wd-license { background: var(--accent-soft); border: 2px solid var(--accent); border-radius: var(--radius-sm); padding: var(--space-4); }
+.wd-license legend { float: left; width: 100%; margin-bottom: var(--space-2); }
+.wd-license legend + * { clear: left; }
+.wd-license .field:last-child { margin-bottom: 0; }
+.wd-contact-hint { color: var(--ink-muted); margin: 0 0 var(--space-3); }
+.wd-questions { margin-top: var(--space-5); font-size: 1.1rem; overflow-wrap: anywhere; }
+.form-pair { gap: 0 var(--space-5); }
+.wd-band { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--space-5); align-items: center; border-radius: var(--radius); background: var(--accent-soft); padding: var(--space-6); border-left: 8px solid var(--accent); }
+@media (min-width: 48rem) { .wd-band { grid-template-columns: 2fr 1fr; } }
+.wd-band h2 { font-size: 1.4rem; }
+.wd-band .badge { margin-bottom: var(--space-2); }
+.wd-callout { display: flex; flex-wrap: wrap; gap: var(--space-3) var(--space-5); align-items: center; justify-content: space-between; background: var(--accent-soft); border: 2px solid var(--accent); border-radius: var(--radius); padding: var(--space-4) var(--space-5); margin-top: var(--space-5); }
+.wd-callout h3 { margin: 0 0 var(--space-1); font-size: 1.25rem; }
+.wd-callout p { margin: 0; }
+:root[data-contrast="high"] .wd-band, :root[data-contrast="high"] .wd-callout, :root[data-contrast="high"] .wd-license { background: #fff; border: 2px solid #000; }
+
+/* Large, easy forms (many visitors are older adults or family helping them). */
+.form-large { font-size: 1.15rem; }
+.form-large .field label, .form-large fieldset legend { font-size: 1.15rem; }
+.form-large .field .hint { font-size: 1rem; }
+.form-large input[type="text"], .form-large input[type="email"], .form-large input[type="tel"],
+.form-large select, .form-large textarea { min-height: 3.25rem; padding: 0.75rem 0.9rem; font-size: 1.15rem; }
+.form-large .check input { width: 1.75rem; height: 1.75rem; margin-top: 0.1rem; }
+.form-large .check { gap: var(--space-3); }
+.form-large .choice-card { padding: var(--space-3); }
+.form-large .field-error { font-size: 1.05rem; }
+.form-large button[type="submit"] { font-size: 1.25rem; padding: 1rem 2rem; }
+@media (max-width: 40rem) { .form-large button[type="submit"] { width: 100%; } }
+/* Long participation-type labels read better one per row. */
+.wellness-day fieldset:has(#wd-partner-participation_types) .choice-grid { grid-template-columns: minmax(0, 1fr); }
