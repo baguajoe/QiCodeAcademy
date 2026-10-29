@@ -257,7 +257,7 @@ def wellness_interest_received(row):
             f"Hi {row.name},",
             ["Thank you for joining the interest list for Senior Wellness Day, a free day of movement, care, "
              "creativity, and community for older adults in Boston.",
-             "We're planning it for May 2027, from 10 AM to 2 PM, at a BCYF site to be confirmed. We'll be in touch "
+             "We're planning it for May 2027, from 10 AM to 2 PM, at a Boston location to be announced. We'll be in touch "
              "when the date and location are set.",
              "You can ask us to remove your information at any time by replying to this email."],
             [("Activities you're interested in", activities),

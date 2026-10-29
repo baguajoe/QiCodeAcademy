@@ -47,9 +47,11 @@ ORG_HISTORY = ("Qi Code Academy, Inc. was incorporated in 2026 to formalize and 
 LEGACY_SETTING_FINGERPRINTS = {
     "tax_status": {"f5f7f0f76fe63a4d1bf144e7349f52dcd3fd948f08147ad5a0fb80e3422ab114"},  # "... has applied for 501(c)(3) ..." (pre-approval)
     "wellness_day_status": {"63b0157f5c44eac96c82620e1acfdb8e8502c5defb5b8f58186a933ff4f105e8"},  # "Coming spring 2027"
-    # Blank date/location (the earlier defaults) become May 2027 / "BCYF site to be confirmed".
+    # Blank date/location (the earlier defaults) become May 2027 / "Boston location to be announced",
+    # as does the retired venue-specific location placeholder.
     "wellness_day_date": {"e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"},
-    "wellness_day_location": {"e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"},
+    "wellness_day_location": {"e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+                              "c5d83d6bb63da6a69ac70ae09aeb1d60ccf084430f8f029efe69ff9e0eca4e07"},
 }
 
 DEFAULT_SETTINGS = [
@@ -81,7 +83,7 @@ DEFAULT_SETTINGS = [
     # Senior Wellness Day page: badge text, date and location (the page falls back to these if blanked)
     ("wellness_day_status", "Coming May 2027", True),
     ("wellness_day_date", "May 2027", True),
-    ("wellness_day_location", "BCYF site to be confirmed", True),
+    ("wellness_day_location", "Boston location to be announced", True),
 ]
 
 # Keep in sync with SLOTS in src/front/js/siteImages.js and IMAGE_GUIDE.md.

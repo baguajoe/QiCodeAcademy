@@ -265,7 +265,7 @@ Required: `name`, `email_or_phone` (a valid email or phone), `consent_to_contact
 #### `GET /api/wellness-day/lineup`
 → `{"items": [{"name": "Silva Bodywork", "participation_types": ["practitioner_massage"]}]}`. ONLY partners with `status == "confirmed"` AND `show_publicly == true`; `name` is the organization, or the person's name if there is none. No other field is ever exposed. Empty list → the page hides "Who's joining us".
 
-Settings (public, `GET /api/settings`): `wellness_day_status` (badge, default "Coming May 2027"), `wellness_day_date` (default "May 2027"), `wellness_day_location` (default "BCYF site to be confirmed"). The page shows the date and location defaults if a value is blanked.
+Settings (public, `GET /api/settings`): `wellness_day_status` (badge, default "Coming May 2027"), `wellness_day_date` (default "May 2027"), `wellness_day_location` (default "Boston location to be announced"). The page shows the date and location defaults if a value is blanked.
 
 ### Donations
 

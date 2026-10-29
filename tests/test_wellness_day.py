@@ -389,7 +389,7 @@ def test_settings_seeded(client, db):
     db.session.commit()
     s = client.get("/api/settings").get_json()
     assert s["wellness_day_status"] == "Coming May 2027"
-    assert s["wellness_day_date"] == "May 2027" and s["wellness_day_location"] == "BCYF site to be confirmed"
+    assert s["wellness_day_date"] == "May 2027" and s["wellness_day_location"] == "Boston location to be announced"
 
 
 def test_old_wellness_day_setting_defaults_are_upgraded(db):
@@ -403,6 +403,22 @@ def test_old_wellness_day_setting_defaults_are_upgraded(db):
     values = {r.key: r.value for r in db.session.query(SiteSetting)}
     assert values["wellness_day_status"] == "Coming May 2027" and values["wellness_day_date"] == "May 2027"
     assert values["wellness_day_location"] == "Grove Hall"  # staff edits are kept
+
+
+def test_old_venue_location_placeholder_is_upgraded(db):
+    from api.commands import upgrade_founder_text
+    from api.models import SiteSetting
+    db.session.add(SiteSetting(key="wellness_day_location", value="BCYF site to be confirmed", is_public=True))
+    db.session.commit()
+    upgrade_founder_text()
+    row = db.session.query(SiteSetting).filter_by(key="wellness_day_location").one()
+    assert row.value == "Boston location to be announced"
+
+
+def test_no_venue_partner_named_for_wellness_day():
+    files = [ROOT / "src/api/seo.py", ROOT / "src/api/services/notifications.py",
+             *(ROOT / "src/front/locales").glob("*.json"), *(ROOT / "src/front/js").rglob("*.js")]
+    assert not [f.name for f in files if "BCYF" in f.read_text()]
 
 
 def test_wellness_page_has_no_donations_or_dollar_amounts():
