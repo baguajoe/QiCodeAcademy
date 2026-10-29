@@ -4,7 +4,7 @@ import CREDITS from "../img/site/credits.json";
 export const STOCK_ALLOWED_SLOTS = ["hero-home", "youth-banner", "seniors-banner", "intergenerational-banner",
   "research-banner", "donate", "home-card-youth", "home-card-seniors", "home-card-research",
   // Senior Wellness Day activity and marketplace photos
-  "wellness-day-chair-yoga", "wellness-day-chair-hip-hop", "wellness-day-breathing", "wellness-day-self-massage",
+  "wellness-day-chair-yoga", "wellness-day-chair-hip-hop", "wellness-day-breathing", "wellness-day-balance", "wellness-day-self-massage",
   "wellness-day-sound", "wellness-day-acupuncture", "wellness-day-painting", "wellness-day-market-baskets",
   "wellness-day-market-jewelry", "wellness-day-market-natural", "wellness-day-resources", "wellness-day-social"];
 
@@ -142,8 +142,8 @@ export const SLOTS = {
     subject: "Donate photo: youth and older adults at a Qi Code Academy program",
     alt: "Youth and older adults at a Qi Code Academy program",
   },
-  // Senior Wellness Day cards and marketplace strip. Stock allowed (except wellness-day-balance) until we
-  // have event photos; a card with no photo shows a line icon instead of a placeholder.
+  // Senior Wellness Day cards and marketplace strip. Stock allowed until we have event photos;
+  // a card with no photo shows a line icon instead of a placeholder.
   "wellness-day-chair-yoga": {
     page: "Senior Wellness Day (Chair yoga card)", size: "1200×900", ratio: "4 / 3", division: "senior",
     subject: "Older adults doing seated yoga or stretching in chairs",
@@ -161,7 +161,7 @@ export const SLOTS = {
   },
   "wellness-day-balance": {
     page: "Senior Wellness Day (Fall prevention and balance card)", size: "1200×900", ratio: "4 / 3", division: "senior",
-    subject: "Our own photo: older adults doing balance exercises in one of our classes (no stock)", optional: true,
+    subject: "Older adults doing balance exercises, ideally holding a chair for support",
     alt: "Older adults practicing balance exercises",
   },
   "wellness-day-self-massage": {

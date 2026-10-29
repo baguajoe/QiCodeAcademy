@@ -573,10 +573,10 @@ def test_wellness_day_photo_slots():
     # Our own photos where we have them.
     for ours in ("seniors-banner", "seniors-join", "research-banner", "seniors-baguazhang", "seniors-chair-massage"):
         assert ours in used and credits[ours]["type"] == "founder-owned"
-    # No photo appears twice on the page; fall prevention takes our own photo only (never stock).
+    # No photo appears twice on the page, and every card and strip slot has a photo (no icon-only cards).
     slots = re.findall(r'slot(?:=|: )"([a-z-]+)"', js)
     assert len(slots) == len(set(slots)), slots
-    assert "wellness-day-balance" not in STOCK_ALLOWED_SLOTS
+    assert not [s for s in slots if s not in credits], "card without a photo"
     # Photos in the repo stay under 200 KB.
     site = ROOT / "src/front/img/site"
     for slot in used:
@@ -587,5 +587,5 @@ def test_wellness_day_photo_slots():
     for slot in WELLNESS_DAY_STOCK_SLOTS:
         if slot in credits:
             c = credits[slot]
-            assert c["type"] == "stock" and c["page_url"].startswith(("https://unsplash.com/", "https://nappy.co/"))
+            assert c["type"] == "stock" and c["page_url"].startswith(("https://unsplash.com/", "https://www.pexels.com/", "https://nappy.co/"))
             assert "license" in c["license"].lower()

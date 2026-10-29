@@ -241,6 +241,17 @@
     "source_site": "Unsplash (unsplash.com)",
     "type": "stock"
   },
+  "wellness-day-balance": {
+    "alt": "Older adults standing on one leg with knees raised, practicing balance in a studio with chairs behind them",
+    "credit": "Photo: Centre for Ageing Better / Unsplash",
+    "file": "wellness-day-balance.jpg",
+    "license": "Public Domain (CC0) and Unsplash License — free for commercial and personal use; credit appreciated, not required. https://unsplash.com/license",
+    "notes": "Stock photo for Senior Wellness Day (cropped to 4:3) — replace with a real event photo when you have one.",
+    "page_url": "https://unsplash.com/photos/adults-balancing-on-one-leg-JDKIVw_eiL4",
+    "photographer": "Centre for Ageing Better (@ageing_better)",
+    "source_site": "Unsplash (unsplash.com)",
+    "type": "stock"
+  },
   "wellness-day-breathing": {
     "alt": "A group of older adults raising their arms overhead together in a leafy park",
     "credit": "Photo: Khanh Do / Unsplash",
@@ -296,6 +307,17 @@
     "source_site": "Nappy (nappy.co)",
     "type": "stock"
   },
+  "wellness-day-market-natural": {
+    "alt": "A market table of natural products: loose herbal teas in paper bags, herb bundles, and bottles of oils",
+    "credit": "Photo: Surya Travel / Pexels",
+    "file": "wellness-day-market-natural.jpg",
+    "license": "Pexels License — free for commercial and personal use, no permission needed; credit appreciated, not required. https://www.pexels.com/license/",
+    "notes": "Stock photo for Senior Wellness Day (cropped to 4:3) — replace with a real event photo when you have one.",
+    "page_url": "https://www.pexels.com/photo/organic-market-stand-with-herbs-and-teas-39126995/",
+    "photographer": "Surya Travel",
+    "source_site": "Pexels (pexels.com)",
+    "type": "stock"
+  },
   "wellness-day-painting": {
     "alt": "Close-up of a hand painting a design on canvas with a fine brush",
     "credit": "Photo: artxadanna / Nappy (CC0)",
@@ -307,6 +329,28 @@
     "source_site": "Nappy (nappy.co)",
     "type": "stock"
   },
+  "wellness-day-resources": {
+    "alt": "Two older women at a table with a blue cloth, reading and filling out papers together",
+    "credit": "Photo: Su Casa Panamá / Pexels",
+    "file": "wellness-day-resources.jpg",
+    "license": "Pexels License — free for commercial and personal use, no permission needed; credit appreciated, not required. https://www.pexels.com/license/",
+    "notes": "Stock photo for Senior Wellness Day (cropped to 4:3) — replace with a real event photo when you have one.",
+    "page_url": "https://www.pexels.com/photo/elderly-women-filling-up-a-paper-while-sitting-on-a-chair-10579144/",
+    "photographer": "Su Casa Panamá",
+    "source_site": "Pexels (pexels.com)",
+    "type": "stock"
+  },
+  "wellness-day-self-massage": {
+    "alt": "An older woman with her eyes closed, gently massaging the side of her neck with one hand",
+    "credit": "Photo: Ron Lach / Pexels",
+    "file": "wellness-day-self-massage.jpg",
+    "license": "Pexels License — free for commercial and personal use, no permission needed; credit appreciated, not required. https://www.pexels.com/license/",
+    "notes": "Stock photo for Senior Wellness Day (cropped to 4:3) — replace with a real event photo when you have one.",
+    "page_url": "https://www.pexels.com/photo/woman-holding-her-neck-8625549/",
+    "photographer": "Ron Lach",
+    "source_site": "Pexels (pexels.com)",
+    "type": "stock"
+  },
   "wellness-day-social": {
     "alt": "Two older couples talking and laughing around a cafe table with drinks",
     "credit": "Photo: Centre for Ageing Better / Unsplash",
@@ -316,6 +360,17 @@
     "page_url": "https://unsplash.com/photos/two-couples-talking-at-a-table-in-a-cafe-N8z6mWyPM4I",
     "photographer": "Centre for Ageing Better (@ageing_better)",
     "source_site": "Unsplash (unsplash.com)",
+    "type": "stock"
+  },
+  "wellness-day-sound": {
+    "alt": "An older woman playing a Tibetan singing bowl outdoors while an older man sits beside her listening",
+    "credit": "Photo: Gustavo Fring / Pexels",
+    "file": "wellness-day-sound.jpg",
+    "license": "Pexels License — free for commercial and personal use, no permission needed; credit appreciated, not required. https://www.pexels.com/license/",
+    "notes": "Stock photo for Senior Wellness Day (cropped to 4:3) — replace with a real event photo when you have one.",
+    "page_url": "https://www.pexels.com/photo/an-elderly-woman-using-a-tibetan-singing-bowl-4971652/",
+    "photographer": "Gustavo Fring",
+    "source_site": "Pexels (pexels.com)",
     "type": "stock"
   },
   "youth-banner": {

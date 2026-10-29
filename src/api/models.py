@@ -39,7 +39,7 @@ PARTNER_TYPES = ("sponsor", "community", "research")
 STOCK_ALLOWED_SLOTS = ("hero-home", "youth-banner", "seniors-banner", "intergenerational-banner", "research-banner",
                        "donate", "home-card-youth", "home-card-seniors", "home-card-research",
                        # Senior Wellness Day activity/marketplace photos (no event photos of ours exist yet)
-                       "wellness-day-chair-yoga", "wellness-day-chair-hip-hop", "wellness-day-breathing",
+                       "wellness-day-chair-yoga", "wellness-day-chair-hip-hop", "wellness-day-breathing", "wellness-day-balance",
                        "wellness-day-self-massage", "wellness-day-sound", "wellness-day-acupuncture", "wellness-day-painting",
                        "wellness-day-market-baskets", "wellness-day-market-jewelry", "wellness-day-market-natural",
                        "wellness-day-resources", "wellness-day-social")

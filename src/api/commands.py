@@ -99,7 +99,6 @@ SITE_IMAGE_SLOTS = [
     "wellness-day-chair-yoga", "wellness-day-chair-hip-hop", "wellness-day-breathing", "wellness-day-self-massage",
     "wellness-day-sound", "wellness-day-acupuncture", "wellness-day-painting", "wellness-day-market-baskets",
     "wellness-day-market-jewelry", "wellness-day-market-natural", "wellness-day-resources", "wellness-day-social",
-    # Our own photo only (no stock): fall prevention & balance card shows an icon until one is added
     "wellness-day-balance",
 ]
 

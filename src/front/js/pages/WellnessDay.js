@@ -64,8 +64,8 @@ function CardMedia({ slot, icon, position, sizes }) {
 
 const CARD_SIZES = "(min-width: 64rem) 23rem, (min-width: 40rem) 45vw, 100vw";
 
-// Our own photos first (Tai Chi, Baguazhang, Qigong, chair massage; fall prevention takes our own photo
-// only, an icon until we have one); stock (credited in credits.json) or an icon for the rest.
+// Our own photos first (Tai Chi, Baguazhang, Qigong, chair massage); credited stock (credits.json) for the
+// rest until we have event photos. The icon only shows if a slot's photo goes missing.
 const MOVEMENT = [
   { key: "tai_chi", slot: "seniors-join", icon: "movement", position: "center 45%" },
   { key: "baguazhang", slot: "research-banner", icon: "movement" },
@@ -97,7 +97,7 @@ const AREAS = [
 // What we hope the day brings (same order as wellnessDay.hopes).
 const HOPE_ICONS = ["movement", "people", "info", "market"];
 
-// Marketplace strip: art and crafts, jewelry, natural products (icon until we have a photo).
+// Marketplace strip: art and crafts, jewelry, natural products.
 const MARKET_PHOTOS = [
   { slot: "wellness-day-market-baskets", icon: "market" },
   { slot: "wellness-day-market-jewelry", icon: "market" },

@@ -29,7 +29,7 @@ There are three kinds of photos:
 2. **Stock:** free-license photos from Unsplash (not "Unsplash+"), Pexels, or Nappy. Confirm the license allows free commercial use before downloading.
 3. **Placeholders:** anything we don't have a good photo for yet. A placeholder is better than a photo that doesn't fit.
 
-- **Stock is allowed ONLY for:** `hero-home`, `youth-banner`, `seniors-banner`, `intergenerational-banner`, `research-banner`, `donate`, the three home division cards (`home-card-youth`, `home-card-seniors`, `home-card-research`), and the Senior Wellness Day activity and marketplace photos (`wellness-day-*` except `wellness-day-balance`; we have no event photos yet). The admin and API enforce this.
+- **Stock is allowed ONLY for:** `hero-home`, `youth-banner`, `seniors-banner`, `intergenerational-banner`, `research-banner`, `donate`, the three home division cards (`home-card-youth`, `home-card-seniors`, `home-card-research`), and the Senior Wellness Day activity and marketplace photos (`wellness-day-*`; we have no event photos yet). The admin and API enforce this.
 - **Stock is NOT allowed for:** `founder-portrait`, `founder-teaching`, the Gallery, team photos, or news posts about our programs.
 - **Alt text describes the scene accurately.** Never caption or describe a stock photo as "our students," "our class," or Qi Code Academy participants.
 - Our community is mostly Black and brown, and photos should reflect that. Reject images with visible logos, readable text, celebrities, or medical settings, and avoid stiff, posed-looking shots.
@@ -63,18 +63,18 @@ There are three kinds of photos:
 | Senior Wellness Day (Baguazhang card) | `research-banner.jpg` (shared) | — | — | ✅ Founder-owned: seniors circle walking |
 | Senior Wellness Day (Qigong card) | `seniors-baguazhang.jpg` (shared) | — | — | ✅ Founder-owned: Joseph guiding students |
 | Senior Wellness Day (Chair massage card) | `seniors-chair-massage.jpg` (shared) | — | — | ✅ Founder-owned |
-| Senior Wellness Day (Fall prevention and balance card) | `wellness-day-balance.jpg` | 1200×900 | **No — our own photo only** | **Line icon** for now: every teaching-seniors photo we have is already used on this page. Add a new one of a balance exercise |
+| Senior Wellness Day (Fall prevention and balance card) | `wellness-day-balance.jpg` | 1200×900 | Yes | Stock (Unsplash, Centre for Ageing Better): older adults balancing on one leg in a studio |
 | Senior Wellness Day (Chair yoga card) | `wellness-day-chair-yoga.jpg` | 1200×900 | Yes | Stock (Unsplash, Centre for Ageing Better): seniors seated in chairs, stretching bands overhead |
 | Senior Wellness Day (Chair hip-hop card) | `wellness-day-chair-hip-hop.jpg` | 1200×900 | Yes | Stock (Nappy, kennie143): older woman dancing outdoors (cropped to 4:3) |
 | Senior Wellness Day (Meditation and breathing card) | `wellness-day-breathing.jpg` | 1200×900 | Yes | Stock (Unsplash, Khanh Do): seniors raising their arms in a park |
-| Senior Wellness Day (Self-massage card) | `wellness-day-self-massage.jpg` | 1200×900 | Yes | **Line icon**: no fitting free photo found |
-| Senior Wellness Day (Sound healing card) | `wellness-day-sound.jpg` | 1200×900 | Yes | **Line icon**: no fitting free photo found (wanted: singing bowls, ideally with older adults) |
+| Senior Wellness Day (Self-massage card) | `wellness-day-self-massage.jpg` | 1200×900 | Yes | Stock (Pexels, Ron Lach): older woman massaging her neck, eyes closed |
+| Senior Wellness Day (Sound healing card) | `wellness-day-sound.jpg` | 1200×900 | Yes | Stock (Pexels, Gustavo Fring): older couple outdoors with a singing bowl |
 | Senior Wellness Day (Acupuncture card) | `wellness-day-acupuncture.jpg` | 1200×900 | Yes | Stock (Unsplash, Christine Galligan): needle in a hand, close-up |
 | Senior Wellness Day (Guided painting card) | `wellness-day-painting.jpg` | 1200×900 | Yes | Stock (Nappy): hand painting on canvas |
 | Senior Wellness Day (Marketplace strip, 1st: art and crafts) | `wellness-day-market-baskets.jpg` | 1200×900 | Yes | Stock (Nappy): basket weaver at a market |
 | Senior Wellness Day (Marketplace strip, 2nd: jewelry) | `wellness-day-market-jewelry.jpg` | 1200×900 | Yes | Stock (Nappy): older man at a craft and bead-jewelry stall |
-| Senior Wellness Day (Marketplace strip, 3rd: natural products) | `wellness-day-market-natural.jpg` | 1200×900 | Yes | **Line icon**: no fitting free photo found (wanted: sea moss, natural skincare) |
-| Senior Wellness Day (Resource tables card) | `wellness-day-resources.jpg` | 1200×900 | Yes | **Line icon**: no fitting free photo found |
+| Senior Wellness Day (Marketplace strip, 3rd: natural products) | `wellness-day-market-natural.jpg` | 1200×900 | Yes | Stock (Pexels, Surya Travel): market table of herbal teas, herb bundles and oils (no free sea moss photo found) |
+| Senior Wellness Day (Resource tables card) | `wellness-day-resources.jpg` | 1200×900 | Yes | Stock (Pexels, Su Casa Panamá): two older women filling out papers at a table |
 | Senior Wellness Day (Healthy snacks and water card) | `wellness-day-social.jpg` | 1200×900 | Yes | Stock (Unsplash, Centre for Ageing Better): seniors talking at a cafe table |
 | Intergenerational (banner) | `intergenerational-banner.jpg` | 1920×800 | Yes | Placeholder |
 | Research (banner) | `research-banner.jpg` | 1920×800 | Yes | ✅ Founder-owned: seniors circle walking |
@@ -110,7 +110,6 @@ Banner and hero photos sit under a dark overlay with white text on top, so the l
 
 - [ ] `intergenerational-banner.jpg`, `about-banner.jpg`, `volunteer-banner.jpg`, and "me teaching seniors3" (for home-card-seniors + the Tai Chi module; blur the lanyard name badge)
 - [ ] Stock photos replaced with real program photos as they become available (after Senior Wellness Day, replace every `wellness-day-*` stock photo with real event photos)
-- [ ] Senior Wellness Day cards still showing a line icon: `wellness-day-balance.jpg` (our own photo only), `wellness-day-self-massage.jpg`, `wellness-day-sound.jpg`, `wellness-day-market-natural.jpg`, `wellness-day-resources.jpg`
 - [ ] Every spot in the first table has a real photo, or you've knowingly chosen to keep the placeholder
 - [ ] Every person pictured has photo/video consent on file
 - [ ] Every uploaded photo has meaningful alt text
